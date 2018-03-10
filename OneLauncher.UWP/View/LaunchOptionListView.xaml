@@ -1,0 +1,38 @@
+﻿<UserControl
+    x:Class="GoodTimeStudio.OneMinecraftLauncher.UWP.View.LaunchOptionListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodTimeStudio.OneMinecraftLauncher.UWP.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="using:GoodTimeStudio.OneMinecraftLauncher.UWP.Models"
+    mc:Ignorable="d"
+    d:DesignHeight="400"
+    d:DesignWidth="200">
+    <UserControl.Resources>
+        
+    </UserControl.Resources>
+    <ListView x:Name="ListView"
+              x:FieldModifier="public"
+              SelectionMode="Single"
+              ItemsSource="{x:Bind OptListViewModel.OptionList, Mode=OneWay}"
+              Background="{StaticResource SystemControlAcrylicWindowBrush}"
+              SelectedItem="{x:Bind OptListViewModel.SelectedOption, Mode=TwoWay}">
+        <ListView.ItemTemplate>
+            <DataTemplate x:DataType="model:LaunchOption">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Image Source="ms-appx:///Assets/StoreLogo.png" />
+
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{x:Bind name, Mode=OneWay}" />
+                        <TextBlock Text="{x:Bind lastVersionId, Mode=OneWay}" />
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</UserControl>

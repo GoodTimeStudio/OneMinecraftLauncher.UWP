@@ -1,0 +1,120 @@
+﻿<Page
+    x:Class="GoodTimeStudio.OneMinecraftLauncher.UWP.View.LaunchOptionsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodTimeStudio.OneMinecraftLauncher.UWP.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="using:GoodTimeStudio.OneMinecraftLauncher.UWP.Models"
+    xmlns:applocal="using:GoodTimeStudio.OneMinecraftLauncher.UWP"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:DataType="model:LaunchOption" x:Key="OptViewTemplate" >
+            <StackPanel Spacing="12">
+                <TextBlock Margin="0,24,0,0" 
+                                       Text="{x:Bind name, Mode=OneWay}"
+                                       Style="{ThemeResource TitleTextBlockStyle}" 
+                                       HorizontalAlignment="Left"/>
+                <TextBox x:Uid="/LaunchOptions/OptNameBox"
+                         Text="{x:Bind name, Mode=TwoWay}" 
+                         Width="400" 
+                         HorizontalAlignment="Left"/>
+
+                <Grid Margin="0,24,0,0" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox  x:Uid="/LaunchOptions/VersionsListBox" 
+                           Width="300"
+                           ItemsSource="{x:Bind applocal:CoreManager.LocalAvailableVersionsList}"
+                           SelectedItem="{x:Bind lastVersionId, Mode=TwoWay}"/>
+                    <Button x:Uid="/LaunchOptions/DownloadVersionButton" 
+                        Grid.Column="1" Margin="12,0,0,0"
+                        Click="Button_Download_Click" 
+                        VerticalAlignment="Bottom"/>
+                </Grid>
+
+                <TextBox x:Uid="/LaunchOptions/GameDirBox"
+                        Text="{x:Bind gameDir, Mode=TwoWay}"
+                         Width="400" 
+                         HorizontalAlignment="Left" 
+                         Margin="0,24,0,0"/>
+                
+                <TextBox x:Uid="/LaunchOptions/JavaExtBox"
+                        Text="{x:Bind javaExt, Mode=TwoWay}"
+                         Width="400" 
+                         HorizontalAlignment="Left"/>
+
+                <TextBox x:Uid="/LaunchOptions/JavaArgsBox"
+                        Text="{x:Bind javaArgs, Mode=TwoWay}"
+                         Width="400" 
+                         HorizontalAlignment="Left"/>
+
+                <Button x:Uid="/LaunchOptions/OptionCancel/" Click="Button_Cancel_Click" Visibility="{x:Bind isPreview}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="OptViewNullTemplate">
+            <Image />
+        </DataTemplate>
+
+        <DataTemplate x:Key="DefaultOptViewTemplate" x:DataType="model:DefaultLaunchOption">
+            <StackPanel Spacing="12">
+                <TextBlock Margin="0,24,0,0" 
+                                       Text="{x:Bind name, Mode=OneWay}"
+                                       Style="{ThemeResource TitleTextBlockStyle}" 
+                                       HorizontalAlignment="Left"/>
+
+                <TextBox x:Uid="/LaunchOptions/GameDirBox"
+                        Text="{x:Bind gameDir, Mode=TwoWay}"
+                         Width="400"/>
+                <TextBox x:Uid="/LaunchOptions/JavaExtBox"
+                        Text="{x:Bind javaExt, Mode=TwoWay}"
+                         Width="400"/>
+
+                <TextBox x:Uid="/LaunchOptions/JavaArgsBox"
+                        Text="{x:Bind javaArgs, Mode=TwoWay}"
+                         Width="400"/>
+
+                <Button x:Uid="/LaunchOptions/OptionCancel/" Click="Button_Cancel_Click" Visibility="{x:Bind isPreview}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <SplitView IsPaneOpen="True"
+                   OpenPaneLength="256"
+                   DisplayMode="Inline">
+            <SplitView.Pane>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock x:Uid="/LaunchOptions/OptionsListHeader/" Style="{ThemeResource TitleTextBlockStyle}" />
+                    <Button x:Uid="/LaunchOptions/AddOptionButton" Grid.Row="1" Click="Button_Add_Click"/>
+                    <local:LaunchOptionListView x:Name="OptionsView" Grid.Row="2"/>
+                </Grid>
+            </SplitView.Pane>
+
+            <ContentControl x:Name="OptionDetailPresenter" 
+                              BorderThickness="1,0,0,0" 
+                              Padding="24,0,0,0"
+                              BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                              Content="{x:Bind OptionsView.ListView.SelectedItem, Mode=OneWay}" >
+                <ContentControl.ContentTransitions>
+                    <TransitionCollection />
+                </ContentControl.ContentTransitions>
+                <ContentControl.ContentTemplateSelector>
+                    <model:LaunchOptionViewTemplateSelector
+                        OptView="{StaticResource OptViewTemplate}"
+                        OptNullView="{StaticResource OptViewNullTemplate}"/>
+                </ContentControl.ContentTemplateSelector>
+            </ContentControl>
+
+        </SplitView>
+    </Grid>
+</Page>
