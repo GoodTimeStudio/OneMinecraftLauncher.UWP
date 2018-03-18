@@ -9,11 +9,12 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Resources;
+using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
@@ -30,11 +31,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
             NullValueHandling = NullValueHandling.Ignore
         };
 
-        public delegate void AppServiceEstablishedHandler(AppServiceConnection connection);
-        public static event AppServiceEstablishedHandler AppServiceEstablishedEvent;
-
         //DO NOT CHANGE
-        public static readonly string WorkDirToken = "OneMinecraftLauncher_RunDir_Token";
+        public static readonly string WorkDirToken = "OneMinecraftLauncher_WorkDir_Token";
 
         public static readonly string OptionsListJsonFileName = "options_list.json";
 
@@ -74,6 +72,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 
         public static async Task InitAppAsync()
         {
+            #region WorkDir
             if (StorageApplicationPermissions.FutureAccessList.ContainsItem(WorkDirToken))
             {
                 WorkDir = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(WorkDirToken);
@@ -88,7 +87,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
             {
                 return;
             }
+            #endregion
 
+            #region OptionsList
             OptListViewModel = new LaunchOptionListViewModel();
             ObservableCollection<LaunchOption> tmp = await LoadOptionList();
             if (tmp != null)
@@ -99,23 +100,15 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
             {
                 OptListViewModel.OptionList.Add(new DefaultLaunchOption());
             }
+            #endregion
 
-            AppServiceEstablishedEvent += CoreManager_GetVersionsList_AppServiceEstablishedEvent;
-            GetLocalAvailableVersionsAsync();
-            var list = LocalAvailableVersionsList;
-
+            await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
+            AppServiceManager.AppServiceConnected += AppServiceManager_AppServiceConnected;
         }
 
-        //App Service
-        // see https://blogs.msdn.microsoft.com/appconsult/2016/12/19/desktop-bridge-the-migrate-phase-invoking-a-win32-process-from-a-uwp-app/
-        public static void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        private async static void AppServiceManager_AppServiceConnected(object sender, EventArgs e)
         {
-            if (args.TaskInstance.TriggerDetails is AppServiceTriggerDetails)
-            {
-                args.TaskInstance.GetDeferral();
-                var connection = ((AppServiceTriggerDetails)args.TaskInstance.TriggerDetails).AppServiceConnection;
-                AppServiceEstablishedEvent(connection);
-            }
+            LocalAvailableVersionsList = await GetLocalAvailableVersionsAsync();
         }
 
         private static string GetLocalSettingAsString(string key)
@@ -138,7 +131,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
                 StorageFile file = await WorkDir.TryGetItemAsync(OptionsListJsonFileName) as StorageFile;
                 if (file == null)
                 {
-                    await WorkDir.CreateFileAsync(OptionsListJsonFileName);
+                    file = await WorkDir.CreateFileAsync(OptionsListJsonFileName);
                 }
 
                 string json = JsonConvert.SerializeObject(list, _LaunchOptSerializerSettings);
@@ -172,49 +165,38 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         }
         #endregion
 
-        #region Resource Helper
         public static string GetStringFromResource(string path)
         {
             var loader = ResourceLoader.GetForCurrentView();
             return loader.GetString(path);
         }
-        #endregion
 
-        #region Get local available versions
-        public static async void GetLocalAvailableVersionsAsync()
+        public static async Task<List<string>> GetLocalAvailableVersionsAsync()
         {
-            LocalAvailableVersionsList = new List<string>();
-            await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync("GetVersions");
-        }
-
-        private static void CoreManager_GetVersionsList_AppServiceEstablishedEvent(AppServiceConnection connection)
-        {
-            connection.RequestReceived += Connection_GetVersionsList_RequestReceived;
-        }
-
-        private async static void Connection_GetVersionsList_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
-        {
-            var deferral = args.GetDeferral();
-            if (args.Request.Message["type"].ToString() == "RequestWorkDirForVersionsScan")
+            if (AppServiceManager.appServiceConnection != null)
             {
+                List<string> ret = new List<string>();
+
                 ValueSet valueSet = new ValueSet();
-                valueSet["value"] = WorkDir.Path;
-                AppServiceResponseStatus status = await args.Request.SendResponseAsync(valueSet);
-                deferral.Complete();
-            }
-            else if (args.Request.Message["type"].ToString() == "VersionsList")
-            {
-                string json = args.Request.Message["value"].ToString();
+                valueSet["type"] = "versionsList";
+                valueSet["workDir"] = WorkDir.Path;
+
+                AppServiceResponse response = await AppServiceManager.appServiceConnection.SendMessageAsync(valueSet);
+                string json = response.Message["value"].ToString();
                 try
                 {
-                    LocalAvailableVersionsList = JsonConvert.DeserializeObject<List<string>>(json);
+                    ret = JsonConvert.DeserializeObject<List<string>>(json);
                 }
                 catch (JsonException)
                 { }
-                deferral.Complete();
+
+                return ret;
             }
-            
+
+            return null;
         }
-        #endregion
+
+      
     }
+    
 }

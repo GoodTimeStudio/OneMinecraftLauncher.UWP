@@ -34,7 +34,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
             this.InitializeComponent();
             OptListView.OptListViewModel = CoreManager.OptListViewModel ?? new LaunchOptionListViewModel();
             this.ViewModel = new StartPageViewModel(OptListView.OptListViewModel);
-            CoreManager.AppServiceEstablishedEvent += CoreManager_OnAppServiceEstablishedEvent;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -47,24 +46,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            CoreManager.AppServiceEstablishedEvent -= CoreManager_OnAppServiceEstablishedEvent;
         }
 
-        private void CoreManager_OnAppServiceEstablishedEvent(AppServiceConnection connection)
+        private async void Button_Launch_Click(object sender, RoutedEventArgs e)
         {
-            DebugWriteLine("App Service connection established");
-            connection.RequestReceived += AppServiceConnection_OnRequestReceived;
-        }
-
-        private async void AppServiceConnection_OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
-        {
-            DebugWriteLine("Received request");
-
-            var deferral = args.GetDeferral(); //keep the connection alive
-
-            DebugWriteLine("Processing request message");
-
-            if (args.Request.Message["type"].ToString() == "RequestLaunchMessage")
+            if (AppServiceManager.appServiceConnection != null)
             {
                 if (ViewModel.ListModel?.SelectedOption != null)
                 {
@@ -75,8 +61,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
                     auth.username = CoreManager.Username;
 
                     LaunchOption option = ViewModel.ListModel.SelectedOption;
-
-                    string t = CoreManager.GlobalJVMPath;
 
                     LaunchMessage message = new LaunchMessage()
                     {
@@ -95,11 +79,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
                     {
                         json = JsonConvert.SerializeObject(message);
                     }
-                    catch (JsonSerializationException e)
+                    catch (JsonSerializationException exp)
                     {
-                        DebugWriteLine("ERROR: " + e.Message);
-
-                        deferral.Complete();
+                        DebugWriteLine("ERROR: " + exp.Message);
                         return;
                     }
 
@@ -110,23 +92,16 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
                         DebugWriteLine("Sending response");
 
                         ValueSet valueSet = new ValueSet();
-                        valueSet.Add("type", "Launch");
+                        valueSet.Add("type", "launch");
                         valueSet.Add("message", json);
-                        await args.Request.SendResponseAsync(valueSet);
+                        await AppServiceManager.appServiceConnection.SendMessageAsync(valueSet);
                     }
                 }
                 else
                 {
                     DebugWriteLine("ERROR: No selected option");
                 }
-
-                deferral.Complete();
             }
-        }
-
-        private async void Button_Launch_Click(object sender, RoutedEventArgs e)
-        {
-            await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync("Launch");
         }
 
         private static void DebugWriteLine(string str)

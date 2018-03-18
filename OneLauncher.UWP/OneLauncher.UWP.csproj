@@ -100,6 +100,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AppServiceManager.cs" />
     <Compile Include="CoreManager.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -138,14 +139,14 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="OneLauncher.UWP_TemporaryKey.pfx" />
-    <PRIResource Include="Strings\zh-Hans\LaunchOptions.resw" />
-    <PRIResource Include="Strings\zh-Hans\Resources.resw" />
-    <PRIResource Include="Strings\zh-Hans\SettingsPage.resw" />
-    <PRIResource Include="Strings\zh-Hans\StartPage.resw" />
-    <PRIResource Include="Strings\en-US\StartPage.resw" />
-    <PRIResource Include="Strings\en-US\SettingsPage.resw" />
-    <PRIResource Include="Strings\en-US\Resources.resw" />
-    <PRIResource Include="Strings\en-US\LaunchOptions.resw" />
+    <PRIResource Include="Resources\zh-Hans\LaunchOptions.resw" />
+    <PRIResource Include="Resources\zh-Hans\Resources.resw" />
+    <PRIResource Include="Resources\zh-Hans\SettingsPage.resw" />
+    <PRIResource Include="Resources\zh-Hans\StartPage.resw" />
+    <PRIResource Include="Resources\en-US\StartPage.resw" />
+    <PRIResource Include="Resources\en-US\SettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\Resources.resw" />
+    <PRIResource Include="Resources\en-US\LaunchOptions.resw" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\Default.rd.xml" />
@@ -207,7 +208,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <XliffResource Include="MultilingualResources\OneLauncher.UWP.zh-Hans.xlf" />
   </ItemGroup>

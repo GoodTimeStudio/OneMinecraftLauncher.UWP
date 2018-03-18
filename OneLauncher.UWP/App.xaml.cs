@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.HockeyApp;
+using Windows.ApplicationModel.AppService;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 {
@@ -113,7 +114,10 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
             base.OnBackgroundActivated(args);
-            CoreManager.OnBackgroundActivated(args);
+            if (args.TaskInstance.TriggerDetails is AppServiceTriggerDetails)
+            {
+                AppServiceManager.OnAppServiceActivated(args);
+            }
         }
     }
 }
