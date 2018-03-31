@@ -40,6 +40,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             Console.ReadKey();
         }
 
+        private static void setColor(ConsoleColor c)
+        {
+            Console.ForegroundColor = c;
+        }
+
 
         public async static void Process(string[] args)
         {
@@ -54,23 +59,35 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             AppServiceConnectionStatus status = await connection.OpenAsync();
             if (status == AppServiceConnectionStatus.Success)
             {
+                setColor(ConsoleColor.Green);
                 Console.WriteLine("Connection established, waiting for requests");
+                setColor(ConsoleColor.White);
             }
             else
             {
+                setColor(ConsoleColor.Red);
                 Console.WriteLine("Connection open failed: " + status.ToString());
+                setColor(ConsoleColor.White);
                 appServiceExit?.Set();
             }
         }
 
         private static void Connection_ServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
         {
+            setColor(ConsoleColor.Red);
+            Console.WriteLine("Connection closed");
+            setColor(ConsoleColor.White);
             appServiceExit?.Set();
         }
 
         private static void Connection_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
+            setColor(ConsoleColor.Yellow);
             string type = args.Request.Message["type"].ToString();
+            Console.WriteLine("*************************************************");
+            Console.WriteLine("Received request, type: " + type);
+            Console.WriteLine("*************************************************");
+            setColor(ConsoleColor.White);
             switch (type)
             {
                 case "launch":
@@ -80,6 +97,10 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
                     VersionList_RequestReceived(sender, args);
                     break;
             }
+
+            setColor(ConsoleColor.Yellow);
+            Console.WriteLine("*************************************************");
+            setColor(ConsoleColor.White);
         }
 
         private async static void VersionList_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
@@ -181,6 +202,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
                 }
             }
 
+            Console.WriteLine("Sending launch result to app");
             await args.Request.SendResponseAsync(ret);
         }
 

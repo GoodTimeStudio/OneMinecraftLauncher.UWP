@@ -24,7 +24,7 @@
         <uap:Extension Category="windows.appService">
           <uap:AppService Name="LaunchAgent" />
         </uap:Extension>
-        <desktop:Extension Category="windows.fullTrustProcess" Executable="OneMinecraftLauncher.UWPCore.exe">
+        <desktop:Extension Category="windows.fullTrustProcess" Executable="core/OneMinecraftLauncher.UWPCore.exe">
           <desktop:FullTrustProcess>
             <desktop:ParameterGroup GroupId="Launch" Parameters="/launch" />
             <desktop:ParameterGroup GroupId="GetVersions" Parameters="/getversions" />

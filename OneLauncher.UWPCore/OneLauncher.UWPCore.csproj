@@ -59,7 +59,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LibZResolver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -89,13 +88,10 @@
     <Error Condition="!Exists('..\packages\UwpDesktop.10.0.14393.3\build\portable-net45+uap\UwpDesktop.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UwpDesktop.10.0.14393.3\build\portable-net45+uap\UwpDesktop.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>cd "$(TargetDir)"
-set LIBZ="$(SolutionDir)packages\LibZ.Bootstrap.1.2.0.0\tools\libz.exe"
-%25LIBZ%25 add --libz libraries.libz --include *.dll --move
-%25LIBZ%25 inject-libz -assembly $(TargetFileName) --libz libraries.libz --move
-%25LIBZ%25 instrument --assembly $(TargetFileName) --libz-resources
+    <PostBuildEvent>del /q "$(SolutionDir)OneLauncher.UWP\bin\x64\$(ConfigurationName)\AppX\core\"
+del /q "$(SolutionDir)OneLauncher.UWP\bin\x86\$(ConfigurationName)\AppX\core\" 
 
-xcopy /y /s "$(TargetPath)" "$(SolutionDir)OneLauncher.UWP\bin\x64\$(ConfigurationName)\AppX\"
-xcopy /y /s "$(TargetPath)" "$(SolutionDir)OneLauncher.UWP\bin\x86\$(ConfigurationName)\AppX\"</PostBuildEvent>
+xcopy /y /s "$(TargetDir)*" "$(SolutionDir)OneLauncher.UWP\bin\x64\$(ConfigurationName)\AppX\core\"
+xcopy /y /s "$(TargetDir)*" "$(SolutionDir)OneLauncher.UWP\bin\x86\$(ConfigurationName)\AppX\core\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
