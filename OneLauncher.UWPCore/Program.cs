@@ -195,7 +195,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
                 else
                 {
                     ret["errorMessage"] = launchResult.ErrorMessage;
-                    ret["errorStack"] = launchResult.Exception.StackTrace;
+                    ret["errorStack"] = launchResult.Exception?.StackTrace;
 
                     Console.WriteLine("Launch failed");
                     Console.WriteLine("ERROR: " + launchResult.ErrorMessage);
