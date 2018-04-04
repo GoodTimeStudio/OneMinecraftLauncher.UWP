@@ -18,6 +18,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
         public const string ServiceName = "LaunchAgent";
         static AutoResetEvent appServiceExit;
 
+        public static LauncherCore core;
+
         static void Main(string[] args)
         {
             Console.WriteLine(" ******************************************************************** ");
@@ -90,6 +92,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             setColor(ConsoleColor.White);
             switch (type)
             {
+                case "init":
+                    Init_RequestReceived(sender, args);
+                    break;
                 case "launch":
                     LaunchAgent_RequestReceived(sender, args);
                     break;
@@ -103,7 +108,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             setColor(ConsoleColor.White);
         }
 
-        private async static void VersionList_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        private async static void Init_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             string workDir = args.Request.Message["workDir"].ToString();
             if (string.IsNullOrWhiteSpace(workDir))
@@ -112,10 +117,18 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             }
 
             Console.WriteLine("Work dir is " + workDir);
-            Console.WriteLine("Creating KMCCC LauncherCore for versions scan");
+            Console.WriteLine("Creating KMCCC LauncherCore");
 
             LaunchMessage message = new LaunchMessage { WorkDirPath = workDir };
-            var core = OneMinecraftLauncher.Core.OneMinecraftLauncher.CreateLauncherCore(message);
+            core = OneMinecraftLauncher.Core.OneMinecraftLauncher.CreateLauncherCore(message);
+            await args.Request.SendResponseAsync(new ValueSet());
+        }
+
+        private async static void VersionList_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        {
+            if (core == null)
+                return;
+
             List<string> list = new List<string>();
             var vers = core.GetVersions();
 
@@ -157,6 +170,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
 
         private async static void LaunchAgent_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
+            if (core == null)
+                return;
+
             string json = args.Request.Message["message"].ToString();
 
             Console.WriteLine("Launch message is :");
@@ -184,7 +200,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             {
                 Console.WriteLine("Ready to launch");
 
-                LaunchResult launchResult = OneMinecraftLauncher.Core.OneMinecraftLauncher.Launch(message);
+                LaunchResult launchResult = OneMinecraftLauncher.Core.OneMinecraftLauncher.Launch(core, message);
 
                 if (launchResult.Success)
                 {

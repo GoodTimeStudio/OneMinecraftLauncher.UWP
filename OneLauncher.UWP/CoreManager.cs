@@ -108,6 +108,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 
         private async static void AppServiceManager_AppServiceConnected(object sender, EventArgs e)
         {
+            ValueSet value = new ValueSet();
+            value["type"] = "init";
+            value["workDir"] = WorkDir?.Path;
+            await AppServiceManager.appServiceConnection.SendMessageAsync(value);
+
             LocalAvailableVersionsList = await GetLocalAvailableVersionsAsync();
         }
 
@@ -179,7 +184,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 
                 ValueSet valueSet = new ValueSet();
                 valueSet["type"] = "versionsList";
-                valueSet["workDir"] = WorkDir.Path;
 
                 AppServiceResponse response = await AppServiceManager.appServiceConnection.SendMessageAsync(valueSet);
                 string json = response.Message["value"].ToString();

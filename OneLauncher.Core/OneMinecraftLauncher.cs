@@ -30,13 +30,20 @@ namespace GoodTimeStudio.OneMinecraftLauncher.Core
                 authenticator = new OfflineAuthenticator("MicroOwl"),
                 JavaExtPath = "C:\\Program Files\\Java\\jre-9.0.4\\bin\\javaw.exe"
             };
-            LaunchResult result = Launch(message);
+            var core = CreateLauncherCore(message);
+            LaunchResult result = Launch(core, message);
         }
 
-        public static LaunchResult Launch(LaunchMessage message)
+        public static LaunchResult Launch(LauncherCore core, LaunchMessage message)
         {
             Console.WriteLine("Processing...");
 
+            if (core == null)
+            {
+                Console.WriteLine("ERROR: Launcher core is null");
+                FailedResult.ErrorMessage = "Launcher core is null";
+                return FailedResult;
+            }
             if (message == null)
             {
                 Console.WriteLine("ERROR: Launch message is null");
@@ -51,9 +58,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.Core
                 return FailedResult;
             }
 
-            Console.WriteLine("Creating KMCCC LaunchCore");
+            core.JavaPath = message.JavaExtPath;
 
-            LauncherCore core = CreateLauncherCore(message);
             LaunchOptions options = new LaunchOptions()
             {
                 Version = core.GetVersion(message.VersionId),
@@ -70,7 +76,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.Core
 
             return core.Launch(options, (Action<MinecraftLaunchArguments>) (args => 
             {
-                //TO-DO: add java args to this.
+                args.AdvencedArguments.Add(message.JavaArgs);
                 System.Version osVersion = Environment.OSVersion.Version;
                 args.AdvencedArguments.Add("-Dos.name=\"" + GetSystemVersionName(osVersion.Major, osVersion.Minor) + "\"");
                 args.AdvencedArguments.Add("-Dos.version=" + osVersion.Major + "." + osVersion.Minor);
