@@ -1,5 +1,5 @@
 ﻿using GoodTimeStudio.OneLauncher.UWP.Models;
-using GoodTimeStudio.OneMinecraftLauncher.UWP.McVersions;
+using GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft;
 using GoodTimeStudio.OneMinecraftLauncher.UWP.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

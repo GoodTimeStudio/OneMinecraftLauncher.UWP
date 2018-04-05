@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 
-namespace GoodTimeStudio.OneMinecraftLauncher.UWP.McVersions
+namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft
 {
     public class MinecraftVersionManager
     {

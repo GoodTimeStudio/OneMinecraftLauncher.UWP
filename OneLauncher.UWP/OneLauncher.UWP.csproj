@@ -105,7 +105,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="McVersions\MinecraftVersion.cs" />
+    <Compile Include="Minecraft\MinecraftVersion.cs" />
     <Compile Include="Models\BindableBase.cs" />
     <Compile Include="Models\LaunchMessage.cs" />
     <Compile Include="Models\LaunchOption.cs" />
