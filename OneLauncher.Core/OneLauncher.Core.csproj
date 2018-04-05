@@ -104,7 +104,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KMCCC.Basic\KMCCC.Basic.csproj">
+    <ProjectReference Include="..\KMCCC\KMCCC.Basic\KMCCC.Basic.csproj">
       <Project>{2b35c1fd-5e62-416e-b125-7577ef8ba1fb}</Project>
       <Name>KMCCC.Basic</Name>
     </ProjectReference>
