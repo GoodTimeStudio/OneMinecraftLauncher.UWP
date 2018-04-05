@@ -101,6 +101,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
                 case "versionsList":
                     VersionList_RequestReceived(sender, args);
                     break;
+                case "librariesCheck":
+                    LibrariesCheck_RequestReceived(sender, args);
+                    break;
             }
 
             setColor(ConsoleColor.Yellow);
@@ -222,5 +225,71 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             await args.Request.SendResponseAsync(ret);
         }
 
+        private async static void LibrariesCheck_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        {
+            if (core == null)
+                return;
+
+            string versionID = args.Request.Message["version"].ToString();
+            if (string.IsNullOrWhiteSpace(versionID))
+                return;
+
+            Console.WriteLine("Scanning libraries and natives");
+            KMCCC.Launcher.Version ver = core.GetVersion(versionID);
+
+            List<DLibrary> missing = new List<DLibrary>();
+            List<Library> missingLib = core.CheckLibraries(ver);
+            List<Native> missingNative = core.CheckNatives(ver);
+
+            Console.WriteLine("Found " + missingLib?.Count + " missing libraries");
+            foreach (Library lib in missingLib)
+            {
+                Console.WriteLine("     # " + lib.NS);
+                missing.Add(new DLibrary
+                {
+                    Name = lib.NS,
+                    Path = core.GetLibPath(lib),
+                    Url = lib.Url
+                });
+            }
+
+            Console.WriteLine("Found " + missingNative?.Count + " missing natives");
+            foreach (Native nav in missingNative)
+            {
+                Console.WriteLine("     # " + nav.NS);
+                missing.Add(new DLibrary
+                {
+                    Name = nav.NS,
+                    Path = core.GetNativePath(nav),
+                    Url = nav.Url
+                });
+            }
+
+            Console.WriteLine("Serializing list to json");
+            string json = null;
+            try
+            {
+                json = JsonConvert.SerializeObject(missing);
+            }
+            catch (JsonException)
+            {
+                return;
+            }
+
+            ValueSet ret = new ValueSet();
+            ret["value"] = json;
+
+            Console.WriteLine("Sending list to app");
+            await args.Request.SendResponseAsync(ret);
+        }
+    }
+
+    public class DLibrary
+    {
+        public string Name;
+
+        public string Path;
+
+        public string Url;
     }
 }
