@@ -42,6 +42,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 
         public static SettingsViewModel SettingsModel;
 
+        public static DownlaodPageViewModel DownlaodPageModel = new DownlaodPageViewModel();
+
         public static StorageFolder AppDir = ApplicationData.Current.LocalFolder;
 
         public static List<string> LocalAvailableVersionsList;

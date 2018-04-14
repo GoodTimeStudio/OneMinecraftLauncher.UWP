@@ -12,6 +12,20 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
 
         public LaunchOptionListViewModel ListModel;
 
+        private string _MsgBoxTitleText;
+        public string MsgBoxTitleText
+        {
+            get => _MsgBoxTitleText;
+            set => this.SetProperty(ref _MsgBoxTitleText, value);
+        }
+
+        private string _MsgBoxContentText;
+        public string MsgBoxContentText
+        {
+            get => _MsgBoxContentText;
+            set => this.SetProperty(ref _MsgBoxContentText, value);
+        }
+
         public StartPageViewModel(LaunchOptionListViewModel listModel)
         {
             ListModel = listModel ?? throw new ArgumentNullException(nameof(listModel));

@@ -244,10 +244,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             Console.WriteLine("Found " + missingLib?.Count + " missing libraries");
             foreach (Library lib in missingLib)
             {
-                Console.WriteLine("     # " + lib.NS);
+                string dName = lib.Url.Substring(lib.Url.LastIndexOf('/') + 1);
+                Console.WriteLine("     # " + dName);
                 missing.Add(new DLibrary
                 {
-                    Name = lib.NS,
+                    Name = dName,
                     Path = core.GetLibPath(lib),
                     Url = lib.Url
                 });
@@ -256,10 +257,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             Console.WriteLine("Found " + missingNative?.Count + " missing natives");
             foreach (Native nav in missingNative)
             {
-                Console.WriteLine("     # " + nav.NS);
+                string dName = nav.Url.Substring(nav.Url.LastIndexOf('/') + 1);
+                Console.WriteLine("     # " + dName);
                 missing.Add(new DLibrary
                 {
-                    Name = nav.NS,
+                    Name = dName,
                     Path = core.GetNativePath(nav),
                     Url = nav.Url
                 });

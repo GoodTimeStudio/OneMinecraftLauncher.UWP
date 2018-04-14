@@ -29,8 +29,23 @@
                 <TextBlock Text="{x:Bind ViewModel.ListModel.SelectedOption.lastVersionId, Mode=OneWay}" />
             </StackPanel>
             
-            <Button Grid.Row="1" x:Uid="/StartPage/ButtonLaunch" Click="Button_Launch_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="100" Margin="0,0,24,24" />
+            <Button Grid.Row="1" 
+                    x:Uid="/StartPage/ButtonLaunch" Click="Button_Launch_Click" 
+                    HorizontalAlignment="Right" VerticalAlignment="Bottom" 
+                    Width="200" Height="100" 
+                    Margin="0,0,24,24" IsEnabled="{x:Bind ViewModel.ListModel.SelectedOption.isNotDownloading, Mode=OneWay}"/>
             
         </Grid>
+
+        <ContentDialog Grid.Column="1"
+                       x:Name="MsgBox"
+                       x:Uid="/StartPage/MsgBox"
+                       PrimaryButtonClick="MsgBox_PrimaryButtonClick"
+                       d:IsHidden="True">
+            <StackPanel>
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="{x:Bind ViewModel.MsgBoxTitleText, Mode=OneWay}" />
+                <TextBlock  Text="{x:Bind ViewModel.MsgBoxContentText, Mode=OneWay}"/>
+            </StackPanel>
+        </ContentDialog>
     </Grid>
 </Page>

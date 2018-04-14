@@ -1,4 +1,5 @@
 ﻿using GoodTimeStudio.OneLauncher.UWP.Models;
+using GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft;
 using GoodTimeStudio.OneMinecraftLauncher.UWP.Models;
 using Newtonsoft.Json;
 using System;
@@ -50,6 +51,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
 
         private async void Button_Launch_Click(object sender, RoutedEventArgs e)
         {
+            //Check connection to launch agent
             if (AppServiceManager.appServiceConnection != null)
             {
                 if (ViewModel.ListModel?.SelectedOption != null)
@@ -74,10 +76,10 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
 
                     DebugWriteLine("Serializing launch message to json");
 
-                    string json;
+                    string messageJson;
                     try
                     {
-                        json = JsonConvert.SerializeObject(message);
+                        messageJson = JsonConvert.SerializeObject(message);
                     }
                     catch (JsonSerializationException exp)
                     {
@@ -85,17 +87,62 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
                         return;
                     }
 
-                    DebugWriteLine(json);
+                    DebugWriteLine(messageJson);
 
-                    if (!string.IsNullOrWhiteSpace(json))
+                    //Check if the launch message was successfully generated
+                    if (!string.IsNullOrWhiteSpace(messageJson))
                     {
-                        DebugWriteLine("Sending response");
 
+                        // Libraries and natives check 
                         ValueSet valueSet = new ValueSet();
+                        valueSet["type"] = "librariesCheck";
+                        valueSet["version"] = message.VersionId;
+                        AppServiceResponse response = await AppServiceManager.appServiceConnection.SendMessageAsync(valueSet);
+
+                        List<Library> missingLibs = null;
+                        string responseJson = response.Message["value"].ToString();
+                        try
+                        {
+                            missingLibs = JsonConvert.DeserializeObject<List<Library>>(responseJson);
+                        }
+                        catch (JsonException)
+                        { }
+
+                        //Found missing libs, go to download page.
+                        if (missingLibs != null && missingLibs.Count > 0)
+                        {
+                            option.isDownloading = true;
+                            missingLibs.ForEach(lib =>
+                            {
+                                DownloadItem item = new DownloadItem(lib.Name, lib.Path, lib.Url);
+                                DownloadManager.DownloadQuene.Add(item);
+                            });
+                            DownloadManager.DownloadAll( );
+                            CoreManager.DownlaodPageModel.isPaneOpen = true;
+                            await MainPage.Instance.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
+                            {
+                                MainPage.Instance.NavigateTo(MainPage.Tag_Download);
+                            });
+
+                            return;
+                        }
+                        
+                        //No missing libs and natives, go through
+                        valueSet = new ValueSet();
                         valueSet.Add("type", "launch");
-                        valueSet.Add("message", json);
-                        await AppServiceManager.appServiceConnection.SendMessageAsync(valueSet);
+                        valueSet.Add("message", messageJson);
+                        response = await AppServiceManager.appServiceConnection.SendMessageAsync(valueSet);
+
+                        //Display error
+                        object obj = response.Message["result"];
+                        if (obj is bool && !((bool) obj))
+                        {
+                            ViewModel.MsgBoxTitleText = CoreManager.GetStringFromResource("/StartPage/LaunchFailed");
+                            ViewModel.MsgBoxContentText = response.Message["errorMessage"].ToString() + "\r\n" + response.Message["errorStack"];
+                            await MsgBox.ShowAsync();
+                        }
                     }
+
                 }
                 else
                 {
@@ -109,6 +156,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
 #if DEBUG
             System.Diagnostics.Debug.WriteLine(str);
 #endif
+        }
+
+        private void MsgBox_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            ViewModel.MsgBoxTitleText = "";
+            ViewModel.MsgBoxContentText = "";
         }
     }
 }
