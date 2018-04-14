@@ -16,26 +16,42 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft
 
         public static MinecraftVersionsList VersionsList;
 
-        public async static Task<MinecraftVersionsList> GetMinecraftVersionsAsync()
+        public async static void Init()
         {
-            IStorageItem item = await CoreManager.AppDir.TryGetItemAsync(VersionManifestFileName);
-            StorageFile file = null;
-            if (item is StorageFile)
+            VersionsList = await GetMinecraftVersionsFromFileAsync();
+            RefreshMinecraftVersions();
+        }
+
+        public async static void RefreshMinecraftVersions()
+        {
+            string json = await GetMinecraftVersionManifestAsync();
+
+            if (!string.IsNullOrWhiteSpace(json))
             {
-                file = item as StorageFile;
+                MinecraftVersionsList list = GetMinecraftVersions(json);
+
+                if (list != null)
+                {
+                    VersionsList = list;
+                }
+            }
+        }
+
+        private async static Task<MinecraftVersionsList> GetMinecraftVersionsFromFileAsync()
+        {
+            StorageFile file = await CoreManager.AppDir.CreateFileAsync(VersionManifestFileName, CreationCollisionOption.OpenIfExists);
+            string json = await FileIO.ReadTextAsync(file);
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return null;
             }
 
-            string json = null;
-            if (file == null)
-            {
-                file = await CoreManager.AppDir.CreateFileAsync(VersionManifestFileName);
-                json = await DownloadMinecraftVersionManifestAsync(file);
-            }
-            else
-            {
-                json = await FileIO.ReadTextAsync(file);
-            }
+            return GetMinecraftVersions(json);
+        }
 
+        public static MinecraftVersionsList GetMinecraftVersions(string json)
+        {
             if (string.IsNullOrWhiteSpace(json))
                 return null;
 
@@ -46,7 +62,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft
             }
             catch (JsonException)
             {
-                await file.DeleteAsync();
                 return null;
             }
 
@@ -62,30 +77,33 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft
         }
 
         /// <summary>
-        /// Downlaod minecraft version manifest to local storage.
+        /// Get minecraft version manifest.
         /// </summary>
-        /// <returns>version manifest strings</returns>
-        private async static Task<string> DownloadMinecraftVersionManifestAsync(StorageFile file)
+        /// <returns>version manifest json</returns>
+        private async static Task<string> GetMinecraftVersionManifestAsync()
         {
-            if (file == null)
-                return null;
-
             string json;
-            using (HttpClient client = new HttpClient())
+            try
             {
-                json = await client.GetStringAsync(VersionManifestUrl);
+                using (HttpClient client = new HttpClient())
+                {
+                    json = await client.GetStringAsync(VersionManifestUrl);
+                }
+            }
+            catch (HttpRequestException)
+            {
+                return string.Empty;
             }
 
-            if (string.IsNullOrWhiteSpace(json))
-                return null;
-            
-            await FileIO.WriteTextAsync(file, json);
             return json;
         }
     }
 
     public class MinecraftVersion
     {
+        public const string Type_Release = "release";
+        public const string Type_Snapshot = "snapshot";
+
         public string id;
         public string type;
         public DateTime time;

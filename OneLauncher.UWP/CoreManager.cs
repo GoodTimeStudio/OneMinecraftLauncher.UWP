@@ -92,6 +92,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
             }
             #endregion
 
+            MinecraftVersionManager.Init();
+
             #region OptionsList
             OptListViewModel = new LaunchOptionListViewModel();
             ObservableCollection<LaunchOption> tmp = await LoadOptionList();
@@ -104,7 +106,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
                 OptListViewModel.OptionList.Add(new DefaultLaunchOption());
             }
             #endregion
-
+            
             await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
             AppServiceManager.AppServiceConnected += AppServiceManager_AppServiceConnected;
         }

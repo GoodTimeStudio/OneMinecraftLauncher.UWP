@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="using:GoodTimeStudio.OneMinecraftLauncher.UWP"
+    xmlns:minecraft="using:GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -13,7 +14,7 @@
             PaneBackground="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
             PanePlacement="Right"
             OpenPaneLength="512"
-            IsPaneOpen="{x:Bind ViewModel.isPaneOpen, Mode=OneWay}">
+            IsPaneOpen="{x:Bind ViewModel.isPaneOpen, Mode=TwoWay}">
 
             <SplitView.Pane>
                 <Grid Margin="24">
@@ -43,6 +44,71 @@
                     </ListView>
                 </Grid>
             </SplitView.Pane>
+
+            <Pivot Margin="0,45,0,0">
+                <Pivot.RightHeader>
+                    <Grid>
+                        <AppBarButton x:Uid="/DownloadPage/Btn_Download" Icon="Download" Click="DownloadListButton_Click" />
+                    </Grid>
+                </Pivot.RightHeader>
+                
+                <PivotItem x:Uid="/DownloadPage/Pivot_Minecraft">
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                            <ToggleSwitch x:Uid="/DownloadPage/Toggle_Snapshot" 
+                                          IsOn="{x:Bind ViewModel.isSnapshotEnabled, Mode=TwoWay}"/>
+                            <ToggleSwitch x:Uid="/DownloadPage/Toggle_Historical" 
+                                          IsOn="{x:Bind ViewModel.isHistoricalEnabled, Mode=TwoWay}"/>
+
+                        </StackPanel>
+
+                        <ListView x:Name="VersionsList"
+                            ItemsSource="{x:Bind ViewModel.VersionsList, Mode=OneWay}"
+                            SelectionMode="Multiple" Margin="0,48,0,48">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Uid="/DownloadPage/TextBlock_VersionName" />
+                                    <TextBlock Grid.Column="1" x:Uid="/DownloadPage/TextBlock_ReleaseTime" />
+                                    <TextBlock Grid.Column="2" x:Uid="/DownloadPage/TextBlock_VersionType" />
+                                </Grid>
+                            </ListView.Header>
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="minecraft:MinecraftVersion">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="{x:Bind id}" />
+                                        <TextBlock Text="{x:Bind releaseTime}" Grid.Column="1" />
+                                        <TextBlock Text="{x:Bind type}" Grid.Column="2" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <Button HorizontalAlignment="Right" 
+                                VerticalAlignment="Bottom" Width="50" Height="24"
+                                x:Uid="/DownloadPage/Btn_StartDownload"
+                                Click="ButtonDownload_Click"/>
+                    </Grid>
+                </PivotItem>
+            </Pivot>
+            
         </SplitView>
     </Grid>
 </Page>

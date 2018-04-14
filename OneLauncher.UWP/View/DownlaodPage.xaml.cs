@@ -1,6 +1,8 @@
-﻿using GoodTimeStudio.OneMinecraftLauncher.UWP.Models;
+﻿using GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft;
+using GoodTimeStudio.OneMinecraftLauncher.UWP.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -27,6 +29,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
 
         public DownlaodPageViewModel ViewModel;
 
+
         public DownloadPage()
         {
             this.InitializeComponent();
@@ -36,13 +39,28 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            
+
             if (ViewModel.DownloadQuene.Count > 0)
             {
                 ViewModel.isPaneOpen = true;
             }
 
+            ViewModel.MakeList();
         }
 
+        private void DownloadListButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.isPaneOpen = true;
+        }
+
+        private void ToggleSwitch_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ViewModel.MakeList();
+        }
+
+        private void ButtonDownload_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }

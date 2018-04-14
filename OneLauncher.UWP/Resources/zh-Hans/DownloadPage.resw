@@ -117,7 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Btn_StartDownload.Content" xml:space="preserve">
+    <value>下载</value>
+  </data>
   <data name="DownloadQueneHeader.Text" xml:space="preserve">
     <value>正在下载</value>
+  </data>
+  <data name="Pivot_Minecraft.Header" xml:space="preserve">
+    <value>Minecraft</value>
+  </data>
+  <data name="TextBlock_ReleaseTime.Text" xml:space="preserve">
+    <value>发布时间</value>
+  </data>
+  <data name="TextBlock_VersionName.Text" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="TextBlock_VersionType.Text" xml:space="preserve">
+    <value>版本类型</value>
+  </data>
+  <data name="Toggle_Historical.OffContent" xml:space="preserve">
+    <value>历史版本</value>
+  </data>
+  <data name="Toggle_Historical.OnContent" xml:space="preserve">
+    <value>历史版本</value>
+  </data>
+  <data name="Toggle_Snapshot.OffContent" xml:space="preserve">
+    <value>快照版本</value>
+  </data>
+  <data name="Toggle_Snapshot.OnContent" xml:space="preserve">
+    <value>快照版本</value>
   </data>
 </root>
