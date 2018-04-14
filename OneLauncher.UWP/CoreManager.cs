@@ -28,13 +28,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         {
             TypeNameHandling = TypeNameHandling.Objects,
             SerializationBinder = new LaunchOptionTypesBinder(),
-            NullValueHandling = NullValueHandling.Ignore
+            NullValueHandling = NullValueHandling.Ignore,
+            Formatting = Formatting.Indented
         };
 
         //DO NOT CHANGE
         public static readonly string WorkDirToken = "OneMinecraftLauncher_WorkDir_Token";
 
-        public static readonly string OptionsListJsonFileName = "options_list.json";
+        public static readonly string OptionsListJsonFilePath = "options_list.json";
 
         public static bool needInit = false;
 
@@ -133,12 +134,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         {
             try
             {
-                FileInfo fileInfo = new FileInfo(WorkDir.Path + @"\" + OptionsListJsonFileName);
+                FileInfo fileInfo = new FileInfo(WorkDir.Path + @"\" + OptionsListJsonFilePath);
 
-                StorageFile file = await WorkDir.TryGetItemAsync(OptionsListJsonFileName) as StorageFile;
+                StorageFile file = await WorkDir.TryGetItemAsync(OptionsListJsonFilePath) as StorageFile;
                 if (file == null)
                 {
-                    file = await WorkDir.CreateFileAsync(OptionsListJsonFileName);
+                    file = await WorkDir.CreateFileAsync(OptionsListJsonFilePath);
                 }
 
                 string json = JsonConvert.SerializeObject(list, _LaunchOptSerializerSettings);
@@ -156,7 +157,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         {
             try
             {
-                StorageFile file = await WorkDir.GetFileAsync(OptionsListJsonFileName);
+                StorageFile file = await WorkDir.GetFileAsync(OptionsListJsonFilePath);
                 string json = await FileIO.ReadTextAsync(file);
                 return JsonConvert.DeserializeObject<ObservableCollection<LaunchOption>>(json, _LaunchOptSerializerSettings);
             }
@@ -166,7 +167,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
             }
             catch (JsonException)
             {
-                await WorkDir.CreateFileAsync(OptionsListJsonFileName, CreationCollisionOption.ReplaceExisting);
+                await WorkDir.CreateFileAsync(OptionsListJsonFilePath, CreationCollisionOption.ReplaceExisting);
                 return null;
             }
         }
