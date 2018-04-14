@@ -28,11 +28,40 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
+
+        public static MainPage Instance;
+
+        public const string Tag_StartPage = "start";
+        public const string Tag_LaunchOptions = "launch_options";
+        public const string Tag_Download = "download";
+
         public MainPage()
         {
+            Instance = this;
             this.InitializeComponent();
             setupTitleBar();
             InitializingPage.InitializationCompleteEvent += OnInitializationComplete;
+        }
+
+        public void NavigateTo(string tag)
+        {
+            this.NavigateTo(tag, null);
+        }
+
+        public void NavigateTo(string pageTag, object obj)
+        {
+            switch (pageTag)
+            {
+                case Tag_StartPage:
+                    NavView.SelectedItem = NavItem_start;
+                    break;
+                case Tag_LaunchOptions:
+                    NavView.SelectedItem = NavItem_launch_options;
+                    break;
+                case Tag_Download:
+                    NavView.SelectedItem = NavItem_Download;
+                    break;
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -103,11 +132,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
                     NavigationViewItem item = args.SelectedItem as NavigationViewItem;
                     switch (item.Tag)
                     {
-                        case "start":
+                        case Tag_StartPage:
                             MainContent.Navigate(typeof(StartPage));
                             break;
-                        case "launch_options":
+                        case Tag_LaunchOptions:
                             MainContent.Navigate(typeof(LaunchOptionsPage));
+                            break;
+                        case Tag_Download:
+                            MainContent.Navigate(typeof(DownloadPage));
                             break;
                     }
                 }

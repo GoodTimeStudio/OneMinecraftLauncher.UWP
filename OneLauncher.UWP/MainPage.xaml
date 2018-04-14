@@ -246,10 +246,10 @@
         <NavigationView Style="{StaticResource NavViewStyle}" 
                         x:Name="NavView" SelectionChanged="NavView_SelectionChanged" AlwaysShowHeader="False">
             <NavigationView.MenuItems>
-                <NavigationViewItem x:Uid="/Resources/NavItem_start" Style="{StaticResource NavItemStyle}" Icon="Play" Tag="start" IsEnabled="{x:Bind ViewModel.IsNavItemEnable, Mode=OneWay}" />
-                <NavigationViewItem x:Uid="/Resources/NavItem_launch_options" Style="{StaticResource NavItemStyle}" Icon="Save" Tag="launch_options" IsEnabled="{x:Bind ViewModel.IsNavItemEnable, Mode=OneWay}" />
-                <NavigationViewItem x:Uid="/Resources/NavItem_download" Style="{StaticResource NavItemStyle}" Icon="Download" Tag="download" IsEnabled="{x:Bind ViewModel.IsNavItemEnable, Mode=OneWay}" />
-                <NavigationViewItem x:Uid="/Resources/NavItem_help" Style="{StaticResource NavItemStyle}" Icon="Help" Tag="help" IsEnabled="{x:Bind ViewModel.IsNavItemEnable, Mode=OneWay}" />
+                <NavigationViewItem x:Uid="/Resources/NavItem_start" x:Name="NavItem_start" Style="{StaticResource NavItemStyle}" Icon="Play" Tag="start" IsEnabled="{x:Bind ViewModel.IsNavItemEnable, Mode=OneWay}" />
+                <NavigationViewItem x:Uid="/Resources/NavItem_launch_options" x:Name="NavItem_launch_options" Style="{StaticResource NavItemStyle}" Icon="Save" Tag="launch_options" IsEnabled="{x:Bind ViewModel.IsNavItemEnable, Mode=OneWay}" />
+                <NavigationViewItem x:Uid="/Resources/NavItem_download" x:Name="NavItem_Download" Style="{StaticResource NavItemStyle}" Icon="Download" Tag="download" IsEnabled="{x:Bind ViewModel.IsNavItemEnable, Mode=OneWay}" />
+                <NavigationViewItem x:Uid="/Resources/NavItem_help" x:Name="NavItem_Help" Style="{StaticResource NavItemStyle}" Icon="Help" Tag="help" IsEnabled="{x:Bind ViewModel.IsNavItemEnable, Mode=OneWay}" />
                 <NavigationViewItemSeparator/>
             </NavigationView.MenuItems>
 
