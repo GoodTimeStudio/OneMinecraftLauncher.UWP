@@ -59,6 +59,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Packet\IServicePacket.cs" />
+    <Compile Include="Packet\PacketInit.cs" />
+    <Compile Include="Packet\PacketLaunchMessage.cs" />
+    <Compile Include="Packet\PacketLibrariesCheck.cs" />
+    <Compile Include="Packet\PacketVersionsList.cs" />
+    <Compile Include="Packet\PacketVersionUrl.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -79,6 +85,7 @@
       <Name>OneLauncher.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\UwpDesktop.10.0.14393.3\build\portable-net45+uap\UwpDesktop.targets" Condition="Exists('..\packages\UwpDesktop.10.0.14393.3\build\portable-net45+uap\UwpDesktop.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

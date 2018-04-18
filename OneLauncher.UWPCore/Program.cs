@@ -1,4 +1,5 @@
 ﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+using GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet;
 using KMCCC.Launcher;
 using Newtonsoft.Json;
 using System;
@@ -17,8 +18,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
     {
         public const string ServiceName = "LaunchAgent";
         static AutoResetEvent appServiceExit;
+        static Dictionary<string, IServicePacket> packets = new Dictionary<string, IServicePacket>();
 
-        public static LauncherCore core;
+        public static LauncherCore Core;
 
         static void Main(string[] args)
         {
@@ -32,6 +34,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             Console.WriteLine(" ******************************************************************** ");
 
             Console.WriteLine("Starting One Minecraft Launcher (UWP Core)");
+
+            RegisterPacket(new PacketInit());
+            RegisterPacket(new PacketLaunchMessage());
+            RegisterPacket(new PacketLibrariesCheck());
+            RegisterPacket(new PacketVersionsList());
+            RegisterPacket(new PacketVersionUrl());
 
             appServiceExit = new AutoResetEvent(false);
             //LaunchTest();
@@ -55,8 +63,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
                 };
 
 
-                core = OneMinecraftLauncher.Core.OneMinecraftLauncher.CreateLauncherCore(message);
-                List<Library> l = core.GetVersion("1.12.2").Libraries;
+                Core = OneMinecraftLauncher.Core.OneMinecraftLauncher.CreateLauncherCore(message);
+                List<Library> l = Core.GetVersion("1.12.2").Libraries;
                 //OneMinecraftLauncher.Core.OneMinecraftLauncher.Launch(core, message);
             }
             
@@ -67,6 +75,10 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             Console.ForegroundColor = c;
         }
 
+        public static void RegisterPacket(IServicePacket packet)
+        {
+            packets.Add(packet.GetTypeName(), packet);
+        }
 
         public async static void Process(string[] args)
         {
@@ -102,7 +114,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             appServiceExit?.Set();
         }
 
-        private static void Connection_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        private static async void Connection_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             setColor(ConsoleColor.Yellow);
             string type = args.Request.Message["type"].ToString();
@@ -110,224 +122,33 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             Console.WriteLine("Received request, type: " + type);
             Console.WriteLine("*************************************************");
             setColor(ConsoleColor.White);
-            switch (type)
+
+            IServicePacket service = null;
+            packets.TryGetValue(type, out service);
+
+            ValueSet ret = null;
+            if (service == null)
             {
-                case "init":
-                    Init_RequestReceived(sender, args);
-                    break;
-                case "launch":
-                    LaunchAgent_RequestReceived(sender, args);
-                    break;
-                case "versionsList":
-                    VersionList_RequestReceived(sender, args);
-                    break;
-                case "librariesCheck":
-                    LibrariesCheck_RequestReceived(sender, args);
-                    break;
-                case "version-url":
-                    VersionDownloadUrl_RequestReceived(sender, args);
-                    break;
+                //send response
+                ret = new ValueSet();
             }
+            else
+            {
+                ValueSet tmp = service.OnRequest(sender, args);
+                if (tmp != null)
+                {
+                    tmp["type"] = type;
+                    ret = tmp;
+                    tmp = null;
+                }
+            }
+            await args.Request.SendResponseAsync(ret);
 
             setColor(ConsoleColor.Yellow);
             Console.WriteLine("*************************************************");
             setColor(ConsoleColor.White);
         }
-
-        private async static void Init_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
-        {
-            string workDir = args.Request.Message["workDir"].ToString();
-            if (string.IsNullOrWhiteSpace(workDir))
-            {
-                return;
-            }
-
-            Console.WriteLine("Work dir is " + workDir);
-            Console.WriteLine("Creating KMCCC LauncherCore");
-
-            LaunchMessage message = new LaunchMessage { WorkDirPath = workDir };
-            core = OneMinecraftLauncher.Core.OneMinecraftLauncher.CreateLauncherCore(message);
-            await args.Request.SendResponseAsync(new ValueSet());
-        }
-
-        private async static void VersionDownloadUrl_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
-        {
-            string versionID = args.Request.Message["version"].ToString();
-
-            if (core == null)
-                return;
-
-            KMCCC.Launcher.Version ver = core.GetVersion(versionID);
-
-            if (ver == null)
-                return;
-
-            ValueSet ret = new ValueSet();
-            ret["client"] = ver.ClientJarUrl;
-            ret["client-sha1"] = ver.ClientJarSHA1;
-            ret["server"] = ver.ServerJarUrl;
-            ret["server-sha1"] = ver.ServerJarSHA1;
-
-            await args.Request.SendResponseAsync(ret);
-        }
-
-        private async static void VersionList_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
-        {
-            if (core == null)
-                return;
-
-            List<string> list = new List<string>();
-            var vers = core.GetVersions();
-
-            Console.WriteLine("Found " + vers.Count() + " versions: ");
-
-            foreach (KMCCC.Launcher.Version ver in vers)
-            {
-                list.Add(ver.Id);
-
-                Console.WriteLine("    # " + ver.Id);
-            }
-
-            Console.WriteLine("Serializing versions list to json");
-
-            string json = null;
-            try
-            {
-                json = JsonConvert.SerializeObject(list);
-            }
-            catch (JsonException)
-            {
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(json))
-                return;
-
-            Console.WriteLine("Versions List json: ");
-            Console.WriteLine("     " + json);
-
-            ValueSet valueSet = new ValueSet();
-            valueSet["type"] = "versionsList";
-            valueSet["value"] = json;
-
-            Console.WriteLine("Sending versions list to app");
-
-            await args.Request.SendResponseAsync(valueSet);
-        }
-
-        private async static void LaunchAgent_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
-        {
-            if (core == null)
-                return;
-
-            string json = args.Request.Message["message"].ToString();
-
-            Console.WriteLine("Launch message is :");
-            Console.WriteLine("     " + json);
-            Console.WriteLine("Deserializing launch message");
-
-            LaunchMessage message = null;
-            ValueSet ret = new ValueSet();
-            ret["result"] = false;
-
-            try
-            {
-                message = JsonConvert.DeserializeObject<LaunchMessage>(json);
-            }
-            catch (JsonException e)
-            {
-                ret["errorMessage"] = e.Message;
-                ret["errorStack"] = e.StackTrace;
-
-                Console.WriteLine("ERROR: " + e.Message);
-                Console.WriteLine("     " + e.StackTrace);
-            }
-
-            if (message != null)
-            {
-                Console.WriteLine("Ready to launch");
-
-                LaunchResult launchResult = OneMinecraftLauncher.Core.OneMinecraftLauncher.Launch(core, message);
-
-                if (launchResult.Success)
-                {
-                    ret["result"] = true;
-
-                    Console.WriteLine("Launch successfully");
-                }
-                else
-                {
-                    ret["errorMessage"] = launchResult.ErrorMessage;
-                    ret["errorStack"] = launchResult.Exception?.StackTrace;
-
-                    Console.WriteLine("Launch failed");
-                    Console.WriteLine("ERROR: " + launchResult.ErrorMessage);
-                }
-            }
-
-            Console.WriteLine("Sending launch result to app");
-            await args.Request.SendResponseAsync(ret);
-        }
-
-        private async static void LibrariesCheck_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
-        {
-            if (core == null)
-                return;
-
-            string versionID = args.Request.Message["version"].ToString();
-            if (string.IsNullOrWhiteSpace(versionID))
-                return;
-
-            Console.WriteLine("Scanning libraries and natives");
-            KMCCC.Launcher.Version ver = core.GetVersion(versionID);
-
-            List<DLibrary> missing = new List<DLibrary>();
-            List<Library> missingLib = core.CheckLibraries(ver);
-            List<Native> missingNative = core.CheckNatives(ver);
-
-            Console.WriteLine("Found " + missingLib?.Count + " missing libraries");
-            foreach (Library lib in missingLib)
-            {
-                string dName = lib.Url.Substring(lib.Url.LastIndexOf('/') + 1);
-                Console.WriteLine("     # " + dName);
-                missing.Add(new DLibrary
-                {
-                    Name = dName,
-                    Path = core.GetLibPath(lib),
-                    Url = lib.Url
-                });
-            }
-
-            Console.WriteLine("Found " + missingNative?.Count + " missing natives");
-            foreach (Native nav in missingNative)
-            {
-                string dName = nav.Url.Substring(nav.Url.LastIndexOf('/') + 1);
-                Console.WriteLine("     # " + dName);
-                missing.Add(new DLibrary
-                {
-                    Name = dName,
-                    Path = core.GetNativePath(nav),
-                    Url = nav.Url
-                });
-            }
-
-            Console.WriteLine("Serializing list to json");
-            string json = null;
-            try
-            {
-                json = JsonConvert.SerializeObject(missing);
-            }
-            catch (JsonException)
-            {
-                return;
-            }
-
-            ValueSet ret = new ValueSet();
-            ret["value"] = json;
-
-            Console.WriteLine("Sending list to app");
-            await args.Request.SendResponseAsync(ret);
-        }
+       
     }
 
     public class DLibrary
