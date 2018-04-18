@@ -67,9 +67,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
         public bool isDownloading
         {
             get => _isDownloading;
-            set => this.SetProperty(ref _isDownloading, value);
+            set
+            {
+                this.SetProperty(ref _isDownloading, value);
+                this.OnPropertyChanged(nameof(isNotDownloading));
+            }
         }
 
+        [JsonIgnore]
         public bool isNotDownloading
         {
             get => !isDownloading;
