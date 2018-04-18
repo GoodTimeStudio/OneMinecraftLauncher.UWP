@@ -117,7 +117,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
                                 DownloadItem item = new DownloadItem(lib.Name, lib.Path, lib.Url);
                                 DownloadManager.DownloadQuene.Add(item);
                             });
-                            DownloadManager.DownloadAll( );
+                            DownloadManager.StartDownload( );
                             CoreManager.DownlaodPageModel.isPaneOpen = true;
                             await MainPage.Instance.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
                             {

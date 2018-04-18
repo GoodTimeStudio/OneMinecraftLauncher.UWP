@@ -22,19 +22,26 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         public static double AllReceivedMb;
         public static double TotalMb;
 
-        // Maximum download 10 files in the same time
-        public static void DownloadAll()
-        {
-            int count = DownloadQuene.Count;
-            if (count > 10)
-            {
-                count = 10;
-            }
+        private static bool isDownloading;
 
-            for (int i = 0; i < count; i++)
+        // Maximum download 10 files in the same time
+        public static void StartDownload()
+        {
+            if (!isDownloading)
             {
-                DownloadItem item = DownloadQuene[i];
-                item.Download(Downloader);
+                int count = DownloadQuene.Count;
+                if (count > 10)
+                {
+                    count = 10;
+                }
+
+                for (int i = 0; i < count; i++)
+                {
+                    DownloadItem item = DownloadQuene[i];
+                    item.Download(Downloader);
+                }
+
+                isDownloading = true;
             }
         }
 
@@ -43,6 +50,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
             if (previousItem.State == DownloadState.Completed)
             {
                 DownloadQuene.Remove(previousItem);
+            }
+
+            if (DownloadQuene.Count == 0)
+            {
+                isDownloading = false;
+                return;
             }
 
             for (int i = 0; i < DownloadQuene.Count; i++)
@@ -80,7 +93,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         public double Progress
         {
             get => progress;
-            set => this.SetProperty(ref progress, value);
+            set
+            {
+                this.SetProperty(ref progress, value);
+                this.OnPropertyChanged(nameof(ProgressText));
+            }
         }
 
         private string displaySize;
@@ -96,6 +113,13 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         }
 
         private CancellationTokenSource cts = new CancellationTokenSource();
+
+        /// <summary>
+        /// solution for UWP API defect
+        /// See https://wpdev.uservoice.com/forums/110705-universal-windows-platform/suggestions/31640206-make-downloadoperation-progress-property-update-fa
+        /// See https://social.msdn.microsoft.com/Forums/windowsapps/en-US/fc0bd6b5-9934-4f52-9b75-9d63154f39f7/downloadoperation-progress-updated-every-1mb-downloaded?forum=wpdevelop
+        /// </summary>
+        private bool firstStart = true;
 
         public DownloadItem(string name, string path, string url)
         {
@@ -118,12 +142,17 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 
         public async Task DownloadAsync(BackgroundDownloader downloader)
         {
+            if (State != DownloadState.Standby)
+            {
+                return;
+            }
+
             DownloadManager.DebugWriteLine("DownloadMgr: Attempt to download " + this.Name);
 
-            string reletivePath = null;
-            if (this.Path.StartsWith(CoreManager.WorkDir.Path))
+            string reletivePath = this.Path;
+            if (reletivePath.StartsWith(CoreManager.WorkDir.Path))
             {
-                reletivePath = this.Path.Replace(CoreManager.WorkDir.Path, "");
+                reletivePath = reletivePath.Replace(CoreManager.WorkDir.Path, "");
                 if (reletivePath.StartsWith("/") || reletivePath.StartsWith(@"\"))
                 {
                     reletivePath = reletivePath.Substring(1);
@@ -185,17 +214,29 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 
         public async void UpdateProgress(DownloadOperation operation)
         {
-            ulong received = Operation.Progress.BytesReceived;
-            ulong total = Operation.Progress.TotalBytesToReceive;
+            /* 
+             * ugly code thanks for UWP API
+             * pause and resume download make Progress update more frequently
+             */
+            if (firstStart && Operation.Progress.Status == BackgroundTransferStatus.Running)
+            {
+                Operation.Pause();
+                await Task.Delay(100);
+                Operation.Resume();
+                firstStart = false;
+            }
+
+            double received = Operation.Progress.BytesReceived;
+            double total = Operation.Progress.TotalBytesToReceive;
 
             if (received > 0 && total > 0)
             {
-                double progress = (received / total) * 100;
-                double receivedMb = Math.Round((double)received / 1024 / 1024, 2);
-                double totalMb = Math.Round((double)total / 1024 / 1024, 2);
+                double progress = Math.Round(received / total * 100d, 2);
+                double receivedMb = Math.Round(received / 1024 / 1024, 2);
+                double totalMb = Math.Round(total / 1024 / 1024, 2);
 
                 System.Diagnostics.Debug.WriteLine(string.Format("{0}: received {1}, receivedMb {2}, total {3}, totalMb {4}, progress {5}%", Name, received, receivedMb, total, totalMb, progress));
-
+                
                 await MainPage.Instance.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
                     DisplaySize = receivedMb + " / " + totalMb + " Mb";

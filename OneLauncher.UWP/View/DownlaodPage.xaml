@@ -48,7 +48,7 @@
             <Pivot Margin="0,45,0,0">
                 <Pivot.RightHeader>
                     <Grid>
-                        <AppBarButton x:Uid="/DownloadPage/Btn_Download" Icon="Download" Click="DownloadListButton_Click" />
+                        <AppBarButton x:Uid="/DownloadPage/Btn_Download" Icon="Download" Click="BtnClick_DownloadList" />
                     </Grid>
                 </Pivot.RightHeader>
                 
@@ -64,7 +64,7 @@
 
                         <ListView x:Name="VersionsList"
                             ItemsSource="{x:Bind ViewModel.VersionsList, Mode=OneWay}"
-                            SelectionMode="Multiple" Margin="0,48,0,48">
+                            SelectionMode="Single" Margin="0,48,0,48">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">
                                     <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -102,9 +102,10 @@
                         </ListView>
 
                         <Button HorizontalAlignment="Right" 
-                                VerticalAlignment="Bottom" Width="50" Height="24"
-                                x:Uid="/DownloadPage/Btn_StartDownload"
-                                Click="ButtonDownload_Click"/>
+                                x:Name="Btn_MinecraftDownload"
+                                VerticalAlignment="Bottom" Width="120" Height="32"
+                                x:Uid="/DownloadPage/Btn_Download"
+                                Click="BtnClick_MinecraftDownload" Margin="0,0,12,12"/>
                     </Grid>
                 </PivotItem>
             </Pivot>

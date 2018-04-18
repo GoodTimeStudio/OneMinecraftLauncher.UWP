@@ -101,6 +101,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppServiceManager.cs" />
+    <Compile Include="View\MsgDialog.xaml.cs">
+      <DependentUpon>MsgDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CoreManager.cs" />
     <Compile Include="DownloadManager.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -189,6 +192,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="View\MsgDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

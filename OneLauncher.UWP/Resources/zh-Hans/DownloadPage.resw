@@ -117,8 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Btn_StartDownload.Content" xml:space="preserve">
+  <data name="Btn_Download.Content" xml:space="preserve">
     <value>下载</value>
+  </data>
+  <data name="DownloadFailed" xml:space="preserve">
+    <value>下载失败</value>
   </data>
   <data name="DownloadQueneHeader.Text" xml:space="preserve">
     <value>正在下载</value>

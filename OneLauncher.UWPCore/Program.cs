@@ -34,12 +34,32 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             Console.WriteLine("Starting One Minecraft Launcher (UWP Core)");
 
             appServiceExit = new AutoResetEvent(false);
+            //LaunchTest();
             Process(args);
-
             appServiceExit.WaitOne();
 
             Console.WriteLine("Press any key to exit ...");
             Console.ReadKey();
+        }
+
+        private static void LaunchTest()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                LaunchMessage message = new LaunchMessage
+                {
+                    WorkDirPath = @"E:\BestOwl\Desktop\LauncherTest",
+                    JavaExtPath = @"D:\Program Files (x86)\Minecraft\runtime\jre-x64\1.8.0_51\bin\java.exe",
+                    VersionId = "1.12.2",
+                    authenticator = new KMCCC.Authentication.OfflineAuthenticator("MicroOwl")
+                };
+
+
+                core = OneMinecraftLauncher.Core.OneMinecraftLauncher.CreateLauncherCore(message);
+                List<Library> l = core.GetVersion("1.12.2").Libraries;
+                //OneMinecraftLauncher.Core.OneMinecraftLauncher.Launch(core, message);
+            }
+            
         }
 
         private static void setColor(ConsoleColor c)
@@ -104,6 +124,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
                 case "librariesCheck":
                     LibrariesCheck_RequestReceived(sender, args);
                     break;
+                case "version-url":
+                    VersionDownloadUrl_RequestReceived(sender, args);
+                    break;
             }
 
             setColor(ConsoleColor.Yellow);
@@ -125,6 +148,27 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             LaunchMessage message = new LaunchMessage { WorkDirPath = workDir };
             core = OneMinecraftLauncher.Core.OneMinecraftLauncher.CreateLauncherCore(message);
             await args.Request.SendResponseAsync(new ValueSet());
+        }
+
+        private async static void VersionDownloadUrl_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        {
+            string versionID = args.Request.Message["version"].ToString();
+
+            if (core == null)
+                return;
+
+            KMCCC.Launcher.Version ver = core.GetVersion(versionID);
+
+            if (ver == null)
+                return;
+
+            ValueSet ret = new ValueSet();
+            ret["client"] = ver.ClientJarUrl;
+            ret["client-sha1"] = ver.ClientJarSHA1;
+            ret["server"] = ver.ServerJarUrl;
+            ret["server-sha1"] = ver.ServerJarSHA1;
+
+            await args.Request.SendResponseAsync(ret);
         }
 
         private async static void VersionList_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)

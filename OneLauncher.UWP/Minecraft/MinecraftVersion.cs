@@ -109,6 +109,21 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft
         public DateTime time;
         public DateTime releaseTime;
         public string url;
+
+        public string GetPath()
+        {
+            return string.Format(@"versions\{0}\", id);
+        }
+
+        public string GetJsonPath()
+        {
+            return GetPath() + id + ".json";
+        }
+
+        public string GetJarPath()
+        {
+            return GetPath() + id + ".jar";
+        }
     }
 
     public class MinecraftVersionsList

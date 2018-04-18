@@ -120,6 +120,9 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>One Minecraft Launcher</value>
   </data>
+  <data name="MsgDialog.PrimaryButtonText" xml:space="preserve">
+    <value>确定</value>
+  </data>
   <data name="NavItem_download.Content" xml:space="preserve">
     <value>下载</value>
   </data>
