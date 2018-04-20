@@ -16,7 +16,7 @@
               x:FieldModifier="public"
               SelectionMode="Single"
               ItemsSource="{x:Bind OptListViewModel.OptionList, Mode=OneWay}"
-              Background="{StaticResource SystemControlAcrylicWindowBrush}"
+              Background="{StaticResource SystemControlAcrylicElementBrush}"
               SelectedItem="{x:Bind OptListViewModel.SelectedOption, Mode=TwoWay}">
         <ListView.ItemTemplate>
             <DataTemplate x:DataType="model:LaunchOption">

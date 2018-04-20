@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GoodTimeStudio.OneMinecraftLauncher.UWP.News;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
             get => _MsgBoxContentText;
             set => this.SetProperty(ref _MsgBoxContentText, value);
         }
+
+        private List<NewsContent> _NewsList;
+        public List<NewsContent> NewsList
+        {
+            get => _NewsList;
+            set => this.SetProperty(ref _NewsList, value);
+        }
+
 
         public StartPageViewModel(LaunchOptionListViewModel listModel)
         {

@@ -5,6 +5,7 @@
     xmlns:local="using:GoodTimeStudio.OneMinecraftLauncher.UWP.View"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:news="using:GoodTimeStudio.OneMinecraftLauncher.UWP.News"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -12,6 +13,7 @@
             <ColumnDefinition Width="256" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        <Image Source="ms-appx:///Assets/StartPageDefaultBackground.png" Stretch="UniformToFill" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
 
         <local:LaunchOptionListView x:Name="OptListView"/>
 
@@ -21,7 +23,18 @@
                 <RowDefinition Height="148"/>
             </Grid.RowDefinitions>
 
-            <WebView x:Name="WebView"/>
+            <Grid>
+                <WebView x:Name="WebView" Visibility="Collapsed"/>
+
+                <ListView SelectionMode="None"
+                          ItemsSource="{x:Bind ViewModel.NewsList, Mode=OneWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="news:NewsContent">
+                            
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
 
             <StackPanel Grid.Row="1" >
                 <TextBlock x:Uid="/StartPage/ReadyToLaunchHeader" Style="{ThemeResource TitleTextBlockStyle}" />
