@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -25,6 +27,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
         public SettingsPage()
         {
             this.InitializeComponent();
+            var ver = Package.Current.Id.Version;
+            About1.Text = string.Format(
+                CoreManager.GetStringFromResource("/SettingsPage/About1"),
+                string.Format("{0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision),
+                CoreManager.CoreVersion
+                );
         }
     }
 }

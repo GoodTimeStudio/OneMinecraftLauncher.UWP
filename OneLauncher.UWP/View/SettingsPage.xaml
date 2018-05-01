@@ -15,6 +15,18 @@
             </Grid.ColumnDefinitions>
 
             <local:SettingsView />
+
+            <StackPanel Grid.Column="1" Margin="0,24,0,0" Spacing="12">
+                <TextBlock x:Uid="/SettingsPage/AboutTitle" Style="{StaticResource TitleTextBlockStyle}" />
+                <TextBlock x:Name="About1" />
+                <RichTextBlock>
+                    <Paragraph>
+                        Copyright (c) 2018 
+                        <Hyperlink NavigateUri="https://github.com/GoodTimeStudio">GoodTime Studio</Hyperlink>
+                    </Paragraph>
+                </RichTextBlock>
+                
+            </StackPanel>
         </Grid>
     </ScrollViewer>
     

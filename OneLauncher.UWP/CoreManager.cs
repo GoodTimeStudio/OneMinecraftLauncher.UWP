@@ -73,6 +73,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         }
         #endregion
 
+        public static string CoreVersion;
+
         public static async Task InitAppAsync()
         {
             #region WorkDir
@@ -116,7 +118,10 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
             ValueSet value = new ValueSet();
             value["type"] = "init";
             value["workDir"] = WorkDir?.Path;
-            await AppServiceManager.appServiceConnection.SendMessageAsync(value);
+            AppServiceResponse response = await AppServiceManager.appServiceConnection.SendMessageAsync(value);
+            object _obj = null;
+            response.Message.TryGetValue("core-version", out _obj);
+            CoreVersion = _obj?.ToString();
 
             LocalAvailableVersionsList = await GetLocalAvailableVersionsAsync();
         }

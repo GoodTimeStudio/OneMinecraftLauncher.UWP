@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.AppService;
@@ -29,7 +30,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 
             LaunchMessage message = new LaunchMessage { WorkDirPath = workDir };
             Program.Core = OneMinecraftLauncher.Core.OneMinecraftLauncher.CreateLauncherCore(message);
-            return null;
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            AssemblyFileVersionAttribute ver = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyFileVersionAttribute));
+            
+            Console.WriteLine("Version " + ver.Version);
+            ValueSet ret = new ValueSet();
+            ret["core-version"] = ver.Version;
+            return ret;
         }
     }
 }
