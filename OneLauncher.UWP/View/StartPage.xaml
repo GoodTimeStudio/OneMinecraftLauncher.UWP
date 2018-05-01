@@ -7,6 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:news="using:GoodTimeStudio.OneMinecraftLauncher.UWP.News"
     mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:Key="ContentDialogContentTemplate">
+            <StackPanel Spacing="12">
+                <TextBlock x:Uid="/StartPage/DownloadDialogSubHeader" />
+
+                <local:DownloadingItemListView Grid.Row="1" Height="300" Width="464"/>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
@@ -54,24 +63,13 @@
                     Width="200" Height="100" 
                     Margin="0,0,24,24" IsEnabled="{x:Bind ViewModel.ListModel.SelectedOption.isReady, Mode=OneWay}"/>
 
-            <ContentDialog 
+            <ContentDialog ContentTemplate="{StaticResource ContentDialogContentTemplate}" 
                 Grid.RowSpan="2" 
                 x:Uid="/StartPage/DownlaodDialog" 
                 x:Name="DownloadDialog" 
                 HorizontalAlignment="Center" VerticalAlignment="Center" 
                 HorizontalContentAlignment="Stretch" 
-                VerticalContentAlignment="Stretch">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Uid="/StartPage/DownloadDialogSubHeader" />
-
-                    <local:DownloadingItemListView Grid.Row="1" Height="400" Width="464"/>
-                </Grid>
-            </ContentDialog>
+                VerticalContentAlignment="Stretch" />
         </Grid>
 
     </Grid>

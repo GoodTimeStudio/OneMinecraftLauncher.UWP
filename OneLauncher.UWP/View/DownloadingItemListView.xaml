@@ -25,6 +25,8 @@
                             <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"/>
                         </StackPanel>
 
+                        <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="{x:Bind ErrorText, Mode=OneWay}" HorizontalAlignment="Center" Foreground="Red"/>
+
                         <TextBlock Grid.Column="1" Text="{x:Bind DisplaySize, Mode=OneWay}" HorizontalAlignment="Center"/>
                         <TextBlock Grid.Column="2" Text="{x:Bind ProgressText, Mode=OneWay}" HorizontalAlignment="Center" />
                     </Grid>

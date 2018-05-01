@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
+using Windows.Web;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 {
@@ -16,7 +17,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
     {
         public static ObservableCollection<DownloadItem> DownloadQuene = new ObservableCollection<DownloadItem>();
 
-        public static BackgroundDownloader Downloader = new BackgroundDownloader();
+        private readonly static BackgroundDownloader _downloader = new BackgroundDownloader();
 
         public static double AllReceivedMb;
         public static double TotalMb;
@@ -24,12 +25,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         private static bool isDownloading;
 
         // Maximum download 5 files in the same time
-        public static void StartDownload()
+        public async static void StartDownload()
         {
-            
             if (!isDownloading)
             {
                 int count = DownloadQuene.Count;
+
                 if (count > 5)
                 {
                     count = 5;
@@ -38,7 +39,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
                 for (int i = 0; i < count; i++)
                 {
                     DownloadItem item = DownloadQuene[i];
-                    item.Download(Downloader);
+                    item.Download(_downloader);
                 }
 
                 isDownloading = true;
@@ -71,7 +72,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
                 DownloadItem item = DownloadQuene[i];
                 if (item.State ==  DownloadState.Standby)
                 {
-                    item.Download(Downloader);
+                    item.Download(_downloader);
+                    break;
                 }
             }
         }
@@ -117,7 +119,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 
         public string ProgressText
         {
-            get => Progress + "%";
+            get => Progress > 0 ? Progress + "%" : string.Empty;
+        }
+
+        private string errText;
+        public string ErrorText
+        {
+            get => errText;
+            set => this.SetProperty(ref errText, value);
         }
 
         private CancellationTokenSource cts = new CancellationTokenSource();
@@ -127,7 +136,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         /// See https://wpdev.uservoice.com/forums/110705-universal-windows-platform/suggestions/31640206-make-downloadoperation-progress-property-update-fa
         /// See https://social.msdn.microsoft.com/Forums/windowsapps/en-US/fc0bd6b5-9934-4f52-9b75-9d63154f39f7/downloadoperation-progress-updated-every-1mb-downloaded?forum=wpdevelop
         /// </summary>
-        private bool firstStart = true;
+        private int firstStart = 2;
 
         public DownloadItem(string name, string path, string url)
         {
@@ -154,6 +163,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
             {
                 return;
             }
+            State = DownloadState.Downloading;
 
             DownloadManager.DebugWriteLine("DownloadMgr: Attempt to download " + this.Name);
 
@@ -167,7 +177,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
                 }
             }
             DownloadManager.DebugWriteLine("DownloadMgr: File path: " + reletivePath);
-            DownloadManager.DebugWriteLine("DownloadMgr: Creating file");
             StorageFile target;
             try
             {
@@ -216,17 +225,35 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 
             try
             {
-                State = DownloadState.Downloading;
-
                 if (start)
                 {
                     // Start the download and attach a progress handler.
-                    await Operation.StartAsync().AsTask(cts.Token, _progressCallback);
+                    try
+                    {
+                        await Operation.StartAsync().AsTask(cts.Token, _progressCallback);
+                    }
+                    catch (Exception e)
+                    {
+                        if (!HandleExpection(e))
+                        {
+                            throw;
+                        }
+                    }
                 }
                 else
                 {
-                    // The download was already running when the application started, re-attach the progress handler.
-                    await Operation.AttachAsync().AsTask(cts.Token, _progressCallback);
+                    try
+                    {
+                        // The download was already running when the application started, re-attach the progress handler.
+                        await Operation.AttachAsync().AsTask(cts.Token, _progressCallback);
+                    }
+                    catch (Exception e)
+                    {
+                        if (!HandleExpection(e))
+                        {
+                            throw;
+                        }
+                    }
                 }
 
                 // Download complete
@@ -247,18 +274,42 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
             }
         }
 
+        private bool HandleExpection(Exception ex)
+        {
+            WebErrorStatus error = BackgroundTransferError.GetStatus(ex.HResult);
+            if (error == WebErrorStatus.Unknown)
+            {
+                this.Progress = 0;
+                DisplaySize = string.Empty;
+                ErrorText = ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
         public async void UpdateProgress(DownloadOperation operation)
         {
             /* 
              * ugly code thanks for UWP API
              * pause and resume download make Progress update more frequently
              */
-            if (firstStart && Operation.Progress.Status == BackgroundTransferStatus.Running)
+            if (firstStart == 2)
+            {
+                /*
+                 * Note: this step is important
+                 * If the file we need to download is small enough, the download time will be very short, 
+                 * Operation.Progress.Status isn't update quickly when download is already complete
+                 * so we need to finish this progress update.
+                 */
+                firstStart--;
+            }
+            else if (firstStart == 1 && Operation.Progress.Status == BackgroundTransferStatus.Running && State == DownloadState.Downloading)
             {
                 Operation.Pause();
                 await Task.Delay(100);
                 Operation.Resume();
-                firstStart = false;
+                firstStart--;
             }
 
             double received = Operation.Progress.BytesReceived;

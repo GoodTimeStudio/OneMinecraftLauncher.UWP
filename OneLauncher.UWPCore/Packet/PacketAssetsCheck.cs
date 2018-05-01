@@ -44,6 +44,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 return null;
             }
 
+            Console.WriteLine("AssetIndex: " + ver.Assets);
+
             string json = File.ReadAllText(string.Format(AssetIndexPath, Program.Core.GameRootPath, ver.Assets));
             JObject rootObj = null;
             try
@@ -86,6 +88,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                     Console.WriteLine("     Found missing asset: " + asset.hash);
                 }
             }
+
+            Console.WriteLine(string.Format("Found {0} missing assets", ret.Count));
 
             json = JsonConvert.SerializeObject(ret);
             ValueSet valueSet = new ValueSet();
