@@ -13,7 +13,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.News
         /// Get news list
         /// </summary>
         /// <returns></returns>
-        List<NewsContent> GetNews();
+        Task<List<NewsContent>> GetNewsAsync();
 
         /// <summary>
         /// News source

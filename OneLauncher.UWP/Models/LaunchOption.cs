@@ -62,6 +62,24 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
 
         [JsonIgnore] public bool isPreview;
 
+        private bool _isReady;
+        [JsonIgnore]
+        public bool isReady
+        {
+            get => _isReady;
+            set
+            {
+                this.SetProperty(ref _isReady, value);
+                this.OnPropertyChanged(nameof(isNotReady));
+            }
+        }
+
+        public bool isNotReady
+        {
+            get => !isReady;
+        }
+
+        /*
         private bool _isDownloading;
         [JsonIgnore]
         public bool isDownloading
@@ -78,14 +96,15 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
         public bool isNotDownloading
         {
             get => !isDownloading;
-        }
+        }*/
 
         public LaunchOption(string name)
         {
             this.name = name;
             this.created = DateTime.Now;
             this.isPreview = false;
-            this.isDownloading = false;
+            this.isReady = true;
+            //this.isDownloading = false;
         }
 
         //public string icon; TO-DO

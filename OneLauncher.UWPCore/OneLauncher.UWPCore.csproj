@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Packet\IServicePacket.cs" />
+    <Compile Include="Packet\PacketAssetsCheck.cs" />
     <Compile Include="Packet\PacketInit.cs" />
     <Compile Include="Packet\PacketLaunchMessage.cs" />
     <Compile Include="Packet\PacketLibrariesCheck.cs" />

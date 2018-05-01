@@ -79,11 +79,5 @@
             
         </StackPanel>
 
-        <ContentDialog Grid.ColumnSpan="2"
-                       x:Name="ErrDialog_WorkDirPicker"
-                       x:Uid="/SettingsPage/ErrDialogWorkDir"
-                       d:IsHidden="True">
-            <TextBlock Text="{x:Bind ViewModel.ErrDialog_Text, Mode=OneWay}" />
-        </ContentDialog>
     </Grid>
 </Page>

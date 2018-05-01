@@ -2,15 +2,18 @@
 using GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet;
 using KMCCC.Launcher;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.AppService;
 using Windows.Foundation.Collections;
+using static GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet.PacketAssetsCheck;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
 {
@@ -40,6 +43,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             RegisterPacket(new PacketLibrariesCheck());
             RegisterPacket(new PacketVersionsList());
             RegisterPacket(new PacketVersionUrl());
+            RegisterPacket(new PacketAssetsCheck());
+            RegisterPacket(new PacketAssetIndexCheck());
 
             appServiceExit = new AutoResetEvent(false);
             //LaunchTest();
@@ -134,13 +139,24 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             }
             else
             {
-                ValueSet tmp = service.OnRequest(sender, args);
-                if (tmp != null)
+                ValueSet tmp = null;
+                try
                 {
-                    tmp["type"] = type;
-                    ret = tmp;
-                    tmp = null;
+                    tmp = service.OnRequest(sender, args);
                 }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+
+                if (tmp == null)
+                {
+                    tmp = new ValueSet();
+                }
+
+                tmp["type"] = type;
+                ret = tmp;
+                tmp = null;
             }
             await args.Request.SendResponseAsync(ret);
 

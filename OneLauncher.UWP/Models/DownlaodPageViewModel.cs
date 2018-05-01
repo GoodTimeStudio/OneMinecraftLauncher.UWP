@@ -11,8 +11,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
     public class DownlaodPageViewModel : BindableBase
     {
 
-        public ObservableCollection<DownloadItem> DownloadQuene;
-
         private ObservableCollection<MinecraftVersion> _VersionList = new ObservableCollection<MinecraftVersion>();
         public ObservableCollection<MinecraftVersion> VersionsList
         {
@@ -47,11 +45,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
                 this.SetProperty(ref _isHistoricalEnabled, value);
                 MakeList();
             }
-        }
-
-        public DownlaodPageViewModel()
-        {
-            DownloadQuene = DownloadManager.DownloadQuene;
         }
 
         public void MakeList()

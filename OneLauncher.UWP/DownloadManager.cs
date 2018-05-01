@@ -14,7 +14,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 {
     public class DownloadManager
     {
-
         public static ObservableCollection<DownloadItem> DownloadQuene = new ObservableCollection<DownloadItem>();
 
         public static BackgroundDownloader Downloader = new BackgroundDownloader();
@@ -24,15 +23,16 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
 
         private static bool isDownloading;
 
-        // Maximum download 10 files in the same time
+        // Maximum download 5 files in the same time
         public static void StartDownload()
         {
+            
             if (!isDownloading)
             {
                 int count = DownloadQuene.Count;
-                if (count > 10)
+                if (count > 5)
                 {
-                    count = 10;
+                    count = 5;
                 }
 
                 for (int i = 0; i < count; i++)
@@ -42,6 +42,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
                 }
 
                 isDownloading = true;
+            }
+        }
+
+        public static void CancelAllDownload()
+        {
+            foreach (DownloadItem item in DownloadQuene)
+            {
+                item.Cancel();
             }
         }
 
@@ -175,6 +183,33 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
             await HandleDownloadAsync(true);
         }
 
+        public void Pause()
+        {
+            if (State == DownloadState.Downloading)
+            {
+                Operation.Pause();
+                State = DownloadState.Pause;
+            }
+        }
+
+        public void Cancel()
+        {
+            if (State == DownloadState.Downloading)
+            {
+                Pause();
+                Operation = null;
+                DownloadManager.DownloadQuene.Remove(this);
+            }
+        }
+
+        public void Resume()
+        {
+            if (State == DownloadState.Pause)
+            {
+                Operation.Resume();
+            }
+        }
+
         private async Task HandleDownloadAsync(bool start)
         {
             Progress<DownloadOperation> _progressCallback = new Progress<DownloadOperation>(UpdateProgress);
@@ -253,6 +288,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         Standby,
         Downloading,
         Completed,
+        Pause,
         Failed
     }
 

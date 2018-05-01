@@ -101,8 +101,13 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppServiceManager.cs" />
+    <Compile Include="Minecraft\Asset.cs" />
     <Compile Include="News\INewsSource.cs" />
     <Compile Include="News\OfficialNews.cs" />
+    <Compile Include="News\RssNews.cs" />
+    <Compile Include="View\DownloadingItemListView.xaml.cs">
+      <DependentUpon>DownloadingItemListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MsgDialog.xaml.cs">
       <DependentUpon>MsgDialog.xaml</DependentUpon>
     </Compile>
@@ -154,7 +159,9 @@
     <PRIResource Include="Resources\zh-Hans\LaunchOptions.resw" />
     <PRIResource Include="Resources\zh-Hans\Resources.resw" />
     <PRIResource Include="Resources\zh-Hans\SettingsPage.resw" />
-    <PRIResource Include="Resources\zh-Hans\StartPage.resw" />
+    <PRIResource Include="Resources\zh-Hans\StartPage.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
     <PRIResource Include="Resources\en-US\StartPage.resw" />
     <PRIResource Include="Resources\en-US\SettingsPage.resw" />
     <PRIResource Include="Resources\en-US\Resources.resw" />
@@ -162,7 +169,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\StartPageDefaultBackground.png" />
-    <Content Include="Assets\StartPageDefaultBackground.jpg" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -196,6 +202,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="View\DownloadingItemListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MsgDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -29,6 +29,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
     public sealed partial class SettingsView : Page
     {
         public SettingsViewModel ViewModel;
+        private MsgDialog  _msgDialog;
 
         public Action CheckAction;
 
@@ -36,6 +37,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
         {
             this.InitializeComponent();
             ViewModel = CoreManager.SettingsModel ?? new SettingsViewModel();
+            _msgDialog = new MsgDialog();
 
             if (CoreManager.WorkDir != null)
             {
@@ -69,9 +71,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
             }
             catch (Exception exp)
             {
-                ViewModel.ErrDialog_Text = "";
-                ViewModel.ErrDialog_Text = exp.Message;
-                await ErrDialog_WorkDirPicker.ShowAsync();
+                await _msgDialog.Show(CoreManager.GetStringFromResource("/SettingsPage/WorkDirSelectError"), exp.Message);
             }
         }
 

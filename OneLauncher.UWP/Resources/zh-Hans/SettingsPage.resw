@@ -144,12 +144,6 @@
   <data name="ButtonWorkDirPicker.Content" xml:space="preserve">
     <value>浏览文件</value>
   </data>
-  <data name="ErrDialogWorkDir.PrimaryButtonText" xml:space="preserve">
-    <value>确定</value>
-  </data>
-  <data name="ErrDialogWorkDir.Title" xml:space="preserve">
-    <value>无法选择这个目录</value>
-  </data>
   <data name="GlobalJVMPath.Header" xml:space="preserve">
     <value>Java 可执行文件路径</value>
   </data>
@@ -167,6 +161,9 @@
   </data>
   <data name="WorkDirHeader.Text" xml:space="preserve">
     <value>工作目录</value>
+  </data>
+  <data name="WorkDirSelectError" xml:space="preserve">
+    <value>无法选择这个目录</value>
   </data>
   <data name="WorkDirSubHeader.Text" xml:space="preserve">
     <value>Minecraft 的核心文件将被保存于此

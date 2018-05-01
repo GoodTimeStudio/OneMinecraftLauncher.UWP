@@ -45,7 +45,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
         {
             base.OnNavigatedTo(e);
 
-            if (ViewModel.DownloadQuene.Count > 0)
+            if (DownloadManager.DownloadQuene.Count > 0)
             {
                 ViewModel.isPaneOpen = true;
             }

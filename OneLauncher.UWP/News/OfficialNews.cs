@@ -13,11 +13,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.News
     {
         const string SourceUrl = "http://launchermeta.mojang.com/mc/news.json";
 
-        public List<NewsContent> GetNews()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<List<NewsContent>> GetNewsAsync()
         {
             JNews jNews = null;
@@ -56,16 +51,16 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.News
 
                 NewsContent news = new NewsContent
                 {
-                    Title = con.content.title,
-                    Text = con.content.text,
-                    Url = con.content.action
+                    Title = con.content.news.title,
+                    Text = con.content.news.text,
+                    Url = con.content.news.action
                 };
-                news.Image = new Windows.UI.Xaml.Media.Imaging.BitmapImage();
 
                 Uri uri = null;
-                Uri.TryCreate(con.content.action, UriKind.Absolute, out uri);
+                Uri.TryCreate(con.content.news.action, UriKind.RelativeOrAbsolute, out uri);
                 if (uri != null)
                 {
+                    news.Image = new Windows.UI.Xaml.Media.Imaging.BitmapImage();
                     news.Image.UriSource = uri;
                 }
 
@@ -90,12 +85,18 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.News
         {
             public string actionType;
             public List<string> tags;
+            public JLocaleContent content;
+        }
+
+        public class JLocaleContent
+        {
             /// <summary>
             /// Default language (English - US)
             /// </summary>
             [JsonProperty("en-us")]
-            public JNewsContent content;
+            public JNewsContent news;
         }
+
 
         public class JNewsContent
         {

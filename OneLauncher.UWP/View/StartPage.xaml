@@ -30,7 +30,11 @@
                           ItemsSource="{x:Bind ViewModel.NewsList, Mode=OneWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="news:NewsContent">
-                            
+                            <StackPanel>
+                                <Image Source="{x:Bind Image}"/>
+                                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="{x:Bind Title}" />
+                                <TextBlock Text="{x:Bind Text}" />
+                            </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -41,24 +45,34 @@
                 <TextBlock Text="{x:Bind ViewModel.ListModel.SelectedOption.name, Mode=OneWay}" />
                 <TextBlock Text="{x:Bind ViewModel.ListModel.SelectedOption.lastVersionId, Mode=OneWay}" />
             </StackPanel>
-            
+
+            <ProgressRing Grid.Row="1" IsActive="{x:Bind ViewModel.ListModel.SelectedOption.isNotReady, Mode=OneWay}" HorizontalAlignment="Right" Margin="0,0,248,0" />
+
             <Button Grid.Row="1" 
                     x:Uid="/StartPage/ButtonLaunch" Click="Button_Launch_Click" 
                     HorizontalAlignment="Right" VerticalAlignment="Bottom" 
                     Width="200" Height="100" 
-                    Margin="0,0,24,24" IsEnabled="{x:Bind ViewModel.ListModel.SelectedOption.isNotDownloading, Mode=OneWay}"/>
-            
+                    Margin="0,0,24,24" IsEnabled="{x:Bind ViewModel.ListModel.SelectedOption.isReady, Mode=OneWay}"/>
+
+            <ContentDialog 
+                Grid.RowSpan="2" 
+                x:Uid="/StartPage/DownlaodDialog" 
+                x:Name="DownloadDialog" 
+                HorizontalAlignment="Center" VerticalAlignment="Center" 
+                HorizontalContentAlignment="Stretch" 
+                VerticalContentAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Uid="/StartPage/DownloadDialogSubHeader" />
+
+                    <local:DownloadingItemListView Grid.Row="1" Height="400" Width="464"/>
+                </Grid>
+            </ContentDialog>
         </Grid>
 
-        <ContentDialog Grid.Column="1"
-                       x:Name="MsgBox"
-                       x:Uid="/StartPage/MsgBox"
-                       PrimaryButtonClick="MsgBox_PrimaryButtonClick"
-                       d:IsHidden="True">
-            <StackPanel>
-                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="{x:Bind ViewModel.MsgBoxTitleText, Mode=OneWay}" />
-                <TextBlock  Text="{x:Bind ViewModel.MsgBoxContentText, Mode=OneWay}"/>
-            </StackPanel>
-        </ContentDialog>
     </Grid>
 </Page>

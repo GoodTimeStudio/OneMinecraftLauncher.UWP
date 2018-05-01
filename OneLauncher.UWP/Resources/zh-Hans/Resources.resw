@@ -120,6 +120,9 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>One Minecraft Launcher</value>
   </data>
+  <data name="Asset" xml:space="preserve">
+    <value>资源文件</value>
+  </data>
   <data name="MsgDialog.PrimaryButtonText" xml:space="preserve">
     <value>确定</value>
   </data>
