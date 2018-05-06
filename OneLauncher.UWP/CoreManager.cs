@@ -73,7 +73,15 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP
         }
         #endregion
 
+        public static PackageVersion AppVersion = Package.Current.Id.Version;
         public static string CoreVersion;
+        public static string AppVersionString
+        {
+            get
+            {
+                return string.Format("{0}.{1}.{2}.{3}", AppVersion.Major, AppVersion.Minor, AppVersion.Build, AppVersion.Revision);
+            }
+        }
 
         public static async Task InitAppAsync()
         {

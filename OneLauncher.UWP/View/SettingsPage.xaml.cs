@@ -30,7 +30,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
             var ver = Package.Current.Id.Version;
             About1.Text = string.Format(
                 CoreManager.GetStringFromResource("/SettingsPage/About1"),
-                string.Format("{0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision),
+                CoreManager.AppVersionString,
                 CoreManager.CoreVersion
                 );
         }
