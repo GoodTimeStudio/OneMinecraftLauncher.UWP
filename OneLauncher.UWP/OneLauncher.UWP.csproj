@@ -17,11 +17,11 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <PackageCertificateKeyFile>OneLauncher.UWP_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>GoodTime Studio Software.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>E90C186356FE05A736030B4FD95FD84274AD6EEF</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>8BCB5D7BAEF6F8D6227789699F7DE3DFC9B0F9FA</PackageCertificateThumbprint>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -154,6 +154,8 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="GoodTime Studio Software.pfx" />
+    <None Include="GoodTimeStudio_Software.pfx" />
     <None Include="OneLauncher.UWP_TemporaryKey.pfx" />
     <PRIResource Include="Resources\zh-Hans\DownloadPage.resw" />
     <PRIResource Include="Resources\zh-Hans\LaunchOptions.resw" />
@@ -169,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\StartPageDefaultBackground.png" />
+    <Content Include="Core\OneMinecraftLauncher.UWPCore.exe" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
