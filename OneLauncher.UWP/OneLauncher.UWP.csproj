@@ -155,8 +155,6 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="GoodTime Studio Software.pfx" />
-    <None Include="GoodTimeStudio_Software.pfx" />
-    <None Include="OneLauncher.UWP_TemporaryKey.pfx" />
     <PRIResource Include="Resources\zh-Hans\DownloadPage.resw" />
     <PRIResource Include="Resources\zh-Hans\LaunchOptions.resw" />
     <PRIResource Include="Resources\zh-Hans\Resources.resw" />
