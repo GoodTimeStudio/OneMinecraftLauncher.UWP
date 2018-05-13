@@ -70,7 +70,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Auhenticator\GoodTimeAuhenticator.cs" />
     <Compile Include="AuthManager.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Model\LauncherLoginAuthenticationModel.cs" />
@@ -109,5 +108,6 @@
       <Name>KMCCC.Basic</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
