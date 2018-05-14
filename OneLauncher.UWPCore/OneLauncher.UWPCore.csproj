@@ -38,6 +38,9 @@
     <StartupObject>GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LibZ.Bootstrap, Version=1.2.0.0, Culture=neutral, PublicKeyToken=62360e53307d6ba2, processorArchitecture=MSIL">
+      <HintPath>..\packages\LibZ.Bootstrap.1.2.0.0\lib\net4-client\LibZ.Bootstrap.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -73,6 +76,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LibZResolver.cs" />
     <Compile Include="Packet\IServicePacket.cs" />
     <Compile Include="Packet\PacketAssetsCheck.cs" />
     <Compile Include="Packet\PacketInit.cs" />
@@ -100,12 +104,15 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del /q "$(SolutionDir)OneLauncher.UWP\Core\"
-del /q "$(SolutionDir)OneLauncher.UWP\bin\x64\$(ConfigurationName)\AppX\Core\"
-del /q "$(SolutionDir)OneLauncher.UWP\bin\x86\$(ConfigurationName)\AppX\Core\" 
+    <PostBuildEvent>cd $(TargetDir)
+set LIBZ="$(SolutionDir)packages\LibZ.Bootstrap.1.2.0.0\tools\libz.exe"
+%25LIBZ%25
+%25LIBZ%25 add --libz libraries.libz --include *.dll --move
+%25LIBZ%25 inject-libz -assembly  $(TargetFileName) --libz libraries.libz --move
+%25LIBZ%25 instrument --assembly $(TargetFileName) --libz-resources
 
-xcopy /y /s "$(TargetDir)*.exe" "$(SolutionDir)OneLauncher.UWP\Core\"
-xcopy /y /s "$(TargetDir)*" "$(SolutionDir)OneLauncher.UWP\bin\x64\$(ConfigurationName)\AppX\Core\"
-xcopy /y /s "$(TargetDir)*" "$(SolutionDir)OneLauncher.UWP\bin\x86\$(ConfigurationName)\AppX\Core\"</PostBuildEvent>
+del /q "$(SolutionDir)OneLauncher.UWP\LauncherCore\" 
+
+xcopy /y /s "$(TargetDir)*.exe" "$(SolutionDir)OneLauncher.UWP\LauncherCore\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
