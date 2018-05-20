@@ -120,6 +120,9 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>One Minecraft Launcher</value>
   </data>
+  <data name="AppShortName" xml:space="preserve">
+    <value>OneMCL</value>
+  </data>
   <data name="Asset" xml:space="preserve">
     <value>资源文件</value>
   </data>
