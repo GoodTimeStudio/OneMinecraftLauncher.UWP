@@ -1,17 +1,12 @@
-#Based on https://www.visualstudio.com/docs/build/scripts/index
-# Enable -Verbose option
-[CmdletBinding()] 
-
 $VersionRegex = "\d+\.\d+\.\d+\.\d+"
+$BuildVersionRegex = "\d+\.\d"
 
-$ManifestVersionRegex = " Version=""\d+\.\d+\.\d+\.\d+"""
-
+# Check if this script is running in a build server.
 if (-not $Env:BUILD_BUILDNUMBER)
 {
     Write-Error ("BUILD_BUILDNUMBER environment variable is missing.")
     exit 1
 }
-Write-Verbose "BUILD_BUILDNUMBER: $Env:BUILD_BUILDNUMBER"
 
 $ScriptPath = $null
 try
@@ -27,32 +22,57 @@ if (!$ScriptPath)
     exit 1
 }
 
-# Get and validate the version data
-$VersionData = [regex]::matches($Env:BUILD_BUILDNUMBER,$VersionRegex)
-switch($VersionData.Count)
+# Get and validate build number data
+$BuildNumber = [regex]::matches($Env:BUILD_BUILDNUMBER,$BuildVersionRegex).Value
+$BuildNumberArray = $BuildNumber.Split(".")
+if ($BuildNumberArray.Count -le 0) # -le <=
 {
-   0        
-      { 
-         Write-Error "Could not find version number data in BUILD_BUILDNUMBER."
-         exit 1
-      }
-   1 {}
-   default 
-      { 
-         Write-Warning "Found more than instance of version data in BUILD_BUILDNUMBER." 
-         Write-Warning "Will assume first instance is version."
-      }
+    Write-Error "Invaild build number: $BuildNumber"
+    exit 1
 }
-$NewVersion = $VersionData[0]
-Write-Verbose "Version: $NewVersion"
+Write-Host "BuildNumber: $BuildNumber"
+
+# Get old version in manifest
+[xml]$manifest = Get-Content -Path "$ScriptDir\\Package.appxmanifest"
+if($manifest)
+{
+    $currentVersion = $manifest.Package.Identity.Version
+    
+    if ($currentVersion)
+    {
+        Write-Host "CurrentVersion: $currentVersion"
+    }
+    else
+    {
+        Write-Error "Invaild version in manifest"
+        exit 1
+    }
+
+    $currentVersionArray = $currentVersion.ToString().Split(".")
+    if ($currentVersionArray.Count -ne 4)
+    {
+        Write-Error "Invaild version in manifest"
+        exit 1
+    }
+}
+else
+{
+    Write-Error "Manifest file not found"
+    exit 1
+}
 
 
-$AssemblyVersion = $NewVersion
-$ManifestVersion = " Version=""$NewVersion"""
-
-Write-Host "Version: $AssemblyVersion"
-Write-Host "Manifest: $ManifestVersion"
+# Set new version
+$currentVersionArray[2] = $BuildNumberArray[0]
+$currentVersionArray[3] = $BuildNumberArray[1]
+$newVersion = "{0}.{1}.{2}.{3}" -f $currentVersionArray[0], $currentVersionArray[1], $currentVersionArray[2], $currentVersionArray[3]
+Write-Host "NewVersion: $newVersion"
 Write-Host "ScriptDir: " $ScriptDir
+
+# Apply new version to manifest
+$manifest.Package.Identity.Version = $newVersion
+$manifest.Save("$ScriptDir\\Package.appxmanifest")
+
 
 # Apply the version to the assembly property files
 $assemblyInfoFiles = gci $ScriptDir -recurse -include "*Properties*","My Project" | 
@@ -66,7 +86,7 @@ if($assemblyInfoFiles)
     foreach ($file in $assemblyInfoFiles) {
         $filecontent = Get-Content($file)
         attrib $file -r
-        $filecontent -replace $VersionRegex, $AssemblyVersion | Out-File $file utf8
+        $filecontent -replace $VersionRegex, $newVersion | Out-File $file utf8
 
         Write-Host "$file.FullName - version applied"
     }
@@ -75,26 +95,3 @@ else
 {
     Write-Warning "No Assembly Info Files found."
 }
-
-# Try Manifests
-$manifestFiles = gci .\ -recurse -include "Package.appxmanifest" 
-
-if($manifestFiles)
-{
-    Write-Host "Will apply $ManifestVersion to $($manifestFiles.count) Manifests."
-
-    foreach ($file in $manifestFiles) {
-        $filecontent = Get-Content($file)
-        attrib $file -r
-        $filecontent -replace $ManifestVersionRegex, $ManifestVersion | Out-File $file utf8
-
-        Write-Host "$file.FullName - version applied to Manifest"
-    }
-}
-else
-{
-    Write-Warning "No Manifest files found."
-}
-
-Write-Host ("##vso[task.setvariable variable=AppxVersion;]$NewVersion") 
-
