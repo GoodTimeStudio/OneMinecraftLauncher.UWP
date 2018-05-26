@@ -9,6 +9,8 @@
     xmlns:applocal="using:GoodTimeStudio.OneMinecraftLauncher.UWP"
     mc:Ignorable="d">
     <Page.Resources>
+        <local:CreateTimeConverter x:Key="CreateTimeConverter" />
+        <local:LastPlayConverter x:Key="LastPlayConverter" />
         <DataTemplate x:DataType="model:LaunchOption" x:Key="OptViewTemplate" >
             <StackPanel Spacing="12">
                 <TextBlock Margin="0,24,0,0" 
@@ -19,6 +21,11 @@
                          Text="{x:Bind name, Mode=TwoWay}" 
                          Width="400" 
                          HorizontalAlignment="Left"/>
+
+                <TextBlock Visibility="{x:Bind CreateTimeVisbility, Mode=OneWay}"
+                          Text="{x:Bind created, Mode=OneWay, Converter={StaticResource CreateTimeConverter} }" />
+                <TextBlock Visibility="{x:Bind LastUsedVisbility, Mode=OneWay}"
+                          Text="{x:Bind lastUsed, Mode=OneWay, Converter={StaticResource LastPlayConverter} }" />
 
                 <Grid Margin="0,24,0,0" >
                     <Grid.ColumnDefinitions>
@@ -35,16 +42,41 @@
                         VerticalAlignment="Bottom"/>
                 </Grid>
 
-                <TextBox x:Uid="/LaunchOptions/GameDirBox"
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Uid="/LaunchOptions/GameDirBox"
                         Text="{x:Bind gameDir, Mode=TwoWay}"
                          Width="400" 
                          HorizontalAlignment="Left" 
                          Margin="0,24,0,0"/>
-                
-                <TextBox x:Uid="/LaunchOptions/JavaExtBox"
+
+                    <Button x:Uid="/LaunchOptions/SelectDirButton"
+                            Grid.Column="1"
+                            Click="Button_GameDir_Click"
+                            Margin="12,0,0,0" VerticalAlignment="Bottom" />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Uid="/LaunchOptions/JavaExtBox"
                         Text="{x:Bind javaExt, Mode=TwoWay}"
                          Width="400" 
                          HorizontalAlignment="Left"/>
+
+                    <Button x:Uid="/LaunchOptions/SelectDirButton"
+                            Grid.Column="1"
+                            Click="Button_JavaExt_Click" 
+                            Margin="12,0,0,0" VerticalAlignment="Bottom" />
+                </Grid>
+                
 
                 <TextBox x:Uid="/LaunchOptions/JavaArgsBox"
                         Text="{x:Bind javaArgs, Mode=TwoWay}"
@@ -116,5 +148,7 @@
             </ContentControl>
 
         </SplitView>
+
+        <local:MsgDialog x:Name="__msgDialog" />
     </Grid>
 </Page>

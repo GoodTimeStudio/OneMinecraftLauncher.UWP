@@ -150,4 +150,19 @@
   <data name="VersionsListBox.Header" xml:space="preserve">
     <value>版本</value>
   </data>
+  <data name="CreateTime" xml:space="preserve">
+    <value>创建时间：{0}</value>
+  </data>
+  <data name="GameDirSelectError" xml:space="preserve">
+    <value>无法选择这个目录</value>
+  </data>
+  <data name="JavaExtSelectError" xml:space="preserve">
+    <value>文件选择失败</value>
+  </data>
+  <data name="LastPlay" xml:space="preserve">
+    <value>最后运行于：{0}</value>
+  </data>
+  <data name="SelectDirButton.Content" xml:space="preserve">
+    <value>选择目录</value>
+  </data>
 </root>

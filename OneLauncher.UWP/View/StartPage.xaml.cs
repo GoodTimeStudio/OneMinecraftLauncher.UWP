@@ -73,8 +73,10 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
             }
 
             option.isReady = false;
+            option.lastUsed = DateTime.Now;
             await Launch(option);
             option.isReady = true;
+            await CoreManager.SaveOptionList(ViewModel.ListModel.OptionList);
         }
 
         private async Task Launch(LaunchOption option)

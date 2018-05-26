@@ -43,7 +43,17 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
         public DateTime lastUsed
         {
             get { return _lastUsed; }
-            set { this.SetProperty(ref _lastUsed, value); }
+            set
+            {
+                this.SetProperty(ref _lastUsed, value);
+                this.OnPropertyChanged("LastUsedVisbility");
+            }
+        }
+
+        [JsonIgnore]
+        public bool LastUsedVisbility
+        {
+            get => lastUsed.ToFileTime() > 0;
         }
 
         private string _lastVersionId;
@@ -57,7 +67,17 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
         public DateTime created
         {
             get { return this._created; }
-            set { this.SetProperty(ref _created, value); }
+            set
+            {
+                this.SetProperty(ref _created, value);
+                this.OnPropertyChanged("CreateTimeVisbility");
+            }
+        }
+
+        [JsonIgnore]
+        public bool CreateTimeVisbility
+        {
+            get => created.ToFileTime() > 0;
         }
 
         [JsonIgnore] public bool isPreview;
@@ -74,6 +94,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
             }
         }
 
+        [JsonIgnore]
         public bool isNotReady
         {
             get => !isReady;

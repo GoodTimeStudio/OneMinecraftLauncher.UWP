@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“内容对话框”项模板
 
-namespace GoodTimeStudio.OneMinecraftLauncher.UWP
+namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
 {
     public sealed partial class MsgDialog : ContentDialog
     {
