@@ -20,11 +20,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 
         public override ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
-            if (Program.Core == null)
-                return null;
-
             List<string> list = new List<string>();
-            var vers = Program.Core.GetVersions();
+            var vers = Program.Launcher.Core.GetVersions();
 
             Logger.Info("Found " + vers.Count() + " versions: ");
 

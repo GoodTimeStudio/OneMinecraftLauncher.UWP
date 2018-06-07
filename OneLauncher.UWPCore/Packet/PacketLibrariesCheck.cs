@@ -1,4 +1,5 @@
-﻿using KMCCC.Launcher;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft;
+using KMCCC.Launcher;
 using log4net;
 using Newtonsoft.Json;
 using System;
@@ -21,45 +22,32 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 
         public override ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
-            if (Program.Core == null)
-                return null;
 
             string versionID = args.Request.Message["version"].ToString();
             if (string.IsNullOrWhiteSpace(versionID))
                 return null;
 
             Logger.Info("Scanning libraries and natives");
-            KMCCC.Launcher.Version ver = Program.Core.GetVersion(versionID);
+            KMCCC.Launcher.Version ver = Program.Launcher.Core.GetVersion(versionID);
 
-            List<DLibrary> missing = new List<DLibrary>();
-            List<Library> missingLib = Program.Core.CheckLibraries(ver);
-            List<Native> missingNative = Program.Core.CheckNatives(ver);
+            List<MinecraftAssembly> missing = new List<MinecraftAssembly>();
+            List<MinecraftAssembly> missingLib = Program.Launcher.CheckLibraries(ver);
+            List<MinecraftAssembly> missingNative = Program.Launcher.CheckNatives(ver);
 
             Logger.Info("Found " + missingLib?.Count + " missing libraries");
-            foreach (Library lib in missingLib)
+            foreach (MinecraftAssembly lib in missingLib)
             {
-                string dName = lib.Url.Substring(lib.Url.LastIndexOf('/') + 1);
-                Logger.Warn("     # " + dName);
-                missing.Add(new DLibrary
-                {
-                    Name = dName,
-                    Path = Program.Core.GetLibPath(lib),
-                    Url = lib.Url
-                });
+                Logger.Warn("     # " + lib.Name);
             }
 
             Logger.Info("Found " + missingNative?.Count + " missing natives");
-            foreach (Native nav in missingNative)
+            foreach (MinecraftAssembly nav in missingNative)
             {
-                string dName = nav.Url.Substring(nav.Url.LastIndexOf('/') + 1);
-                Logger.Warn("     # " + dName);
-                missing.Add(new DLibrary
-                {
-                    Name = dName,
-                    Path = Program.Core.GetNativePath(nav),
-                    Url = nav.Url
-                });
+                Logger.Warn("     # " + nav.Name);
             }
+
+            missing.AddRange(missingLib);
+            missing.AddRange(missingNative);
 
             Logger.Info("Serializing list to json");
             string json = null;

@@ -1,4 +1,5 @@
-﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core;
+using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
 using GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet;
 using KMCCC.Launcher;
 using log4net;
@@ -17,7 +18,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using Windows.ApplicationModel.AppService;
 using Windows.Foundation.Collections;
-using static GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet.PacketAssetsCheck;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
 {
@@ -29,7 +29,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
         static AutoResetEvent appServiceExit;
         static Dictionary<string, IServicePacket> packets = new Dictionary<string, IServicePacket>();
 
-        public static LauncherCore Core;
+        public static OneMCL Launcher;
+        public static bool isInited
+        {
+            get => Launcher != null;
+        }
 
         static void Main(string[] args)
         {
@@ -69,22 +73,16 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
 
         private static void LaunchTest()
         {
-            for (int i = 0; i < 3; i++)
+            OneMCL mcl = new OneMCL(@"E:\BestOwl\Desktop\LauncherTest");
+            LaunchOptionBase launchOption = new LaunchOptionBase("test")
             {
-                LaunchMessage message = new LaunchMessage
-                {
-                    WorkDirPath = @"E:\BestOwl\Desktop\LauncherTest",
-                    JavaExtPath = @"D:\Program Files (x86)\Minecraft\runtime\jre-x64\1.8.0_51\bin\java.exe",
-                    VersionId = "1.12.2",
-                    authenticator = new KMCCC.Authentication.OfflineAuthenticator("MicroOwl")
-                };
+                javaExt = @"D:\Program Files (x86)\Minecraft\runtime\jre-x64\1.8.0_51\bin\java.exe",
+                versionId = "1.12.2",
+            };
+            mcl.UserAuthenticator = new KMCCC.Authentication.OfflineAuthenticator("MicroOwl");
 
-
-                Core = OneMinecraftLauncher.Core.OneMinecraftLauncher.CreateLauncherCore(message);
-                List<Library> l = Core.GetVersion("1.12.2").Libraries;
-                //OneMinecraftLauncher.Core.OneMinecraftLauncher.Launch(core, message);
-            }
-            
+            List<Library> l = mcl.Core.GetVersion("1.12.2").Libraries;
+            mcl.Launch(launchOption);
         }
 
         private static void setColor(ConsoleColor c)
@@ -154,7 +152,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
                 ValueSet tmp = null;
                 try
                 {
-                    tmp = service.OnRequest(sender, args);
+                    if (isInited || service is PacketInit)
+                    {
+                        tmp = service.OnRequest(sender, args);
+                    }
+                    else
+                    {
+                        Logger.Error("Receied packet before launcher initialized, use PacketInit first");
+                    }
                 }
                 catch(Exception e)
                 {
@@ -179,12 +184,4 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
        
     }
 
-    public class DLibrary
-    {
-        public string Name;
-
-        public string Path;
-
-        public string Url;
-    }
 }

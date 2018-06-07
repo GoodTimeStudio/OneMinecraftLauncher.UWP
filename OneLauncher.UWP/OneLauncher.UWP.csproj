@@ -102,7 +102,6 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppServiceManager.cs" />
-    <Compile Include="Minecraft\Asset.cs" />
     <Compile Include="News\INewsSource.cs" />
     <Compile Include="News\OfficialNews.cs" />
     <Compile Include="News\RssNews.cs" />
@@ -117,11 +116,8 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Minecraft\Library.cs" />
-    <Compile Include="Minecraft\MinecraftVersion.cs" />
-    <Compile Include="Models\BindableBase.cs" />
+    <Compile Include="MinecraftVersionManager.cs" />
     <Compile Include="Models\DownlaodPageViewModel.cs" />
-    <Compile Include="Models\LaunchMessage.cs" />
     <Compile Include="Models\LaunchOption.cs" />
     <Compile Include="Models\LaunchOptionListViewModel.cs" />
     <Compile Include="Models\LaunchOptionViewTemplateSelector.cs" />
@@ -247,7 +243,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\OneLauncher.Core\OneLauncher.Core.csproj">
+      <Project>{4ffe312c-2bc7-4b8d-9af9-25d8f6a505b8}</Project>
+      <Name>OneLauncher.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

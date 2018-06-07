@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
+namespace GoodTimeStudio.OneMinecraftLauncher.Core.Models
 {
     public class BindableBase : INotifyPropertyChanged
     {

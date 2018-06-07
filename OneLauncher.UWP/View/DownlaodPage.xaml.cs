@@ -1,4 +1,4 @@
-﻿using GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft;
 using GoodTimeStudio.OneMinecraftLauncher.UWP.Models;
 using System;
 using System.Collections.Generic;

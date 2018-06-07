@@ -1,4 +1,6 @@
-﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core;
+using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+using KMCCC.Authentication;
 using KMCCC.Launcher;
 using log4net;
 using Newtonsoft.Json;
@@ -22,22 +24,33 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 
         public override ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
-            if (Program.Core == null)
+            string auth_type = args.Request.Message["auth_type"].ToString();
+            string auth_username = args.Request.Message["auth_username"].ToString();
+            switch (auth_type)
+            {
+                case "offline":
+                    Program.Launcher.UserAuthenticator = new OfflineAuthenticator(auth_username);
+                    break;
+                //case "mojang":
+            }
+            if (Program.Launcher.UserAuthenticator == null)
+            {
+                Logger.Error("User authenticator no set or passed a wrong auth massage");
                 return null;
+            }
 
-            string json = args.Request.Message["message"].ToString();
+            string json = args.Request.Message["launchOption"].ToString();
 
-            Logger.Info("Launch message is :");
-            Logger.Info("     " + json);
-            Logger.Info("Deserializing launch message");
+            Logger.Info("LaunchOption: " + json);
+            Logger.Info("Deserializing launch option");
 
-            LaunchMessage message = null;
+            LaunchOptionBase launchOption = null;
             ValueSet ret = new ValueSet();
             ret["result"] = false;
 
             try
             {
-                message = JsonConvert.DeserializeObject<LaunchMessage>(json);
+                launchOption = JsonConvert.DeserializeObject<LaunchOptionBase>(json);
             }
             catch (JsonException e)
             {
@@ -48,11 +61,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 Logger.Error("     " + e.StackTrace);
             }
 
-            if (message != null)
+            if (launchOption != null)
             {
                 Logger.Info("Ready to launch");
 
-                LaunchResult launchResult = OneMinecraftLauncher.Core.OneMinecraftLauncher.Launch(Program.Core, message);
+                LaunchResult launchResult = Program.Launcher.Launch(launchOption);
 
                 if (launchResult.Success)
                 {

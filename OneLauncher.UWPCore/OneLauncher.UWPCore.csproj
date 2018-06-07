@@ -37,6 +37,8 @@
   <PropertyGroup>
     <StartupObject>GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="LibZ.Bootstrap, Version=1.2.0.0, Culture=neutral, PublicKeyToken=62360e53307d6ba2, processorArchitecture=MSIL">
       <HintPath>..\packages\LibZ.Bootstrap.1.2.0.0\lib\net4-client\LibZ.Bootstrap.dll</HintPath>
@@ -106,7 +108,7 @@
       <Name>KMCCC.Basic</Name>
     </ProjectReference>
     <ProjectReference Include="..\OneLauncher.Core\OneLauncher.Core.csproj">
-      <Project>{9adf1867-5ca2-4ee4-a647-018bbd9f3a11}</Project>
+      <Project>{4ffe312c-2bc7-4b8d-9af9-25d8f6a505b8}</Project>
       <Name>OneLauncher.Core</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,4 +1,5 @@
-﻿using KMCCC.Launcher;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft;
+using KMCCC.Launcher;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -27,11 +28,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 
         public override ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
-            if (Program.Core == null)
-            {
-                return null;
-            }
-
             string versionId = args.Request.Message["version"].ToString();
             if (string.IsNullOrEmpty(versionId))
             {
@@ -40,7 +36,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 
             Logger.Info("Checking assets for  # " + versionId);
 
-            KMCCC.Launcher.Version ver = Program.Core.GetVersion(versionId);
+            KMCCC.Launcher.Version ver = Program.Launcher.Core.GetVersion(versionId);
             if (ver == null)
             {
                 return null;
@@ -48,7 +44,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 
             Logger.Info("AssetIndex: " + ver.Assets);
 
-            string json = File.ReadAllText(string.Format(AssetIndexPath, Program.Core.GameRootPath, ver.Assets));
+            string json = File.ReadAllText(string.Format(AssetIndexPath, Program.Launcher.Core.GameRootPath, ver.Assets));
             JObject rootObj = null;
             try
             {
@@ -64,7 +60,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 return null;
             }
 
-            List<JAsset> ret = new List<JAsset>();
+            List<MinecraftAsset> ret = new List<MinecraftAsset>();
             var sha1 = new SHA1CryptoServiceProvider();
             foreach (KeyValuePair<string, JToken> prop in rootObj)
             {
@@ -77,17 +73,17 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 int _size;
                 int.TryParse(prop.Value["size"].ToString(), out _size);
 
-                JAsset asset = new JAsset
+                MinecraftAsset asset = new MinecraftAsset
                 {
-                    hash = _hash,
-                    size = _size
+                    Hash = _hash,
+                    Size = _size
                 };
 
-                if (!Program.Core.CheckFileHash(asset.GetPath(), asset.hash, sha1))
+                if (!Program.Launcher.Core.CheckFileHash(asset.GetPath(), asset.Hash, sha1))
                 {
                     ret.Add(asset);
 
-                    Logger.Warn("     Found missing asset: " + asset.hash);
+                    Logger.Warn("     Found missing asset: " + asset.Hash);
                 }
             }
 
@@ -99,40 +95,25 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
             return valueSet;
         }
 
-        public class JAsset
-        {
-            public string hash;
-
-            public int size;
-
-            public string GetPath()
-            {
-                return string.Format(@"{0}\assets\objects\{1}\{2}", Program.Core.GameRootPath, hash.Substring(0, 2), hash);
-            }
-
-        }
     }
 
-    public class PacketAssetIndexCheck : IServicePacket
+    public class PacketAssetIndexCheck : PacketBase
     {
-        public string GetTypeName()
+        public override string GetTypeName()
         {
             return "assetIndexCheck";
         }
 
-        public ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        public override ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             string versionID = args.Request.Message["version"].ToString();
 
-            if (Program.Core == null)
-                return null;
-
-            KMCCC.Launcher.Version ver = Program.Core.GetVersion(versionID);
+            KMCCC.Launcher.Version ver = Program.Launcher.Core.GetVersion(versionID);
 
             if (ver == null)
                 return null;
 
-            if (Program.Core.CheckFileHash(string.Format(@"{0}\assets\indexes\{1}.json", Program.Core.GameRootPath, ver.Assets), ver.AssetIndexInfo.SHA1, new SHA1CryptoServiceProvider()))
+            if (Program.Launcher.Core.CheckFileHash(string.Format(@"{0}\assets\indexes\{1}.json", Program.Launcher.Core.GameRootPath, ver.Assets), ver.AssetIndexInfo.SHA1, new SHA1CryptoServiceProvider()))
                 return null;
 
             ValueSet ret = new ValueSet();

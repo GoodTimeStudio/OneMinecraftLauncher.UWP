@@ -20,10 +20,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
         {
             string versionID = args.Request.Message["version"].ToString();
 
-            if (Program.Core == null)
-                return null;
-
-            KMCCC.Launcher.Version ver = Program.Core.GetVersion(versionID);
+            KMCCC.Launcher.Version ver = Program.Launcher.Core.GetVersion(versionID);
 
             if (ver == null)
                 return null;

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -9,35 +10,8 @@ using System.Threading.Tasks;
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
 {
 
-    public class LaunchOption : BindableBase
+    public class LaunchOption : LaunchOptionBase
     {
-        private string _name;
-        public string name
-        {
-            get { return _name; }
-            set { this.SetProperty(ref _name, value); }
-        }
-
-        private string _gameDir;
-        public string gameDir
-        {
-            get { return _gameDir; }
-            set { this.SetProperty(ref _gameDir, value); }
-        }
-
-        private string _javaExt;
-        public string javaExt
-        {
-            get { return _javaExt; }
-            set { this.SetProperty(ref _javaExt, value); }
-        }
-
-        private string _javaArgs;
-        public string javaArgs
-        {
-            get { return _javaArgs; }
-            set { this.SetProperty(ref _javaArgs, value); }
-        }
 
         private DateTime _lastUsed;
         public DateTime lastUsed
@@ -100,32 +74,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
             get => !isReady;
         }
 
-        /*
-        private bool _isDownloading;
-        [JsonIgnore]
-        public bool isDownloading
+        public LaunchOption(string name) : base(name)
         {
-            get => _isDownloading;
-            set
-            {
-                this.SetProperty(ref _isDownloading, value);
-                this.OnPropertyChanged(nameof(isNotDownloading));
-            }
-        }
-
-        [JsonIgnore]
-        public bool isNotDownloading
-        {
-            get => !isDownloading;
-        }*/
-
-        public LaunchOption(string name)
-        {
-            this.name = name;
             this.created = DateTime.Now;
             this.isPreview = false;
             this.isReady = true;
-            //this.isDownloading = false;
         }
 
         //public string icon; TO-DO

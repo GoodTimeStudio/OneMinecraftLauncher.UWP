@@ -66,15 +66,16 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Properties {
         ///  &lt;appender name=&quot;console&quot; type=&quot;log4net.Appender.ConsoleAppender&quot;&gt;
         ///
         ///    &lt;layout type=&quot;log4net.Layout.PatternLayout&quot;&gt;
-        ///      &lt;conversionPattern value=&quot;%date [%-5level] [%logger]#    %message%newline&quot; /&gt;
+        ///      &lt;conversionPattern value=&quot;%date %-5level [%logger]# %message%newline&quot; /&gt;
         ///    &lt;/layout&gt;
         ///  &lt;/appender&gt;
         ///
-        ///  &lt;root&gt;
-        ///    &lt;level value=&quot;DEBUG&quot; /&gt;
-        ///    &lt;appender-ref ref=&quot;console&quot; /&gt;
-        ///  &lt;/root&gt;
-        ///&lt;/log4net&gt; 的本地化字符串。
+        ///  &lt;appender name=&quot;RollingFile&quot; type=&quot;log4net.Appender.RollingFileAppender&quot;&gt;
+        ///    &lt;lockingModel type=&quot;log4net.Appender.FileAppender+MinimalLock&quot;/&gt;
+        ///    &lt;file value=&quot;logs\&quot; /&gt;
+        ///    &lt;datePattern value=&quot;dd-MM-yyyy&apos;.log&apos;&quot; /&gt;
+        ///    &lt;staticLogFileName value=&quot;false&quot; /&gt;
+        ///     [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string log4net_config {
             get {

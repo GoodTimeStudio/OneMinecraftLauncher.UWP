@@ -1,13 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft
+namespace GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft
 {
-    public class Asset
+    public class MinecraftAsset
     {
         private const string Download_URL = "http://resources.download.minecraft.net/";
 
@@ -26,7 +24,5 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft
         {
             return string.Format(@"{0}{1}/{2}", Download_URL, Hash.Substring(0, 2), Hash);
         }
-
     }
-
 }

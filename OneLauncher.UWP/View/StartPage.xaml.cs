@@ -1,5 +1,5 @@
-﻿using GoodTimeStudio.OneLauncher.UWP.Models;
-using GoodTimeStudio.OneMinecraftLauncher.UWP.Minecraft;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+using GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft;
 using GoodTimeStudio.OneMinecraftLauncher.UWP.Models;
 using GoodTimeStudio.OneMinecraftLauncher.UWP.News;
 using Newtonsoft.Json;
@@ -87,8 +87,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
                 return;
             }
 
-            List<Library> missingLibs = null;  //include missing natives
-            List<Asset> missingAssets = new List<Asset>();
+            List<MinecraftAssembly> missingLibs = null;  //include missing natives
+            List<MinecraftAsset> missingAssets = new List<MinecraftAsset>();
 
             #region Libraries and natives check
             ValueSet valueSet = new ValueSet();
@@ -99,7 +99,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
             string responseJson = response.Message["value"].ToString();
             try
             {
-                missingLibs = JsonConvert.DeserializeObject<List<Library>>(responseJson);
+                missingLibs = JsonConvert.DeserializeObject<List<MinecraftAssembly>>(responseJson);
             }
             catch (JsonException)
             { }
@@ -145,7 +145,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
             responseJson = response.Message["value"].ToString();
             try
             {
-                missingAssets = JsonConvert.DeserializeObject<List<Asset>>(responseJson);
+                missingAssets = JsonConvert.DeserializeObject<List<MinecraftAsset>>(responseJson);
             }
             catch (JsonException) { }
             #endregion
@@ -174,28 +174,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
                 return;
             }
 
-            DebugWriteLine("Generating launch message");
-
-            JAuthenticator auth = new JAuthenticator();
-            auth.type = CoreManager.AccountTypeTag;
-            auth.username = CoreManager.Username;
-
-            LaunchMessage message = new LaunchMessage()
-            {
-                VersionId = option.lastVersionId,
-                authenticator = auth,
-                WorkDirPath = CoreManager.WorkDir?.Path,
-                GameDirPath = string.IsNullOrWhiteSpace(option.gameDir) ? CoreManager.WorkDir?.Path : option.gameDir,
-                JavaExtPath = string.IsNullOrWhiteSpace(option.javaExt) ? CoreManager.GlobalJVMPath : option.javaExt,
-                JavaArgs = option.javaArgs
-            };
-
             DebugWriteLine("Serializing launch message to json");
 
             string messageJson;
             try
             {
-                messageJson = JsonConvert.SerializeObject(message);
+                messageJson = JsonConvert.SerializeObject(option as LaunchOptionBase);
             }
             catch (JsonSerializationException exp)
             {
@@ -210,7 +194,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
             {
                 valueSet = new ValueSet();
                 valueSet.Add("type", "launch");
-                valueSet.Add("message", messageJson);
+                valueSet.Add("launch_option", messageJson);
+                valueSet.Add("auth_type", CoreManager.AccountTypeTag);
+                valueSet.Add("auth_username", CoreManager.Username);
                 response = await AppServiceManager.appServiceConnection.SendMessageAsync(valueSet);
 
                 //Display error

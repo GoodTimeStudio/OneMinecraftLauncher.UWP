@@ -1,4 +1,5 @@
-﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core;
+using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -30,8 +31,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
             Logger.Info("Work dir is " + workDir);
             Logger.Info("Creating KMCCC LauncherCore");
 
-            LaunchMessage message = new LaunchMessage { WorkDirPath = workDir };
-            Program.Core = OneMinecraftLauncher.Core.OneMinecraftLauncher.CreateLauncherCore(message);
+            Program.Launcher = new OneMCL(workDir);
 
             Assembly assembly = Assembly.GetExecutingAssembly();
             AssemblyFileVersionAttribute ver = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyFileVersionAttribute));

@@ -129,12 +129,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OneLauncher.Core\OneLauncher.Core.csproj">
-      <Project>{9adf1867-5ca2-4ee4-a647-018bbd9f3a11}</Project>
-      <Name>OneLauncher.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>cd "$(TargetDir)"

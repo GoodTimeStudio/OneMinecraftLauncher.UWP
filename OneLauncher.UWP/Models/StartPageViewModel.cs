@@ -1,4 +1,5 @@
-﻿using GoodTimeStudio.OneMinecraftLauncher.UWP.News;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+using GoodTimeStudio.OneMinecraftLauncher.UWP.News;
 using System;
 using System.Collections.Generic;
 using System.Linq;
