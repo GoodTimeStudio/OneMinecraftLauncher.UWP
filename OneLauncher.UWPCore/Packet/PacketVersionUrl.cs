@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +9,14 @@ using Windows.Foundation.Collections;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 {
-    public class PacketVersionUrl : IServicePacket
+    public class PacketVersionUrl : PacketBase
     {
-        public string GetTypeName()
+        public override string GetTypeName()
         {
             return "version-url";
         }
 
-        public ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        public override ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             string versionID = args.Request.Message["version"].ToString();
 

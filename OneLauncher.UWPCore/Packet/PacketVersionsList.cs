@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using log4net;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,15 @@ using Windows.Foundation.Collections;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 {
-    public class PacketVersionsList : IServicePacket
+    public class PacketVersionsList : PacketBase
     {
-        public string GetTypeName()
+
+        public override string GetTypeName()
         {
             return "versionsList";
         }
 
-        public ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        public override ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             if (Program.Core == null)
                 return null;
@@ -24,16 +26,16 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
             List<string> list = new List<string>();
             var vers = Program.Core.GetVersions();
 
-            Console.WriteLine("Found " + vers.Count() + " versions: ");
+            Logger.Info("Found " + vers.Count() + " versions: ");
 
             foreach (KMCCC.Launcher.Version ver in vers)
             {
                 list.Add(ver.Id);
 
-                Console.WriteLine("    # " + ver.Id);
+                Logger.Info("    # " + ver.Id);
             }
 
-            Console.WriteLine("Serializing versions list to json");
+            Logger.Info("Serializing versions list to json");
 
             string json = null;
             try
@@ -48,14 +50,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
             if (string.IsNullOrWhiteSpace(json))
                 return null;
 
-            Console.WriteLine("Versions List json: ");
-            Console.WriteLine("     " + json);
+            Logger.Info("Versions List json: ");
+            Logger.Info("     " + json);
 
             ValueSet valueSet = new ValueSet();
             valueSet["type"] = "versionsList";
             valueSet["value"] = json;
 
-            Console.WriteLine("Sending versions list to app");
+            Logger.Info("Sending versions list to app");
 
             return valueSet;
         }

@@ -1,4 +1,5 @@
 ﻿using KMCCC.Launcher;
+using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,16 +15,17 @@ using Windows.Foundation.Collections;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 {
-    public class PacketAssetsCheck : IServicePacket
+    public class PacketAssetsCheck : PacketBase
     {
+
         public const string AssetIndexPath = @"{0}\assets\indexes\{1}.json";
 
-        public string GetTypeName()
+        public override string GetTypeName()
         {
             return "assetsCheck";
         }
 
-        public ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        public override ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             if (Program.Core == null)
             {
@@ -36,7 +38,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 return null;
             }
 
-            Console.WriteLine("Checking assets for  # " + versionId);
+            Logger.Info("Checking assets for  # " + versionId);
 
             KMCCC.Launcher.Version ver = Program.Core.GetVersion(versionId);
             if (ver == null)
@@ -44,7 +46,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 return null;
             }
 
-            Console.WriteLine("AssetIndex: " + ver.Assets);
+            Logger.Info("AssetIndex: " + ver.Assets);
 
             string json = File.ReadAllText(string.Format(AssetIndexPath, Program.Core.GameRootPath, ver.Assets));
             JObject rootObj = null;
@@ -85,11 +87,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 {
                     ret.Add(asset);
 
-                    Console.WriteLine("     Found missing asset: " + asset.hash);
+                    Logger.Warn("     Found missing asset: " + asset.hash);
                 }
             }
 
-            Console.WriteLine(string.Format("Found {0} missing assets", ret.Count));
+            Logger.Info(string.Format("Found {0} missing assets", ret.Count));
 
             json = JsonConvert.SerializeObject(ret);
             ValueSet valueSet = new ValueSet();

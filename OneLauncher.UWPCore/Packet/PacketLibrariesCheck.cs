@@ -1,4 +1,5 @@
 ﻿using KMCCC.Launcher;
+using log4net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,15 @@ using Windows.Foundation.Collections;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 {
-    public class PacketLibrariesCheck : IServicePacket
+    public class PacketLibrariesCheck : PacketBase
     {
-        public string GetTypeName()
+
+        public override string GetTypeName()
         {
             return "librariesCheck";
         }
 
-        public ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        public override ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             if (Program.Core == null)
                 return null;
@@ -26,18 +28,18 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
             if (string.IsNullOrWhiteSpace(versionID))
                 return null;
 
-            Console.WriteLine("Scanning libraries and natives");
+            Logger.Info("Scanning libraries and natives");
             KMCCC.Launcher.Version ver = Program.Core.GetVersion(versionID);
 
             List<DLibrary> missing = new List<DLibrary>();
             List<Library> missingLib = Program.Core.CheckLibraries(ver);
             List<Native> missingNative = Program.Core.CheckNatives(ver);
 
-            Console.WriteLine("Found " + missingLib?.Count + " missing libraries");
+            Logger.Info("Found " + missingLib?.Count + " missing libraries");
             foreach (Library lib in missingLib)
             {
                 string dName = lib.Url.Substring(lib.Url.LastIndexOf('/') + 1);
-                Console.WriteLine("     # " + dName);
+                Logger.Warn("     # " + dName);
                 missing.Add(new DLibrary
                 {
                     Name = dName,
@@ -46,11 +48,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 });
             }
 
-            Console.WriteLine("Found " + missingNative?.Count + " missing natives");
+            Logger.Info("Found " + missingNative?.Count + " missing natives");
             foreach (Native nav in missingNative)
             {
                 string dName = nav.Url.Substring(nav.Url.LastIndexOf('/') + 1);
-                Console.WriteLine("     # " + dName);
+                Logger.Warn("     # " + dName);
                 missing.Add(new DLibrary
                 {
                     Name = dName,
@@ -59,7 +61,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 });
             }
 
-            Console.WriteLine("Serializing list to json");
+            Logger.Info("Serializing list to json");
             string json = null;
             try
             {
@@ -73,7 +75,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
             ValueSet ret = new ValueSet();
             ret["value"] = json;
 
-            Console.WriteLine("Sending list to app");
+            Logger.Info("Sending list to app");
             return ret;
         }
     }

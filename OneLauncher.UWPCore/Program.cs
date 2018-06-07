@@ -1,16 +1,20 @@
 ﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
 using GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet;
 using KMCCC.Launcher;
+using log4net;
+using log4net.Config;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using Windows.ApplicationModel.AppService;
 using Windows.Foundation.Collections;
 using static GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet.PacketAssetsCheck;
@@ -19,6 +23,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
 {
     class Program
     {
+        private static readonly ILog Logger = LogManager.GetLogger("UWPCore");
+
         public const string ServiceName = "LaunchAgent";
         static AutoResetEvent appServiceExit;
         static Dictionary<string, IServicePacket> packets = new Dictionary<string, IServicePacket>();
@@ -36,7 +42,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             Console.WriteLine(" * ");
             Console.WriteLine(" ******************************************************************** ");
 
-            Console.WriteLine("Starting One Minecraft Launcher (UWP Core)");
+            //Get log4net config in assembly
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(Properties.Resources.log4net_config);
+            XmlConfigurator.Configure(xml.DocumentElement);
+
+            Logger.Info("Starting One Minecraft Launcher (UWP Core)");
 
             RegisterPacket(new PacketInit());
             RegisterPacket(new PacketLaunchMessage());
@@ -51,6 +62,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             Process(args);
             appServiceExit.WaitOne();
 
+            Logger.Info("UWPCore is shutting down.");
             Console.WriteLine("Press any key to exit ...");
             Console.ReadKey();
         }
@@ -87,7 +99,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
 
         public async static void Process(string[] args)
         {
-            Console.WriteLine("Openning AppService connection.");
+            Logger.Info("Openning AppService connection.");
 
             AppServiceConnection connection = new AppServiceConnection();
             connection.AppServiceName = ServiceName;
@@ -99,13 +111,13 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             if (status == AppServiceConnectionStatus.Success)
             {
                 setColor(ConsoleColor.Green);
-                Console.WriteLine("Connection established, waiting for requests");
+                Logger.Info("Connection established, waiting for requests");
                 setColor(ConsoleColor.White);
             }
             else
             {
                 setColor(ConsoleColor.Red);
-                Console.WriteLine("Connection open failed: " + status.ToString());
+                Logger.Error("Connection open failed: " + status.ToString());
                 setColor(ConsoleColor.White);
                 appServiceExit?.Set();
             }
@@ -114,7 +126,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
         private static void Connection_ServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
         {
             setColor(ConsoleColor.Red);
-            Console.WriteLine("Connection closed");
+            Logger.Error("Connection closed");
             setColor(ConsoleColor.White);
             appServiceExit?.Set();
         }
@@ -123,9 +135,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
         {
             setColor(ConsoleColor.Yellow);
             string type = args.Request.Message["type"].ToString();
-            Console.WriteLine("*************************************************");
-            Console.WriteLine("Received request, type: " + type);
-            Console.WriteLine("*************************************************");
+            Logger.Info("*************************************************");
+            Logger.Info("Received request, type: " + type);
+            Logger.Info("*************************************************");
             setColor(ConsoleColor.White);
 
             IServicePacket service = null;
@@ -161,7 +173,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             await args.Request.SendResponseAsync(ret);
 
             setColor(ConsoleColor.Yellow);
-            Console.WriteLine("*************************************************");
+            Logger.Info("*************************************************");
             setColor(ConsoleColor.White);
         }
        

@@ -1,5 +1,6 @@
 ﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
 using KMCCC.Launcher;
+using log4net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,23 +12,24 @@ using Windows.Foundation.Collections;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 {
-    public class PacketLaunchMessage : IServicePacket
+    public class PacketLaunchMessage : PacketBase
     {
-        public string GetTypeName()
+
+        public override string GetTypeName()
         {
             return "launch";
         }
 
-        public ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        public override ValueSet OnRequest(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             if (Program.Core == null)
                 return null;
 
             string json = args.Request.Message["message"].ToString();
 
-            Console.WriteLine("Launch message is :");
-            Console.WriteLine("     " + json);
-            Console.WriteLine("Deserializing launch message");
+            Logger.Info("Launch message is :");
+            Logger.Info("     " + json);
+            Logger.Info("Deserializing launch message");
 
             LaunchMessage message = null;
             ValueSet ret = new ValueSet();
@@ -42,13 +44,13 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 ret["errorMessage"] = e.Message;
                 ret["errorStack"] = e.StackTrace;
 
-                Console.WriteLine("ERROR: " + e.Message);
-                Console.WriteLine("     " + e.StackTrace);
+                Logger.Error("ERROR: " + e.Message);
+                Logger.Error("     " + e.StackTrace);
             }
 
             if (message != null)
             {
-                Console.WriteLine("Ready to launch");
+                Logger.Info("Ready to launch");
 
                 LaunchResult launchResult = OneMinecraftLauncher.Core.OneMinecraftLauncher.Launch(Program.Core, message);
 
@@ -56,19 +58,18 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 {
                     ret["result"] = true;
 
-                    Console.WriteLine("Launch successfully");
+                    Logger.Info("Launch successfully");
                 }
                 else
                 {
                     ret["errorMessage"] = launchResult.ErrorMessage;
                     ret["errorStack"] = launchResult.Exception?.StackTrace;
 
-                    Console.WriteLine("Launch failed");
-                    Console.WriteLine("ERROR: " + launchResult.ErrorMessage);
+                    Logger.Warn("Launch failed: " + launchResult.ErrorMessage);
                 }
             }
 
-            Console.WriteLine("Sending launch result to app");
+            Logger.Info("Sending launch result to app");
             return ret;
         }
     }
