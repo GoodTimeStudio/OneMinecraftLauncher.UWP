@@ -96,6 +96,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Config.cs" />
     <Compile Include="LibZResolver.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -128,6 +129,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KMCCC\KMCCC.Basic\KMCCC.Basic.csproj">
+      <Project>{2b35c1fd-5e62-416e-b125-7577ef8ba1fb}</Project>
+      <Name>KMCCC.Basic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OneLauncher.Core\OneLauncher.Core.csproj">
+      <Project>{4ffe312c-2bc7-4b8d-9af9-25d8f6a505b8}</Project>
+      <Name>OneLauncher.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

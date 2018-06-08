@@ -1,4 +1,6 @@
-﻿using KMCCC.Authentication;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core;
+using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+using KMCCC.Authentication;
 using KMCCC.Launcher;
 using KMCCC.Modules.JVersion;
 using MahApps.Metro.Controls;
@@ -17,7 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GoodTimeStudio.OneMinecraftLauncher
+namespace GoodTimeStudio.OneMinecraftLauncher.WPF
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -71,7 +73,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher
             var options = new LaunchOptions()
             {
                 Version = version,
-                Authenticator = new GoodTimeAuhenticator("BestOwl", "SuHao2015"),
                 MaxMemory = int.Parse(_TB_MaxMemory.Text),
                 Mode = LaunchMode.MCLauncher,
             };
