@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP.News
 {
@@ -57,11 +58,13 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.News
                 };
 
                 Uri uri = null;
-                Uri.TryCreate(con.content.news.action, UriKind.RelativeOrAbsolute, out uri);
+                Uri.TryCreate(con.content.news.image, UriKind.RelativeOrAbsolute, out uri);
                 if (uri != null)
                 {
-                    news.Image = new Windows.UI.Xaml.Media.Imaging.BitmapImage();
-                    news.Image.UriSource = uri;
+                    news.Image = new BitmapImage
+                    {
+                        UriSource = uri
+                    };
                 }
 
                 ret.Add(news);

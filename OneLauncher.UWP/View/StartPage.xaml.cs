@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using System.Timers;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.AppService;
 using Windows.Foundation;
@@ -50,6 +51,29 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
         private async void GetNews()
         {
             ViewModel.NewsList = await NewsSource.GetNewsAsync();
+
+            if (ViewModel.NewsList != null && ViewModel.NewsList.Count > 1)
+            {
+                Timer timer = new Timer(5000);
+                timer.Elapsed += NewsTimer_Elapsed;
+                timer.Start();
+            }
+        }
+
+        //Auto flip
+        private async void NewsTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                if (NewsFlipView.SelectedIndex < ViewModel.NewsList.Count - 1)
+                {
+                    NewsFlipView.SelectedIndex++;
+                }
+                else
+                {
+                    for (; NewsFlipView.SelectedIndex > 0; NewsFlipView.SelectedIndex--) { }
+                }
+            });
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

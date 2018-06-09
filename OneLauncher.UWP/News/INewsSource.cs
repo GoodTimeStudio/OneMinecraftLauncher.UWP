@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.UWP.News
@@ -37,7 +38,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.News
         /// <summary>
         /// News content image
         /// </summary>
-        public BitmapImage Image;
+        public ImageSource Image;
 
         /// <summary>
         /// Open this url when clicking on news content

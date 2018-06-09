@@ -35,18 +35,21 @@
             <Grid>
                 <WebView x:Name="WebView" Visibility="Collapsed"/>
 
-                <ListView SelectionMode="None"
-                          ItemsSource="{x:Bind ViewModel.NewsList, Mode=OneWay}">
-                    <ListView.ItemTemplate>
+                <FlipView x:Name="NewsFlipView"
+                          ItemsSource="{x:Bind ViewModel.NewsList, Mode=OneWay}" 
+                          VerticalAlignment="Top" HorizontalAlignment="Center"
+                          Height="260" MaxWidth="480" Margin="0,72,0,0"
+                          Background="{StaticResource SystemControlAcrylicElementBrush}">
+                    <FlipView.ItemTemplate>
                         <DataTemplate x:DataType="news:NewsContent">
                             <StackPanel>
-                                <Image Source="{x:Bind Image}"/>
+                                <Image Source="{x:Bind Image}" Stretch="Uniform"/>
                                 <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="{x:Bind Title}" />
                                 <TextBlock Text="{x:Bind Text}" />
                             </StackPanel>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                    </FlipView.ItemTemplate>
+                </FlipView>
             </Grid>
 
             <StackPanel Grid.Row="1" >
