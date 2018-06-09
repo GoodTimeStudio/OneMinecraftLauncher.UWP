@@ -29,7 +29,7 @@
 
                     <StackPanel Grid.Column="1">
                         <TextBlock Text="{x:Bind name, Mode=OneWay}" />
-                        <TextBlock Text="{x:Bind lastVersionId, Mode=OneWay}" />
+                        <TextBlock Text="{x:Bind versionId, Mode=OneWay}" />
                     </StackPanel>
                 </Grid>
             </DataTemplate>

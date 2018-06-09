@@ -26,6 +26,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
         {
             string auth_type = args.Request.Message["auth_type"].ToString();
             string auth_username = args.Request.Message["auth_username"].ToString();
+            Logger.Info("User type: " + auth_type);
+            Logger.Info("Username: " + auth_username);
             switch (auth_type)
             {
                 case "offline":
@@ -39,7 +41,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 return null;
             }
 
-            string json = args.Request.Message["launchOption"].ToString();
+            string json = args.Request.Message["launch_option"].ToString();
 
             Logger.Info("LaunchOption: " + json);
             Logger.Info("Deserializing launch option");

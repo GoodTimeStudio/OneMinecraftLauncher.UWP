@@ -35,7 +35,7 @@
                     <ComboBox  x:Uid="/LaunchOptions/VersionsListBox" 
                            Width="300"
                            ItemsSource="{x:Bind applocal:CoreManager.LocalAvailableVersionsList}"
-                           SelectedItem="{x:Bind lastVersionId, Mode=TwoWay}"/>
+                           SelectedItem="{x:Bind versionId, Mode=TwoWay}"/>
                     <Button x:Uid="/LaunchOptions/DownloadVersionButton" 
                         Grid.Column="1" Margin="12,0,0,0"
                         Click="Button_Download_Click" 

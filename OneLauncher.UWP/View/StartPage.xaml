@@ -52,7 +52,7 @@
             <StackPanel Grid.Row="1" >
                 <TextBlock x:Uid="/StartPage/ReadyToLaunchHeader" Style="{ThemeResource TitleTextBlockStyle}" />
                 <TextBlock Text="{x:Bind ViewModel.ListModel.SelectedOption.name, Mode=OneWay}" />
-                <TextBlock Text="{x:Bind ViewModel.ListModel.SelectedOption.lastVersionId, Mode=OneWay}" />
+                <TextBlock Text="{x:Bind ViewModel.ListModel.SelectedOption.versionId, Mode=OneWay}" />
             </StackPanel>
 
             <ProgressRing Grid.Row="1" IsActive="{x:Bind ViewModel.ListModel.SelectedOption.isNotReady, Mode=OneWay}" HorizontalAlignment="Right" Margin="0,0,248,0" />

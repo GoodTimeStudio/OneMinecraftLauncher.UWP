@@ -93,7 +93,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
             #region Libraries and natives check
             ValueSet valueSet = new ValueSet();
             valueSet["type"] = "librariesCheck";
-            valueSet["version"] = option.lastVersionId;
+            valueSet["version"] = option.versionId;
             AppServiceResponse response = await AppServiceManager.appServiceConnection.SendMessageAsync(valueSet);
 
             string responseJson = response.Message["value"].ToString();
@@ -107,23 +107,24 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
 
             #region Assets check
             valueSet = new ValueSet();
-            valueSet["type"] = "assetIndexCheck";
-            valueSet["version"] = option.lastVersionId;
+            valueSet["type"] = "assetsCheck";
+            valueSet["version"] = option.versionId;
             response = await AppServiceManager.appServiceConnection.SendMessageAsync(valueSet);
 
             object obj = null;
-            response.Message.TryGetValue("path", out obj);
+            response.Message.TryGetValue("index_path", out obj);
+            // Asset index dose not exist or invalid
             if (obj != null)
             {
                 string path = obj.ToString();
-                string url = response.Message["url"].ToString();
+                string url = response.Message["index_url"].ToString();
 
                 try
                 {
                     using (HttpClient client = new HttpClient())
                     {
                         string json = await client.GetStringAsync(url);
-                        StorageFile file = await CoreManager.WorkDir.CreateFileAsync(path, Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                        StorageFile file = await CoreManager.WorkDir.CreateFileAsync(path, CreationCollisionOption.ReplaceExisting);
                         await FileIO.WriteTextAsync(file, json);
                     }
                 }
@@ -135,14 +136,21 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
                         );
                     return;
                 }
+
+                //Check again after asset index downloaded
+                response = await AppServiceManager.appServiceConnection.SendMessageAsync(valueSet);
+                obj = null;
+                response.Message.TryGetValue("index_path", out obj);
+                if (obj != null)
+                {
+                    await _msgDialog.Show(
+                        CoreManager.GetStringFromResource("/StartPage/LaunchFailed"),
+                        "Asset index validation failed");
+                    return;
+                }
             }
 
-            valueSet = new ValueSet();
-            valueSet["type"] = "assetsCheck";
-            valueSet["version"] = option.lastVersionId;
-            response = await AppServiceManager.appServiceConnection.SendMessageAsync(valueSet);
-
-            responseJson = response.Message["value"].ToString();
+            responseJson = response.Message["missing_assets"].ToString();
             try
             {
                 missingAssets = JsonConvert.DeserializeObject<List<MinecraftAsset>>(responseJson);
@@ -179,7 +187,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.View
             string messageJson;
             try
             {
-                messageJson = JsonConvert.SerializeObject(option as LaunchOptionBase);
+                LaunchOptionBase tmp = option as LaunchOptionBase;
+                if (string.IsNullOrWhiteSpace(option.javaExt))
+                {
+                    tmp.javaExt = CoreManager.GlobalJVMPath;
+                }
+                messageJson = JsonConvert.SerializeObject(tmp);
             }
             catch (JsonSerializationException exp)
             {

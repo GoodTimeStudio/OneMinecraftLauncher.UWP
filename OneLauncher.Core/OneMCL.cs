@@ -3,8 +3,12 @@ using GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft;
 using KMCCC.Authentication;
 using KMCCC.Launcher;
 using KMCCC.Modules.JVersion;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.Core
 {
@@ -61,7 +65,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.Core
             {
                 Version = Core.GetVersion(launchOption.versionId),
                 Authenticator = UserAuthenticator,
-                GameDirPath = launchOption.gameDir,
+                GameDirPath = string.IsNullOrEmpty(launchOption.gameDir) ? Core.GameRootPath : launchOption.gameDir,
             };
 
             Console.WriteLine("Launching...");
@@ -117,6 +121,69 @@ namespace GoodTimeStudio.OneMinecraftLauncher.Core
             return missing;
         }
 
+        /// <summary>
+        /// Check minecraft assets before launch
+        /// </summary>
+        /// <returns>
+        /// hasValidIndex: Indicates whether a valid index file exists
+        /// missingAssets: List of missing assets, will be null if 'hasValidIndex' is false.
+        /// </returns>
+        public (bool hasValidIndex, List<MinecraftAsset> missingAssets) CheckAssets(KMCCC.Launcher.Version version)
+        {
+            string indexPath = string.Format(@"{0}\assets\indexes\{1}.json", Core.GameRootPath, version.Assets);
+
+            bool hasIndex = Core.CheckFileHash(indexPath, version.AssetIndexInfo.SHA1, new SHA1CryptoServiceProvider());
+
+            if (!hasIndex)
+            {
+                return (false, null);
+            }
+
+            //Read and parse asset index
+            string json = File.ReadAllText(indexPath);
+            JObject rootObj = null;
+            try
+            {
+                rootObj = JObject.Parse(json)["objects"]?.ToObject<JObject>();
+            }
+            catch (JsonException)
+            {
+                return (false, null); 
+            }
+
+            List<MinecraftAsset> ret = new List<MinecraftAsset>();
+            if (rootObj == null)
+            {
+                //Some specific versions may not contain assets files
+                return (true, ret);
+            }
+
+            var sha1 = new SHA1CryptoServiceProvider();
+            foreach (KeyValuePair<string, JToken> prop in rootObj)
+            {
+                string _hash = prop.Value["hash"].ToString();
+                if (string.IsNullOrWhiteSpace(_hash))
+                {
+                    continue;
+                }
+
+                int _size;
+                int.TryParse(prop.Value["size"].ToString(), out _size);
+
+                MinecraftAsset asset = new MinecraftAsset
+                {
+                    Hash = _hash,
+                    Size = _size
+                };
+
+                if (!Core.CheckFileHash(string.Format(@"{0}\{1}", Core.GameRootPath, asset.GetPath()), asset.Hash, sha1))
+                {
+                    ret.Add(asset);
+                }
+            }
+
+            return (true, ret);
+        }
 
         //TO-DO: detect the server version of windows
         public static string GetSystemVersionName(int majorVersion, int minorVersion)

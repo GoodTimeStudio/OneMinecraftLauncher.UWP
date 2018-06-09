@@ -59,7 +59,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             RegisterPacket(new PacketVersionsList());
             RegisterPacket(new PacketVersionUrl());
             RegisterPacket(new PacketAssetsCheck());
-            RegisterPacket(new PacketAssetIndexCheck());
 
             appServiceExit = new AutoResetEvent(false);
             //LaunchTest();
@@ -133,9 +132,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
         {
             setColor(ConsoleColor.Yellow);
             string type = args.Request.Message["type"].ToString();
-            Logger.Info("*************************************************");
             Logger.Info("Received request, type: " + type);
-            Logger.Info("*************************************************");
             setColor(ConsoleColor.White);
 
             IServicePacket service = null;
@@ -177,9 +174,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             }
             await args.Request.SendResponseAsync(ret);
 
-            setColor(ConsoleColor.Yellow);
-            Logger.Info("*************************************************");
-            setColor(ConsoleColor.White);
         }
        
     }

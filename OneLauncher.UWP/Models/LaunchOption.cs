@@ -12,6 +12,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
 
     public class LaunchOption : LaunchOptionBase
     {
+        private DateTime NullTime;
 
         private DateTime _lastUsed;
         public DateTime lastUsed
@@ -27,14 +28,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
         [JsonIgnore]
         public bool LastUsedVisbility
         {
-            get => lastUsed.ToFileTime() > 0;
-        }
-
-        private string _lastVersionId;
-        public string lastVersionId
-        {
-            get { return _lastVersionId; }
-            set { this.SetProperty(ref _lastVersionId, value); }
+            get => !lastUsed.Equals(NullTime);
         }
 
         private DateTime _created;
@@ -51,7 +45,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Models
         [JsonIgnore]
         public bool CreateTimeVisbility
         {
-            get => created.ToFileTime() > 0;
+            get => !created.Equals(NullTime);
         }
 
         [JsonIgnore] public bool isPreview;
