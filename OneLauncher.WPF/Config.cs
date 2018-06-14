@@ -13,10 +13,16 @@ namespace GoodTimeStudio.OneMinecraftLauncher
         public static Config INSTANCE;
 
         public static readonly string CONFIG_FILE = "config.json";
+        public static readonly JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented
+        };
 
         public string Username = "";
-        public string Javapath = "";
-        public int Maxmemory = 2048;
+        public string JavaExt = "";
+        public string JavaArgs = "";
+        public int MaxMemory = 1024;
+        public string SelectedVersion = "";
 
         public Config()
         {
@@ -43,7 +49,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher
                         {
                             try
                             {
-                                var t = JsonConvert.DeserializeObject<Config>(str);
+                                var t = JsonConvert.DeserializeObject<Config>(str, serializerSettings);
                                 if (t != null)
                                     INSTANCE = t;
                                 else
@@ -76,16 +82,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher
             
         }
 
-        public static async void SaveConfigToFile()
+        public static void SaveConfigToFile()
         {
-            using (FileStream stream = File.OpenWrite(CONFIG_FILE))
-            {
-                using (StreamWriter writer = new StreamWriter(stream))
-                {
-                    string str = JsonConvert.SerializeObject(INSTANCE);
-                    await writer.WriteLineAsync(str);
-                }
-            }
+            File.WriteAllText(CONFIG_FILE, JsonConvert.SerializeObject(INSTANCE, serializerSettings));
         }
 
     }

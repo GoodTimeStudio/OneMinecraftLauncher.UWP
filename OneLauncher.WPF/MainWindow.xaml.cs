@@ -4,6 +4,7 @@ using KMCCC.Authentication;
 using KMCCC.Launcher;
 using KMCCC.Modules.JVersion;
 using MahApps.Metro.Controls;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,60 +27,99 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        private OneMCL _launcher;
+        private LaunchOptionBase _option;
 
-        private bool isLogin;
+        private Dictionary<string, KMCCC.Launcher.Version> VersionsIdMap;
 
         public MainWindow()
         {
             InitializeComponent();
-
+            _launcher = new OneMCL(@"E:\BestOwl\Desktop\LauncherTest");
+            _option = new LaunchOptionBase("one-minecraft-launcher");
             LoadConfig();
         }
 
         public async void LoadConfig()
         {
+            await Task.Run(() =>
+            {
+                ViewModel.VersionsList = _launcher.Core.GetVersions().ToList();
+                VersionsIdMap = new Dictionary<string, KMCCC.Launcher.Version>();
+                if (ViewModel.VersionsList == null)
+                {
+                    return;
+                }
+                foreach (KMCCC.Launcher.Version ver in ViewModel.VersionsList)
+                {
+                    VersionsIdMap.Add(ver.Id, ver);
+                }
+            });
             await Config.LoadFromFileAsync();
 
-            Dispatcher.Invoke(() =>
+            ViewModel.Username = Config.INSTANCE.Username;
+            ViewModel.JavaExt = Config.INSTANCE.JavaExt;
+            ViewModel.JavaArgs = Config.INSTANCE.JavaArgs;
+            ViewModel.MaxMemory = Config.INSTANCE.MaxMemory;
+
+            string id = Config.INSTANCE.SelectedVersion;
+            if (!string.IsNullOrWhiteSpace(id))
             {
-                _TB_UserName.Text = Config.INSTANCE.Username;
-                _TB_JavaPath.Text = Config.INSTANCE.Javapath;
-                _TB_MaxMemory.Text = Config.INSTANCE.Maxmemory.ToString();
-            });
+                if (VersionsIdMap.TryGetValue(id, out KMCCC.Launcher.Version ver))
+                {
+                    Dispatcher.Invoke(() => _VerBox.SelectedItem = ver);
+                }
+            }
+            
         }
 
         public void SaveConfig()
         {
-            Config.INSTANCE.Username = _TB_UserName.Text;
-            Config.INSTANCE.Javapath = _TB_JavaPath.Text;
-            Config.INSTANCE.Maxmemory = int.Parse(_TB_MaxMemory.Text);
+            Config.INSTANCE.Username = ViewModel.Username;
+            Config.INSTANCE.JavaExt = ViewModel.JavaExt;
+            Config.INSTANCE.JavaArgs = ViewModel.JavaArgs;
+            Config.INSTANCE.MaxMemory = ViewModel.MaxMemory;
+
             Config.SaveConfigToFile();
         }
 
         private void _BTN_Launch_Click(object sender, RoutedEventArgs e)
         {
             SaveConfig();
-            LoginScreen.Visibility = Visibility.Visible;
-            _TB_LoginScreenTip.Text = "正在登陆...";
-
-            LauncherCore core = LauncherCore.Create(new LauncherCoreCreationOption(
-                    "./game",
-                    Config.INSTANCE.Javapath,
-                    new JVersionLocator()
-                ));
-
-            var version = core.GetVersion("1.10.2-forge1.10.2-12.18.3.2185");
-
-            var options = new LaunchOptions()
+            _option.versionId = (_VerBox.SelectedItem as KMCCC.Launcher.Version).Id;
+            _option.javaExt = ViewModel.JavaExt;
+            _option.javaArgs = ViewModel.JavaArgs;
+            if (ViewModel.MaxMemory > 0)
             {
-                Version = version,
-                MaxMemory = int.Parse(_TB_MaxMemory.Text),
-                Mode = LaunchMode.MCLauncher,
-            };
+                _option.javaArgs = string.Format("-Xmx{0}M {1}", ViewModel.MaxMemory, _option.javaArgs);
+            }
+            _launcher.UserAuthenticator = new OfflineAuthenticator(ViewModel.Username);
+            _launcher.Launch(_option);
 
-            core.Launch(options);
+            //Dispatcher.InvokeShutdown();
+        }
 
-            Dispatcher.InvokeShutdown();
+        private void _VerBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems?[0] is KMCCC.Launcher.Version)
+            {
+                Config.INSTANCE.SelectedVersion = (e.AddedItems[0] as KMCCC.Launcher.Version).Id;
+                Config.SaveConfigToFile();
+            }
+        }
+
+        private void _BTN_JavaExtPicker_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.FileName = "javaw";
+            fileDialog.DefaultExt = ".exe";
+            fileDialog.Filter = "Java Runtime|javaw.exe|Executable files (*.exe)|*.exe|All files (*.*)|*.*";
+
+            bool? result = fileDialog.ShowDialog();
+            if (result == true)
+            {
+                ViewModel.JavaExt = fileDialog.FileName;
+            }
         }
     }
 }

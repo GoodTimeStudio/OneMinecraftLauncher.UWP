@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace OneLauncher_Reloaded_Lite
+namespace GoodTimeStudio.OneMinecraftLauncher.WPF
 {
     /// <summary>
     /// App.xaml 的交互逻辑

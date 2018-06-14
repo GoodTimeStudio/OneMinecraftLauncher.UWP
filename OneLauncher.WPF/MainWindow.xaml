@@ -4,13 +4,37 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:local="clr-namespace:OneLauncher_Reloaded_Lite"
+        xmlns:local="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.WPF"
+        xmlns:kmccc="clr-namespace:KMCCC.Launcher;assembly=KMCCC.Basic"
         mc:Ignorable="d"
-        Title="One Minecraft Launcher" Height="350" Width="525">
+        Title="One Minecraft Launcher" Height="500" Width="800"
+        Icon="icon.ico"
+        BorderBrush="{DynamicResource AccentColorBrush}"
+        BorderThickness="1"
+        WindowStartupLocation="CenterScreen"
+        ShowIconOnTitleBar="True"
+        ShowMaxRestoreButton="False"
+        ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
     </Window.Resources>
-    
+    <Window.DataContext>
+        <local:MainWindowViewModel x:Name="ViewModel" />
+    </Window.DataContext>
+
+    <Controls:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <Grid Width="{TemplateBinding Width}"
+                 Height="{TemplateBinding Height}"
+                 Margin="6"
+                 Background="Transparent"
+                 RenderOptions.EdgeMode="Aliased"
+                 RenderOptions.BitmapScalingMode="HighQuality">
+                <Image Source="icon.ico"></Image>
+            </Grid>
+        </DataTemplate>
+    </Controls:MetroWindow.IconTemplate>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1.5*" />
@@ -21,46 +45,50 @@
             <RowDefinition Height="1.5*" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.RowSpan="2" Grid.ColumnSpan="2" Background="White" Panel.ZIndex="1" Opacity="0.9"
-              x:Name="LoginScreen" Visibility="Collapsed">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            
-            <Controls:ProgressRing Grid.RowSpan="2"/>
-            <TextBlock Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="15" Width="200"  TextAlignment="Center"
-                       x:Name="_TB_LoginScreenTip"/>
-        </Grid>
-
         <StackPanel Margin="5,10,0,0">
-            <TextBlock Text="用户名" Margin="0,0,0,10" Height="26" />
-            <TextBlock Text="密码" Margin="0,0,0,10" Height="26" />
-            <TextBlock Text="Java路径" Margin="0,0,0,10" Height="26" />
-            <TextBlock Text="最大内存" Margin="0,0,0,10" Height="26" />
+            <TextBlock Text="用户名" Margin="0,5" Height="26" />
+            <TextBlock Text="Java路径" Margin="0,5" Height="26" />
+            <TextBlock Text="Java Args" Margin="0,5" Height="26" />
+            <TextBlock Text="最大内存" Margin="0,5" Height="26" />
+            <TextBlock Text="版本" Margin="0,5" Height="26" />
         </StackPanel>
 
         <StackPanel Grid.Column="1" Margin="0,10,0,0">
-            <TextBox x:Name="_TB_UserName" HorizontalAlignment="Left" Width="100" Margin="0,0,0,10" Height="26"/>
-            <PasswordBox x:Name="_TB_Password" HorizontalAlignment="Left" Width="150" Margin="0,0,0,10" Height="26" />
+            <TextBox Text="{Binding Username, Mode=TwoWay}" HorizontalAlignment="Left" Width="100" Margin="0,0,0,10" Height="26"/>
 
-            <Grid>
+            <Grid Margin="0,0,0,10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="6*" />
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
                 
-                <TextBox x:Name="_TB_JavaPath" Margin="0,0,0,10" Height="26" />
-                <Button Grid.Column="1" Content="选择路径" Margin="5,0,0,10" />
+                <TextBox Text="{Binding JavaExt, Mode=TwoWay}"  Height="26" />
+                <Button Grid.Column="1" Content="选择路径" Margin="5,0,0,0" Click="_BTN_JavaExtPicker_Click" />
             </Grid>
-            
-            <TextBox x:Name="_TB_MaxMemory" HorizontalAlignment="Left" Width="100" Height="26" />
+
+            <TextBox Text="{Binding JavaArgs, Mode=TwoWay}" 
+                     HorizontalAlignment="Left" 
+                     Width="400" Margin="0,0,0,10" 
+                     Controls:TextBoxHelper.AutoWatermark="True" Controls:TextBoxHelper.Watermark="正常情况下请不要改动该项，否则可能无法启动游戏"/>
+            <TextBox Text="{Binding MaxMemoryStr, Mode=TwoWay}" HorizontalAlignment="Left" Width="100" Height="26" Margin="0,0,0,10" />
+
+            <ComboBox Width="200" x:Name="_VerBox"
+                     ItemsSource="{Binding VersionsList}" 
+                      HorizontalAlignment="Left"
+                      Controls:ComboBoxHelper.MaxLength="300"
+                      SelectionChanged="_VerBox_SelectionChanged">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="kmccc:Version">
+                        <TextBlock Text="{Binding Id}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
         </StackPanel>
 
         <Button x:Name="_BTN_Launch"  Grid.Column="1" Grid.Row="1" Content="启动" HorizontalAlignment="Right" Margin="0,5,10,5" Width="120" Click="_BTN_Launch_Click" />
 
-        <TextBlock Text="Version 0.1-dev    Copyright © 2017 GoodTime Studio" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom" />
+        <TextBlock Text="Version 1.0    Copyright © 2018 GoodTime Studio" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom" />
 
     </Grid>
 
