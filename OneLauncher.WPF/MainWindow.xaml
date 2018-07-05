@@ -40,7 +40,9 @@
         <TabItem Header="开始">
             <view:StartView />
         </TabItem>
-        <TabItem Header="下载" />
+        <TabItem Header="下载">
+            <view:DownloadView />
+        </TabItem>
         <TabItem Header="关于" >
             <Grid Margin="0,12,0,0">
                 <StackPanel>
@@ -77,5 +79,4 @@
         </TabItem>
     </Controls:MetroAnimatedTabControl>
     
-
 </Controls:MetroWindow>

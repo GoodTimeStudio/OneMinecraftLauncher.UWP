@@ -11,20 +11,22 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.Models
 {
     public class DownloadViewModel : BindableBase
     {
-        public MinecraftVersionsList AllMinecraftVersions;
+        private MinecraftVersionsList _AllMinecraftVersions;
+        public MinecraftVersionsList AllMinecraftVersions
+        {
+            set
+            {
+                _AllMinecraftVersions = value;
+                MakeList();
+            }
+            get => _AllMinecraftVersions;
+        }
 
         private ObservableCollection<MinecraftVersion> _VersionList = new ObservableCollection<MinecraftVersion>();
         public ObservableCollection<MinecraftVersion> VersionsList
         {
             get => _VersionList;
             set => this.SetProperty(ref _VersionList, value);
-        }
-
-        private bool _isPaneOpen;
-        public bool isPaneOpen
-        {
-            get => _isPaneOpen;
-            set => this.SetProperty(ref _isPaneOpen, value);
         }
 
         private bool _isSnapshotEnabled;

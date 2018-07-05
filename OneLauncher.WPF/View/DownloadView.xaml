@@ -11,14 +11,32 @@
     <UserControl.DataContext>
         <model:DownloadViewModel x:Name="ViewModel" />
     </UserControl.DataContext>
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+    </UserControl.Resources>
     <Controls:MetroAnimatedTabControl>
         <TabItem Header="Minecraft">
-            <StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.5*"/>
+                    <RowDefinition Height="8.5*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
                 <Controls:MetroProgressBar IsIndeterminate ="{Binding isWorking, Mode=OneWay}" 
-                                       VerticalAlignment="Top" Margin="0,5,0,0" />
-                <DataGrid></DataGrid>
-
-            </StackPanel>
+                                       VerticalAlignment="Top"/>
+                <DataGrid ItemsSource="{Binding VersionsList, Mode=OneWay}" Grid.Row="1"
+                  AutoGenerateColumns="False" x:Name="_verList"
+                  Style="{StaticResource AzureDataGrid}" SelectionMode="Single" 
+                          CanUserSortColumns="False" CanUserResizeColumns="False" CanUserDeleteRows="False" 
+                          CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeRows="False" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="版本" Binding="{Binding id}" Width="250" />
+                        <DataGridTextColumn Header="类型" Binding="{Binding type}" Width="250" />
+                        <DataGridTextColumn Header="发布时间" Binding="{Binding releaseTime}" Width="250" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="下载" Grid.Row="2" HorizontalAlignment="Right" Width="100" Margin="5" Click="Button_Click"/>
+            </Grid>
         </TabItem>
 
     </Controls:MetroAnimatedTabControl>

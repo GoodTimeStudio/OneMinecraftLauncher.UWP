@@ -9,11 +9,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft
         public const string Type_Release = "release";
         public const string Type_Snapshot = "snapshot";
 
-        public string id;
-        public string type;
-        public DateTime time;
-        public DateTime releaseTime;
-        public string url;
+        public string id { get; set; }
+        public string type { get; set; }
+        public DateTime time { get; set; }
+        public DateTime releaseTime { get; set; }
+        public string url { get; set; }
 
         public string GetPath()
         {

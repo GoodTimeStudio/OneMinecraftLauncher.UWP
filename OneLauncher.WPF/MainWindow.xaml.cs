@@ -24,9 +24,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        public static MainWindow Instance;
+
         public MainWindow()
         {
             InitializeComponent();
+            Instance = this;
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)

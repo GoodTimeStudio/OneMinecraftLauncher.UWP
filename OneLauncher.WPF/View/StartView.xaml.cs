@@ -24,16 +24,10 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
     /// </summary>
     public partial class StartView : UserControl
     {
-        private OneMCL _launcher;
-        private LaunchOptionBase _option;
-
-        private Dictionary<string, KMCCC.Launcher.Version> VersionsIdMap;
 
         public StartView()
         {
             InitializeComponent();
-            _launcher = new OneMCL(@"E:\BestOwl\Desktop\LauncherTest");
-            _option = new LaunchOptionBase("one-minecraft-launcher");
             LoadConfig();
         }
 
@@ -41,15 +35,15 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
         {
             await Task.Run(() =>
             {
-                ViewModel.VersionsList = _launcher.Core.GetVersions().ToList();
-                VersionsIdMap = new Dictionary<string, KMCCC.Launcher.Version>();
+                ViewModel.VersionsList = CoreManager.CoreMCL.Core.GetVersions().ToList();
+                CoreManager.VersionsIdMap = new Dictionary<string, KMCCC.Launcher.Version>();
                 if (ViewModel.VersionsList == null)
                 {
                     return;
                 }
                 foreach (KMCCC.Launcher.Version ver in ViewModel.VersionsList)
                 {
-                    VersionsIdMap.Add(ver.Id, ver);
+                    CoreManager.VersionsIdMap.Add(ver.Id, ver);
                 }
             });
             await Config.LoadFromFileAsync();
@@ -62,7 +56,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             string id = Config.INSTANCE.SelectedVersion;
             if (!string.IsNullOrWhiteSpace(id))
             {
-                if (VersionsIdMap.TryGetValue(id, out KMCCC.Launcher.Version ver))
+                if (CoreManager.VersionsIdMap.TryGetValue(id, out KMCCC.Launcher.Version ver))
                 {
                     Dispatcher.Invoke(() => _VerBox.SelectedItem = ver);
                 }
@@ -83,15 +77,15 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
         private void _BTN_Launch_Click(object sender, RoutedEventArgs e)
         {
             SaveConfig();
-            _option.versionId = (_VerBox.SelectedItem as KMCCC.Launcher.Version).Id;
-            _option.javaExt = ViewModel.JavaExt;
-            _option.javaArgs = ViewModel.JavaArgs;
+            CoreManager.Option.versionId = (_VerBox.SelectedItem as KMCCC.Launcher.Version).Id;
+            CoreManager.Option.javaExt = ViewModel.JavaExt;
+            CoreManager.Option.javaArgs = ViewModel.JavaArgs;
             if (ViewModel.MaxMemory > 0)
             {
-                _option.javaArgs = string.Format("-Xmx{0}M {1}", ViewModel.MaxMemory, _option.javaArgs);
+                CoreManager.Option.javaArgs = string.Format("-Xmx{0}M {1}", ViewModel.MaxMemory, CoreManager.Option.javaArgs);
             }
-            _launcher.UserAuthenticator = new OfflineAuthenticator(ViewModel.Username);
-            _launcher.Launch(_option);
+            CoreManager.CoreMCL.UserAuthenticator = new OfflineAuthenticator(ViewModel.Username);
+            CoreManager.CoreMCL.Launch(CoreManager.Option);
 
             //Dispatcher.InvokeShutdown();
         }
