@@ -1,4 +1,5 @@
-﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft;
+﻿using AltoHttp;
+using GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using System;
@@ -72,21 +73,60 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             }
 
             ViewModel.isWorking = true;
-            _verList.IsEnabled = false;
 
             try
             {
-                string jsonPath = version.GetJsonPath();
+                string jsonPath = CoreManager.CoreMCL.Core.GameRootPath + "\\" + version.GetJsonPath();
                 using (HttpClient client = new HttpClient())
                 {
-                    File.WriteAllText(jsonPath, await client.GetStringAsync(version.url));   
+                    FileInfo file = new FileInfo(jsonPath);
+                    if (!file.Directory.Exists)
+                    {
+                        file.Directory.Create();
+                    }
+                    File.Create(jsonPath).Dispose();
+                    File.WriteAllText(jsonPath, await client.GetStringAsync(version.url));
+
+                    string jarPath;
+                    KMCCC.Launcher.Version kver = CoreManager.CoreMCL.Core.GetVersion(version.id);
+                    jarPath = CoreManager.CoreMCL.Core.GameRootPath + "\\" + version.GetJarPath();
+
+                    file = new FileInfo(jarPath);
+                    if (!file.Directory.Exists)
+                    {
+                        file.Directory.Create();
+                    }
+                    File.Create(jarPath);
+
+                    HttpDownloader downloader = new HttpDownloader(kver.ClientJarUrl, jarPath);
+                    var progressController = await MainWindow.Instance.ShowProgressAsync("正在下载:  " + kver.Id, "");
+                    downloader.DownloadProgressChanged += async delegate
+                    {
+                        if (downloader.ProgressInPercent == 100)
+                        {
+                            await progressController.CloseAsync();
+                        }
+                        else
+                        {
+                            progressController.SetProgress(downloader.ProgressInPercent / 100);
+                            progressController.SetMessage("下载速度: " + downloader.SpeedInBytes / 1024d / 1024d + " Mb/s");
+                        }
+                    };
+                    downloader.Start();
                 }
 
             }
             catch (IOException ex)
             {
-
+                await MainWindow.Instance.ShowMessageAsync("下载失败", ex.Message);
             }
+            catch (HttpRequestException ex)
+            {
+                await MainWindow.Instance.ShowMessageAsync("下载失败", ex.Message);
+            }
+
+            ViewModel.isWorking = false;
         }
+
     }
 }

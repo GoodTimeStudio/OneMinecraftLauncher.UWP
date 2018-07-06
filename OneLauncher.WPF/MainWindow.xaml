@@ -69,9 +69,15 @@
                         <Run Text="本启动器使用了以下开源类库" />
                         <LineBreak/>
                         <Run Text="KMCCC: " />
-                        <Hyperlink NavigateUri="https://github.com/GoodTimeStudio/KMCCC/blob/ba111a7414d8666e21c9aa290ab990c3754ad449/LICENSE"
+                        <Hyperlink NavigateUri="https://github.com/GoodTimeStudio/KMCCC"
                                    RequestNavigate="Hyperlink_RequestNavigate">
                             LGPLv3
+                        </Hyperlink>
+                        <LineBreak/>
+                        <Run Text="AltoHttp: " />
+                        <Hyperlink NavigateUri="https://github.com/aalitor/AltoHttp"
+                                   RequestNavigate="Hyperlink_RequestNavigate">
+                            GPLv2
                         </Hyperlink>
                     </TextBlock>
                 </StackPanel>

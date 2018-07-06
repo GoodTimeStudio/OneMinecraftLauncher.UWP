@@ -55,7 +55,16 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.Models
         public bool isWorking
         {
             get => _isWorking;
-            set => SetProperty(ref _isWorking, value);
+            set
+            {
+                SetProperty(ref _isWorking, value);
+                OnPropertyChanged(nameof(isNotWorking));
+            }
+        }
+
+        public bool isNotWorking
+        {
+            get => !isWorking;
         }
 
         private void MakeList()

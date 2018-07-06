@@ -1,4 +1,5 @@
-﻿using GoodTimeStudio.OneMinecraftLauncher.Core;
+﻿using AltoHttp;
+using GoodTimeStudio.OneMinecraftLauncher.Core;
 using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF
     {
         public static OneMCL CoreMCL;
         public static LaunchOptionBase Option;
+
+        public static readonly HttpDownloadQueue Downloader = new HttpDownloadQueue();
 
         public static Dictionary<string, KMCCC.Launcher.Version> VersionsIdMap;
 

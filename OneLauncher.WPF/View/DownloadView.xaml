@@ -25,7 +25,7 @@
                 <Controls:MetroProgressBar IsIndeterminate ="{Binding isWorking, Mode=OneWay}" 
                                        VerticalAlignment="Top"/>
                 <DataGrid ItemsSource="{Binding VersionsList, Mode=OneWay}" Grid.Row="1"
-                  AutoGenerateColumns="False" x:Name="_verList"
+                  AutoGenerateColumns="False" x:Name="_verList" IsEnabled="{Binding isNotWorking, Mode=OneWay}"
                   Style="{StaticResource AzureDataGrid}" SelectionMode="Single" 
                           CanUserSortColumns="False" CanUserResizeColumns="False" CanUserDeleteRows="False" 
                           CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeRows="False" >
