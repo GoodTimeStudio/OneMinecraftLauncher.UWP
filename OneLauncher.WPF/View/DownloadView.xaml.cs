@@ -28,6 +28,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
     {
         private static readonly string VersionManifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
 
+        private static readonly MetroDialogSettings DefaultDialogSettings = new MetroDialogSettings
+        {
+            MaximumBodyHeight = 250
+        };
+
         public DownloadView()
         {
             InitializeComponent();
@@ -54,11 +59,13 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             }
             catch (HttpRequestException ex)
             {
-                await MainWindow.Instance.ShowMessageAsync("获取版本数据失败", "无法从服务器获取元文件\r\n" + ex.Message + "\r\n" + ex.StackTrace);
+                await MainWindow.Instance.ShowMessageAsync("获取版本数据失败", "无法从服务器获取元文件" + ex.Message + ex.StackTrace, 
+                    MessageDialogStyle.Affirmative,DefaultDialogSettings);
             }
             catch (JsonException ex)
             {
-                await MainWindow.Instance.ShowMessageAsync("获取版本数据失败", "未知错误\r\n" + ex.Message + "\r\n" + ex.StackTrace);
+                await MainWindow.Instance.ShowMessageAsync("获取版本数据失败", "未知错误" + ex.Message + ex.StackTrace,
+                    MessageDialogStyle.Affirmative, DefaultDialogSettings);
             }
 
             ViewModel.isWorking = false;
@@ -99,7 +106,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
                     File.Create(jarPath);
 
                     HttpDownloader downloader = new HttpDownloader(kver.ClientJarUrl, jarPath);
-                    var progressController = await MainWindow.Instance.ShowProgressAsync("正在下载:  " + kver.Id, "");
+                    var progressController = await MainWindow.Instance.ShowProgressAsync("正在下载:  " + kver.Id, "", true, DefaultDialogSettings);
                     downloader.DownloadProgressChanged += async delegate
                     {
                         if (downloader.ProgressInPercent == 100)
@@ -109,7 +116,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
                         else
                         {
                             progressController.SetProgress(downloader.ProgressInPercent / 100);
-                            progressController.SetMessage("下载速度: " + downloader.SpeedInBytes / 1024d / 1024d + " Mb/s");
+                            progressController.SetMessage("下载速度: " + GetDownloadSpeedFriendlyText(downloader));
+                        }
+                    };
+                    progressController.Canceled += delegate
+                    {
+                        if (downloader.State != DownloadState.Completed)
+                        {
+                            downloader.Cancel();
                         }
                     };
                     downloader.Start();
@@ -118,14 +132,31 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             }
             catch (IOException ex)
             {
-                await MainWindow.Instance.ShowMessageAsync("下载失败", ex.Message);
+                await MainWindow.Instance.ShowMessageAsync("下载失败", ex.Message + ex.StackTrace);
             }
             catch (HttpRequestException ex)
             {
-                await MainWindow.Instance.ShowMessageAsync("下载失败", ex.Message);
+                await MainWindow.Instance.ShowMessageAsync("下载失败", ex.Message + ex.StackTrace);
             }
 
             ViewModel.isWorking = false;
+        }
+
+        private string GetDownloadSpeedFriendlyText(HttpDownloader downloader)
+        {
+            if (downloader == null && downloader.State != DownloadState.Downloading)
+            {
+                return string.Empty;
+            }
+            double speed = downloader.SpeedInBytes / 1024d;
+            if (speed <= 1000)
+            {
+                return Math.Round(speed, 1) + " Kb/s";
+            }
+            else
+            {
+                return Math.Round(speed / 1024d, 2) + "Mb/s";
+            }
         }
 
     }

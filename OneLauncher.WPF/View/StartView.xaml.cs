@@ -1,5 +1,7 @@
 ﻿using GoodTimeStudio.OneMinecraftLauncher.Core;
 using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+using GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft;
+using MahApps.Metro.Controls.Dialogs;
 using KMCCC.Authentication;
 using Microsoft.Win32;
 using System;
@@ -74,10 +76,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             Config.SaveConfigToFile();
         }
 
-        private void _BTN_Launch_Click(object sender, RoutedEventArgs e)
+        private async void _BTN_Launch_Click(object sender, RoutedEventArgs e)
         {
             SaveConfig();
-            CoreManager.Option.versionId = (_VerBox.SelectedItem as KMCCC.Launcher.Version).Id;
+            KMCCC.Launcher.Version kver = _VerBox.SelectedItem as KMCCC.Launcher.Version;
+            CoreManager.Option.versionId = kver.Id;
             CoreManager.Option.javaExt = ViewModel.JavaExt;
             CoreManager.Option.javaArgs = ViewModel.JavaArgs;
             if (ViewModel.MaxMemory > 0)
@@ -85,6 +88,15 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
                 CoreManager.Option.javaArgs = string.Format("-Xmx{0}M {1}", ViewModel.MaxMemory, CoreManager.Option.javaArgs);
             }
             CoreManager.CoreMCL.UserAuthenticator = new OfflineAuthenticator(ViewModel.Username);
+
+            // Check Libraries
+            List<MinecraftAssembly> missingLibs = CoreManager.CoreMCL.CheckLibraries(kver);
+            List<MinecraftAssembly> missingNatives = CoreManager.CoreMCL.CheckNatives(kver);
+            await MainWindow.Instance.ShowMetroDialogAsync()
+
+            (bool, List<MinecraftAsset>) assetResult = CoreManager.CoreMCL.CheckAssets(kver);
+            
+
             CoreManager.CoreMCL.Launch(CoreManager.Option);
 
             //Dispatcher.InvokeShutdown();
