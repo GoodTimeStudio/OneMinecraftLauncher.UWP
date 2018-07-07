@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GoodTimeStudio.OneMinecraftLauncher.WPF.Models;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
 {
@@ -26,11 +27,13 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
     /// </summary>
     public partial class StartView : UserControl
     {
+        private bool isWorking;
 
         public StartView()
         {
             InitializeComponent();
             LoadConfig();
+            ViewModel.LaunchButtonContent = "启动";
         }
 
         public async void LoadConfig()
@@ -78,6 +81,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
 
         private async void _BTN_Launch_Click(object sender, RoutedEventArgs e)
         {
+            if (isWorking)
+            {
+                return;
+            }
+            isWorking = true;
             SaveConfig();
             KMCCC.Launcher.Version kver = _VerBox.SelectedItem as KMCCC.Launcher.Version;
             CoreManager.Option.versionId = kver.Id;
@@ -89,16 +97,37 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             }
             CoreManager.CoreMCL.UserAuthenticator = new OfflineAuthenticator(ViewModel.Username);
 
+            DownloadDialog dialog = new DownloadDialog();
+
             // Check Libraries
-            List<MinecraftAssembly> missingLibs = CoreManager.CoreMCL.CheckLibraries(kver);
-            List<MinecraftAssembly> missingNatives = CoreManager.CoreMCL.CheckNatives(kver);
-            await MainWindow.Instance.ShowMetroDialogAsync()
+            ViewModel.LaunchButtonContent = "正在检查核心文件...";
+            List<MinecraftAssembly> missing = CoreManager.CoreMCL.CheckLibraries(kver);
+            missing?.AddRange(CoreManager.CoreMCL.CheckNatives(kver));
+            missing.ForEach(lib =>
+            {
+                if (Uri.TryCreate(lib.Url, UriKind.Absolute, out Uri uri))
+                {
+                    DownloadItem item = new DownloadItem
+                    {
+                        Name = lib.Name,
+                        Path = lib.Path,
+                        Uri = uri
+                    };
+                }
+            });/*
+            if (missing?.Count > 0)
+            {
+                await MainWindow.Instance.ShowMetroDialogAsync(dialog);
+            }*/
 
-            (bool, List<MinecraftAsset>) assetResult = CoreManager.CoreMCL.CheckAssets(kver);
-            
+            ViewModel.LaunchButtonContent = "正在检查资源文件...";
+            var assetResult = CoreManager.CoreMCL.CheckAssets(kver);
 
+            ViewModel.LaunchButtonContent = "正在启动...";
             CoreManager.CoreMCL.Launch(CoreManager.Option);
 
+            ViewModel.LaunchButtonContent = "启动";
+            isWorking = false;
             //Dispatcher.InvokeShutdown();
         }
 

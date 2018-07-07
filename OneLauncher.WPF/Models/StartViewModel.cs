@@ -59,5 +59,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.Models
             get => _VersionsList;
             set => SetProperty(ref _VersionsList, value);
         }
+
+        private string _LaunchButtonContent;
+        public string LaunchButtonContent
+        {
+            get => _LaunchButtonContent;
+            set => SetProperty(ref _LaunchButtonContent, value);
+        }
     }
 }

@@ -16,64 +16,58 @@
     </UserControl.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
-
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="6*" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="8.5*" />
-            <RowDefinition Height="1.5*" />
-        </Grid.RowDefinitions>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.5*" />
-                <ColumnDefinition Width="8.5*" />
-            </Grid.ColumnDefinitions>
+        <StackPanel Margin="5,10,0,0">
+            <TextBlock Text="用户名" Margin="0,5" Height="26" />
+            <TextBlock Text="Java路径" Margin="0,5" Height="26" />
+            <TextBlock Text="Java Args" Margin="0,5" Height="26" />
+            <TextBlock Text="最大内存" Margin="0,5" Height="26" />
+            <TextBlock Text="版本" Margin="0,5" Height="26" />
+        </StackPanel>
 
-            <StackPanel Margin="5,10,0,0">
-                <TextBlock Text="用户名" Margin="0,5" Height="26" />
-                <TextBlock Text="Java路径" Margin="0,5" Height="26" />
-                <TextBlock Text="Java Args" Margin="0,5" Height="26" />
-                <TextBlock Text="最大内存" Margin="0,5" Height="26" />
-                <TextBlock Text="版本" Margin="0,5" Height="26" />
-            </StackPanel>
+        <StackPanel Grid.Column="1" Margin="0,10,0,0">
+            <TextBox Text="{Binding Username, Mode=TwoWay}" HorizontalAlignment="Left" Width="100" Margin="0,0,0,10" Height="26"/>
 
-            <StackPanel Grid.Column="1" Margin="0,10,0,0">
-                <TextBox Text="{Binding Username, Mode=TwoWay}" HorizontalAlignment="Left" Width="100" Margin="0,0,0,10" Height="26"/>
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="6*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
 
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="6*" />
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="2*" />
-                    </Grid.ColumnDefinitions>
+                <TextBox Text="{Binding JavaExt, Mode=TwoWay}"  Height="26" />
+                <Button Grid.Column="1" Content="选择路径" Margin="5,0,0,0" Click="_BTN_JavaExtPicker_Click" />
+            </Grid>
 
-                    <TextBox Text="{Binding JavaExt, Mode=TwoWay}"  Height="26" />
-                    <Button Grid.Column="1" Content="选择路径" Margin="5,0,0,0" Click="_BTN_JavaExtPicker_Click" />
-                </Grid>
-
-                <TextBox Text="{Binding JavaArgs, Mode=TwoWay}" 
+            <TextBox Text="{Binding JavaArgs, Mode=TwoWay}" 
                      HorizontalAlignment="Left" 
                      Width="400" Margin="0,0,0,10" 
                      Controls:TextBoxHelper.AutoWatermark="True" Controls:TextBoxHelper.Watermark="正常情况下请不要改动该项，否则可能无法启动游戏"/>
-                <TextBox Text="{Binding MaxMemoryStr, Mode=TwoWay}" HorizontalAlignment="Left" Width="100" Height="26" Margin="0,0,0,10" />
+            <TextBox Text="{Binding MaxMemoryStr, Mode=TwoWay}" HorizontalAlignment="Left" Width="100" Height="26" Margin="0,0,0,10" />
 
-                <ComboBox Width="200" x:Name="_VerBox"
+            <ComboBox Width="200" x:Name="_VerBox"
                      ItemsSource="{Binding VersionsList}" 
                       HorizontalAlignment="Left"
                       Controls:ComboBoxHelper.MaxLength="300"
                       SelectionChanged="_VerBox_SelectionChanged">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="kmccc:Version">
-                            <TextBlock Text="{Binding Id}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
-        </Grid>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="kmccc:Version">
+                        <TextBlock Text="{Binding Id}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
 
-        <Border Grid.Row="1" HorizontalAlignment="Right" Width="200" BorderThickness="5" >
-            <Button x:Name="_BTN_Launch" Content="启动"  Click="_BTN_Launch_Click" FontFamily="Segoe UI Black" FontSize="22" />
-        </Border>
+        <Grid Grid.Column="2" >
+            <Controls:Tile x:Name="_BTN_Launch" Content="{Binding LaunchButtonContent, Mode=OneWay}" 
+                           Click="_BTN_Launch_Click" FontFamily="Segoe UI Black" FontSize="24" 
+                           VerticalAlignment="Bottom" Margin="5,0,5,5" Height="100" Width="Auto" />
+
+        </Grid>
 
     </Grid>
 </UserControl>
