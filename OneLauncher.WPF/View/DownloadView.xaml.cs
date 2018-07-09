@@ -19,6 +19,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using static GoodTimeStudio.OneMinecraftLauncher.WPF.CoreManager;
+
 namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
 {
     /// <summary>
@@ -27,11 +29,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
     public partial class DownloadView : UserControl
     {
         private static readonly string VersionManifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
-
-        private static readonly MetroDialogSettings DefaultDialogSettings = new MetroDialogSettings
-        {
-            MaximumBodyHeight = 250
-        };
 
         public DownloadView()
         {
@@ -60,7 +57,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             catch (HttpRequestException ex)
             {
                 await MainWindow.Instance.ShowMessageAsync("获取版本数据失败", "无法从服务器获取元文件" + ex.Message + ex.StackTrace, 
-                    MessageDialogStyle.Affirmative,DefaultDialogSettings);
+                    MessageDialogStyle.Affirmative, DefaultDialogSettings);
             }
             catch (JsonException ex)
             {
@@ -140,23 +137,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             }
 
             ViewModel.isWorking = false;
-        }
-
-        private string GetDownloadSpeedFriendlyText(HttpDownloader downloader)
-        {
-            if (downloader == null && downloader.State != DownloadState.Downloading)
-            {
-                return string.Empty;
-            }
-            double speed = downloader.SpeedInBytes / 1024d;
-            if (speed <= 1000)
-            {
-                return Math.Round(speed, 1) + " Kb/s";
-            }
-            else
-            {
-                return Math.Round(speed / 1024d, 2) + "Mb/s";
-            }
         }
 
     }

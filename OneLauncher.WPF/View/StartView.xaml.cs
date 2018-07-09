@@ -20,6 +20,12 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GoodTimeStudio.OneMinecraftLauncher.WPF.Models;
 
+using static GoodTimeStudio.OneMinecraftLauncher.WPF.CoreManager;
+using System.Collections.ObjectModel;
+using System.Net.Http;
+using System.IO;
+using KMCCC.Launcher;
+
 namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
 {
     /// <summary>
@@ -40,15 +46,15 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
         {
             await Task.Run(() =>
             {
-                ViewModel.VersionsList = CoreManager.CoreMCL.Core.GetVersions().ToList();
-                CoreManager.VersionsIdMap = new Dictionary<string, KMCCC.Launcher.Version>();
+                ViewModel.VersionsList = CoreMCL.Core.GetVersions().ToList();
+                VersionsIdMap = new Dictionary<string, KMCCC.Launcher.Version>();
                 if (ViewModel.VersionsList == null)
                 {
                     return;
                 }
                 foreach (KMCCC.Launcher.Version ver in ViewModel.VersionsList)
                 {
-                    CoreManager.VersionsIdMap.Add(ver.Id, ver);
+                    VersionsIdMap.Add(ver.Id, ver);
                 }
             });
             await Config.LoadFromFileAsync();
@@ -61,7 +67,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             string id = Config.INSTANCE.SelectedVersion;
             if (!string.IsNullOrWhiteSpace(id))
             {
-                if (CoreManager.VersionsIdMap.TryGetValue(id, out KMCCC.Launcher.Version ver))
+                if (VersionsIdMap.TryGetValue(id, out KMCCC.Launcher.Version ver))
                 {
                     Dispatcher.Invoke(() => _VerBox.SelectedItem = ver);
                 }
@@ -79,6 +85,13 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             Config.SaveConfigToFile();
         }
 
+        private async Task<bool> ShowDownloadDialog(DownloadDialog dialog)
+        {
+            await MainWindow.Instance.ShowMetroDialogAsync(dialog, DefaultDialogSettings);
+            await dialog.WaitUntilUnloadedAsync();
+            return dialog.Cancelled;
+        }
+
         private async void _BTN_Launch_Click(object sender, RoutedEventArgs e)
         {
             if (isWorking)
@@ -88,47 +101,116 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             isWorking = true;
             SaveConfig();
             KMCCC.Launcher.Version kver = _VerBox.SelectedItem as KMCCC.Launcher.Version;
-            CoreManager.Option.versionId = kver.Id;
-            CoreManager.Option.javaExt = ViewModel.JavaExt;
-            CoreManager.Option.javaArgs = ViewModel.JavaArgs;
+            Option.versionId = kver.Id;
+            Option.javaExt = ViewModel.JavaExt;
+            Option.javaArgs = ViewModel.JavaArgs;
             if (ViewModel.MaxMemory > 0)
             {
-                CoreManager.Option.javaArgs = string.Format("-Xmx{0}M {1}", ViewModel.MaxMemory, CoreManager.Option.javaArgs);
+                Option.javaArgs = string.Format("-Xmx{0}M {1}", ViewModel.MaxMemory, Option.javaArgs);
             }
-            CoreManager.CoreMCL.UserAuthenticator = new OfflineAuthenticator(ViewModel.Username);
+            CoreMCL.UserAuthenticator = new OfflineAuthenticator(ViewModel.Username);
+            
 
-            DownloadDialog dialog = new DownloadDialog();
-
-            // Check Libraries
+            // Check Libraries and Natives
             ViewModel.LaunchButtonContent = "正在检查核心文件...";
-            List<MinecraftAssembly> missing = CoreManager.CoreMCL.CheckLibraries(kver);
-            missing?.AddRange(CoreManager.CoreMCL.CheckNatives(kver));
-            missing.ForEach(lib =>
-            {
-                if (Uri.TryCreate(lib.Url, UriKind.Absolute, out Uri uri))
-                {
-                    DownloadItem item = new DownloadItem
-                    {
-                        Name = lib.Name,
-                        Path = lib.Path,
-                        Uri = uri
-                    };
-                }
-            });/*
+            List<MinecraftAssembly> missing = CoreMCL.CheckLibraries(kver);
+            missing?.AddRange(CoreMCL.CheckNatives(kver));
+            
             if (missing?.Count > 0)
             {
-                await MainWindow.Instance.ShowMetroDialogAsync(dialog);
-            }*/
+                DownloadDialog dialog = new DownloadDialog("正在下载运行Minecraft所需的文件...");
+                missing.ForEach(lib =>
+                {
+                    if (Uri.TryCreate(lib.Url, UriKind.Absolute, out Uri uri))
+                    {
+                        DownloadItem item = new DownloadItem(lib.Name, lib.Path, uri);
+                        dialog.DownloadQuene.Add(item);
+                    }
+                });
+                dialog.StartDownload();
+                if (!await ShowDownloadDialog(dialog))
+                {
+                    return;
+                }
+            }
 
+            // Check Assets
+            ViewModel.LaunchButtonContent = "正在检查资源文件";
+            if (!CheckAssetsIndex(kver))
+            {
+                ViewModel.LaunchButtonContent = "正在获取资源元数据";
+                try
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        string json = await client.GetStringAsync(kver.AssetIndexInfo.Url);
+                        string path= string.Format(@"{0}\assets\indexes\{1}.json", CoreMCL.Core.GameRootPath, kver.Assets);
+                        FileInfo fileInfo = new FileInfo(path);
+                        if (!fileInfo.Directory.Exists)
+                        {
+                            fileInfo.Directory.Create();
+                        }
+                        fileInfo.Create().Dispose();
+                        File.WriteAllText(path, json);
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    await MainWindow.Instance.ShowMessageAsync("获取资源元数据失败", ex.Message + ex.StackTrace, MessageDialogStyle.Affirmative, DefaultDialogSettings);
+                    ViewModel.LaunchButtonContent = "启动";
+                    return;
+                }
+                catch (IOException ex)
+                {
+                    await MainWindow.Instance.ShowMessageAsync("获取资源元数据失败", ex.Message + ex.StackTrace, MessageDialogStyle.Affirmative, DefaultDialogSettings);
+                    ViewModel.LaunchButtonContent = "启动";
+                    return;
+                }
+            }
             ViewModel.LaunchButtonContent = "正在检查资源文件...";
-            var assetResult = CoreManager.CoreMCL.CheckAssets(kver);
+            var assetsResult = CoreMCL.CheckAssets(kver);
+            if (!assetsResult.hasValidIndex)
+            {
+                ViewModel.LaunchButtonContent = "启动";
+                await MainWindow.Instance.ShowMessageAsync("获取资源元数据失败", "发生未知错误，无法获取有效的资源元数据，我们将为您继续启动游戏，但这可能会导致游戏中出现无翻译和无声音等问题");
+            }
+            else
+            {
+                if (assetsResult.missingAssets.Count > 0)
+                {
+                    DownloadDialog dialog = new DownloadDialog("正在下载资源文件...");
+                    assetsResult.missingAssets.ForEach(ass =>
+                    {
+                        if (Uri.TryCreate(ass.GetDownloadUrl(), UriKind.Absolute, out Uri uri))
+                        {
+                            DownloadItem item = new DownloadItem("资源: " + ass.Hash, CoreMCL.Core.GameRootPath + "\\" + ass.GetPath(), uri);
+                            dialog.DownloadQuene.Add(item);
+                        }
+                    });
+                    dialog.StartDownload();
+                    if (!await ShowDownloadDialog(dialog))
+                    {
+                        return;
+                    }
+                }
+            }
 
             ViewModel.LaunchButtonContent = "正在启动...";
-            CoreManager.CoreMCL.Launch(CoreManager.Option);
+            LaunchResult result = CoreMCL.Launch(Option);
+            if (!result.Success)
+            {
+                await MainWindow.Instance.ShowMessageAsync("启动失败", result.ErrorMessage + "\r\n" + result.Exception);
+            }
 
             ViewModel.LaunchButtonContent = "启动";
             isWorking = false;
             //Dispatcher.InvokeShutdown();
+        }
+
+        private bool CheckAssetsIndex(KMCCC.Launcher.Version kver)
+        {
+            var result = CoreMCL.CheckAssets(kver);
+            return result.hasValidIndex;
         }
 
         private void _VerBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

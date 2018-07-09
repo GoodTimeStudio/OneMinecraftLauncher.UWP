@@ -8,34 +8,51 @@
              xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
              xmlns:model="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.WPF.Models"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="800">
+             Height="300"
+             d:DesignHeight="300" d:DesignWidth="500">
+    <dialog:CustomDialog.DataContext>
+        <model:DownloadDialogViewModel x:Name="ViewModel" />
+    </dialog:CustomDialog.DataContext>
     <Grid>
-        <TextBlock Text="正在下载运行Minecraft所需的必要组件..." Margin="0,5,0,0" FontSize="16" />
-        <ListView SelectionMode="Single"
-                  ItemsSource="{Binding DownloadQuene}">
-            <ListView.DataContext>
-                <model:DownloadDialogViewModel x:Name="ViewModel" />
-            </ListView.DataContext>
+        <Grid.Resources>
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="18" />
+            <RowDefinition />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+        <TextBlock Text="{Binding Title, Mode=OneWay}" Margin="0,5,0,0" FontSize="20" FontWeight="Bold" />
+        <TextBlock Grid.Row="1" Text="{Binding manager.CurrentSpeedText, Mode=OneWay}"  HorizontalAlignment="Right" Width="130"/>
+        <ListView SelectionMode="Single" Grid.Row="2"
+                  ItemsSource="{Binding DownloadQuene}" BorderThickness="0">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="model:DownloadItem">
-                    <Grid Width="464">
+                    <Grid Width="375" Margin="0,5" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="6*" />
+                            <RowDefinition Height="4*" />
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="6*" />
-                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="5.5*" />
+                            <ColumnDefinition Width="2.5*" />
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}" />
-                            <ProgressBar Value="{Binding Progress, Mode=OneWay}"/>
-                        </StackPanel>
-
-                        <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding ErrorText, Mode=OneWay}" HorizontalAlignment="Center" Foreground="Red"/>
+                        <TextBlock Text="{Binding Name}" />
 
                         <TextBlock Grid.Column="1" Text="{Binding DisplaySize, Mode=OneWay}" HorizontalAlignment="Center"/>
                         <TextBlock Grid.Column="2" Text="{Binding ProgressText, Mode=OneWay}" HorizontalAlignment="Center" />
+
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding ErrorText, Mode=OneWay}" Foreground="Red"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <Controls:MetroProgressBar Grid.Row="3" Value="{Binding manager.TotalProgress, Mode=OneWay}"/>
+        <Button Grid.Row="4" Content="取消" HorizontalAlignment="Right" Margin="5" 
+                Width="100" Click="ButtonCancel_Click" />
     </Grid>
 </dialog:CustomDialog>
