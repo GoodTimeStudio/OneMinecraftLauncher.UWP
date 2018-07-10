@@ -6,11 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoodTimeStudio.OneMinecraftLauncher.WPF
+namespace GoodTimeStudio.OneMinecraftLauncher.WPF.Downloading
 {
     public class DownloadManager : BindableBase
     {
         private ObservableCollection<DownloadItem> _list;
+        public IDownloadSource Source;
         private bool isDownloading = false;
         private int ItemCount;
         private int DownloadedItemCount;
@@ -31,9 +32,10 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF
 
         public event EventHandler DownloadCompleted;
 
-        public DownloadManager(ref ObservableCollection<DownloadItem> list)
+        public DownloadManager(ref ObservableCollection<DownloadItem> list, IDownloadSource source)
         {
             _list = list;
+            Source = source;
             ItemCount = list.Count;
         }
 

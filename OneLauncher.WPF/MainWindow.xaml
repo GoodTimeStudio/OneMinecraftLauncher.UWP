@@ -6,7 +6,6 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.WPF"
         xmlns:view="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.WPF.View"
-        xmlns:kmccc="clr-namespace:KMCCC.Launcher;assembly=KMCCC.Basic"
         mc:Ignorable="d"
         Title="One Minecraft Launcher" Height="500" Width="800"
         Icon="icon.ico"
@@ -35,7 +34,6 @@
             </Grid>
         </DataTemplate>
     </Controls:MetroWindow.IconTemplate>
-
     <Controls:MetroAnimatedTabControl>
         <TabItem Header="开始">
             <view:StartView />
@@ -43,46 +41,9 @@
         <TabItem Header="下载">
             <view:DownloadView />
         </TabItem>
-        <TabItem Header="关于" >
-            <Grid Margin="0,12,0,0">
-                <StackPanel>
-                    <Image Source="pack://application:,,,/Resources/GoodTimeStudioLogo.png" 
-                           Width="120" Height="106" Margin="0,0,0,24" />
-                    <TextBlock FontSize="14" Width="600" HorizontalAlignment="Left" Margin="24,0,0,0">
-                        <Run FontSize="24">One Minecraft Launcher</Run>
-                        <Run Text="  (WPF)" />
-                        <LineBreak/>
-                        <Run Text="Version 1.1.0" />
-                        <LineBreak/>
-                        <LineBreak/>                
-                        <Run FontSize="24">开放源代码许可</Run>
-                        <LineBreak/>
-                        <Run>
-                            © 2018 GoodTime Studio</Run>
-                        <LineBreak/>
-                        <Hyperlink NavigateUri="https://github.com/GoodTimeStudio/OneMinecraftLauncher.NET/blob/master/LICENSE"
-                                   RequestNavigate="Hyperlink_RequestNavigate">
-                            https://github.com/GoodTimeStudio/OneMinecraftLauncher.NET/blob/master/LICENSE
-                        </Hyperlink>
-                        <LineBreak/>
-                        <LineBreak/>
-                        <Run Text="本启动器使用了以下开源类库" />
-                        <LineBreak/>
-                        <Run Text="KMCCC: " />
-                        <Hyperlink NavigateUri="https://github.com/GoodTimeStudio/KMCCC"
-                                   RequestNavigate="Hyperlink_RequestNavigate">
-                            LGPLv3
-                        </Hyperlink>
-                        <LineBreak/>
-                        <Run Text="AltoHttp: " />
-                        <Hyperlink NavigateUri="https://github.com/aalitor/AltoHttp"
-                                   RequestNavigate="Hyperlink_RequestNavigate">
-                            GPLv2
-                        </Hyperlink>
-                    </TextBlock>
-                </StackPanel>
-            </Grid>
+        <TabItem Header="设置" >
+            <view:SettingsView />
         </TabItem>
+            
     </Controls:MetroAnimatedTabControl>
-    
 </Controls:MetroWindow>

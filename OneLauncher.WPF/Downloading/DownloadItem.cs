@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoodTimeStudio.OneMinecraftLauncher.WPF.Models
+namespace GoodTimeStudio.OneMinecraftLauncher.WPF.Downloading
 {
     public class DownloadItem : BindableBase
     {
@@ -36,6 +36,10 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.Models
         public void Start(DownloadManager manager)
         {
             _manager = manager;
+            if (_manager.Source != null)
+            {
+                Uri = _manager.Source.GetDownloadUrl(Uri);
+            }
             FileInfo file = new FileInfo(Path);
             if (!file.Directory.Exists)
             {

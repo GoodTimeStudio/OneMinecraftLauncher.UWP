@@ -1,5 +1,6 @@
 ﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
 using GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft;
+using GoodTimeStudio.OneMinecraftLauncher.WPF.Downloading;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

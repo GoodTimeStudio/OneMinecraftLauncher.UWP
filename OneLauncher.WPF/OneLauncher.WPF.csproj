@@ -96,16 +96,23 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CoreManager.cs" />
-    <Compile Include="DownloadManager.cs" />
+    <Compile Include="Downloading\BMCLApiSource.cs" />
+    <Compile Include="Downloading\DownloadManager.cs" />
+    <Compile Include="Downloading\IDownloadSource.cs" />
+    <Compile Include="Downloading\OriginalSource.cs" />
     <Compile Include="Models\DownloadDialogViewModel.cs" />
-    <Compile Include="Models\DownloadItem.cs" />
+    <Compile Include="Downloading\DownloadItem.cs" />
     <Compile Include="Models\DownloadViewModel.cs" />
+    <Compile Include="Models\SettingsViewModel.cs" />
     <Compile Include="Models\StartViewModel.cs" />
     <Compile Include="View\DownloadDialog.xaml.cs">
       <DependentUpon>DownloadDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DownloadView.xaml.cs">
       <DependentUpon>DownloadView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\StartView.xaml.cs">
       <DependentUpon>StartView.xaml</DependentUpon>
@@ -139,13 +146,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\StartView.xaml">
+    <Page Include="View\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\StartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Models\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

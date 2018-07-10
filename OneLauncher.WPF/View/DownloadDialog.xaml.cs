@@ -1,4 +1,5 @@
-﻿using GoodTimeStudio.OneMinecraftLauncher.WPF.Models;
+﻿using GoodTimeStudio.OneMinecraftLauncher.WPF.Downloading;
+using GoodTimeStudio.OneMinecraftLauncher.WPF.Models;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
 
         public void StartDownload()
         {
-            manager = new DownloadManager(ref DownloadQuene);
+            manager = new DownloadManager(ref DownloadQuene, CoreManager.DownloadSource);
             ViewModel.manager = manager;
             manager.DownloadCompleted += Manager_DownloadCompleted;
             manager.StartDownload();

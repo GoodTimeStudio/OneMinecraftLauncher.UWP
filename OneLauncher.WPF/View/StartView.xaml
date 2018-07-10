@@ -23,31 +23,11 @@
 
         <StackPanel Margin="5,10,0,0">
             <TextBlock Text="用户名" Margin="0,5" Height="26" />
-            <TextBlock Text="Java路径" Margin="0,5" Height="26" />
-            <TextBlock Text="Java Args" Margin="0,5" Height="26" />
-            <TextBlock Text="最大内存" Margin="0,5" Height="26" />
             <TextBlock Text="版本" Margin="0,5" Height="26" />
         </StackPanel>
 
         <StackPanel Grid.Column="1" Margin="0,10,0,0">
             <TextBox Text="{Binding Username, Mode=TwoWay}" HorizontalAlignment="Left" Width="100" Margin="0,0,0,10" Height="26"/>
-
-            <Grid Margin="0,0,0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="6*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-
-                <TextBox Text="{Binding JavaExt, Mode=TwoWay}"  Height="26" />
-                <Button Grid.Column="1" Content="选择路径" Margin="5,0,0,0" Click="_BTN_JavaExtPicker_Click" />
-            </Grid>
-
-            <TextBox Text="{Binding JavaArgs, Mode=TwoWay}" 
-                     HorizontalAlignment="Left" 
-                     Width="400" Margin="0,0,0,10" 
-                     Controls:TextBoxHelper.AutoWatermark="True" Controls:TextBoxHelper.Watermark="正常情况下请不要改动该项，否则可能无法启动游戏"/>
-            <TextBox Text="{Binding MaxMemoryStr, Mode=TwoWay}" HorizontalAlignment="Left" Width="100" Height="26" Margin="0,0,0,10" />
 
             <ComboBox Width="200" x:Name="_VerBox"
                      ItemsSource="{Binding VersionsList}" 

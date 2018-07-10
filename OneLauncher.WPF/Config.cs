@@ -18,18 +18,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher
             Formatting = Formatting.Indented
         };
 
-        public string Username = "";
-        public string JavaExt = "";
-        public string JavaArgs = "";
-        public int MaxMemory = 1024;
-        public string SelectedVersion = "";
+        public string Username;
+        public string JavaExt;
+        public string JavaArgs;
+        public int MaxMemory;
+        public string SelectedVersion;
+        public string DownloadSourceId;
 
-        public Config()
-        {
-            INSTANCE = this;
-        }
-
-        public static async Task LoadFromFileAsync()
+        public static void LoadFromFile()
         {
             bool needReset = false;
 
@@ -40,27 +36,21 @@ namespace GoodTimeStudio.OneMinecraftLauncher
             }
             else
             {
-                using (FileStream stream = File.OpenRead(CONFIG_FILE))
-                {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        string str = await reader.ReadToEndAsync();
-                        if (str != null)
-                        {
-                            try
-                            {
-                                var t = JsonConvert.DeserializeObject<Config>(str, serializerSettings);
-                                if (t != null)
-                                    INSTANCE = t;
-                                else
-                                    INSTANCE = new Config();
-                            }
-                            catch
-                            {
-                                needReset = true;
-                            }
-                        }
 
+                string str = File.ReadAllText(CONFIG_FILE);
+                if (str != null)
+                {
+                    try
+                    {
+                        var t = JsonConvert.DeserializeObject<Config>(str, serializerSettings);
+                        if (t != null)
+                            INSTANCE = t;
+                        else
+                            INSTANCE = new Config();
+                    }
+                    catch
+                    {
+                        needReset = true;
                     }
                 }
 

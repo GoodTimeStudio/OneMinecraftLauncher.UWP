@@ -1,4 +1,5 @@
-﻿using GoodTimeStudio.OneMinecraftLauncher.Core;
+﻿using static GoodTimeStudio.OneMinecraftLauncher.WPF.CoreManager;
+using GoodTimeStudio.OneMinecraftLauncher.Core;
 using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
 using GoodTimeStudio.OneMinecraftLauncher.Core.Models.Minecraft;
 using MahApps.Metro.Controls.Dialogs;
@@ -19,12 +20,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GoodTimeStudio.OneMinecraftLauncher.WPF.Models;
-
-using static GoodTimeStudio.OneMinecraftLauncher.WPF.CoreManager;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.IO;
 using KMCCC.Launcher;
+using GoodTimeStudio.OneMinecraftLauncher.WPF.Downloading;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
 {
@@ -38,51 +38,25 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
         public StartView()
         {
             InitializeComponent();
-            LoadConfig();
+            Loaded += StartView_Loaded;
             ViewModel.LaunchButtonContent = "启动";
         }
 
-        public async void LoadConfig()
+        private void StartView_Loaded(object sender, RoutedEventArgs e)
         {
-            await Task.Run(() =>
+            if (Config.INSTANCE != null) // determine launcher have inited
             {
-                ViewModel.VersionsList = CoreMCL.Core.GetVersions().ToList();
-                VersionsIdMap = new Dictionary<string, KMCCC.Launcher.Version>();
-                if (ViewModel.VersionsList == null)
-                {
-                    return;
-                }
-                foreach (KMCCC.Launcher.Version ver in ViewModel.VersionsList)
-                {
-                    VersionsIdMap.Add(ver.Id, ver);
-                }
-            });
-            await Config.LoadFromFileAsync();
+                ViewModel.VersionsList = VersionsList;
+                ViewModel.Username = Config.INSTANCE.Username;
 
-            ViewModel.Username = Config.INSTANCE.Username;
-            ViewModel.JavaExt = Config.INSTANCE.JavaExt;
-            ViewModel.JavaArgs = Config.INSTANCE.JavaArgs;
-            ViewModel.MaxMemory = Config.INSTANCE.MaxMemory;
-
-            string id = Config.INSTANCE.SelectedVersion;
-            if (!string.IsNullOrWhiteSpace(id))
-            {
-                if (VersionsIdMap.TryGetValue(id, out KMCCC.Launcher.Version ver))
+                foreach (KMCCC.Launcher.Version kver in ViewModel.VersionsList)
                 {
-                    Dispatcher.Invoke(() => _VerBox.SelectedItem = ver);
+                    if (Equals(kver.Id, Config.INSTANCE.SelectedVersion))
+                    {
+                        _VerBox.SelectedItem = kver;
+                    }
                 }
             }
-
-        }
-
-        public void SaveConfig()
-        {
-            Config.INSTANCE.Username = ViewModel.Username;
-            Config.INSTANCE.JavaExt = ViewModel.JavaExt;
-            Config.INSTANCE.JavaArgs = ViewModel.JavaArgs;
-            Config.INSTANCE.MaxMemory = ViewModel.MaxMemory;
-
-            Config.SaveConfigToFile();
         }
 
         private async Task<bool> ShowDownloadDialog(DownloadDialog dialog)
@@ -99,14 +73,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
                 return;
             }
             isWorking = true;
-            SaveConfig();
+            Config.SaveConfigToFile();
             KMCCC.Launcher.Version kver = _VerBox.SelectedItem as KMCCC.Launcher.Version;
             Option.versionId = kver.Id;
-            Option.javaExt = ViewModel.JavaExt;
-            Option.javaArgs = ViewModel.JavaArgs;
-            if (ViewModel.MaxMemory > 0)
+            Option.javaExt = Config.INSTANCE.JavaExt;
+            Option.javaArgs = Config.INSTANCE.JavaArgs;
+            if (Config.INSTANCE.MaxMemory > 0)
             {
-                Option.javaArgs = string.Format("-Xmx{0}M {1}", ViewModel.MaxMemory, Option.javaArgs);
+                Option.javaArgs = string.Format("-Xmx{0}M {1}", Config.INSTANCE.MaxMemory, Option.javaArgs);
             }
             CoreMCL.UserAuthenticator = new OfflineAuthenticator(ViewModel.Username);
             
@@ -222,18 +196,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             }
         }
 
-        private void _BTN_JavaExtPicker_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.FileName = "javaw";
-            fileDialog.DefaultExt = ".exe";
-            fileDialog.Filter = "Java Runtime|javaw.exe|Executable files (*.exe)|*.exe|All files (*.*)|*.*";
-
-            bool? result = fileDialog.ShowDialog();
-            if (result == true)
-            {
-                ViewModel.JavaExt = fileDialog.FileName;
-            }
-        }
+        
     }
 }
