@@ -73,6 +73,14 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
                 return;
             }
             isWorking = true;
+            await launch();
+            ViewModel.LaunchButtonContent = "启动";
+            isWorking = false;
+            //Dispatcher.InvokeShutdown();
+        }
+
+        private async Task launch()
+        {
             Config.SaveConfigToFile();
             KMCCC.Launcher.Version kver = _VerBox.SelectedItem as KMCCC.Launcher.Version;
             Option.versionId = kver.Id;
@@ -83,13 +91,13 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
                 Option.javaArgs = string.Format("-Xmx{0}M {1}", Config.INSTANCE.MaxMemory, Option.javaArgs);
             }
             CoreMCL.UserAuthenticator = new OfflineAuthenticator(ViewModel.Username);
-            
+
 
             // Check Libraries and Natives
             ViewModel.LaunchButtonContent = "正在检查核心文件...";
             List<MinecraftAssembly> missing = CoreMCL.CheckLibraries(kver);
             missing?.AddRange(CoreMCL.CheckNatives(kver));
-            
+
             if (missing?.Count > 0)
             {
                 DownloadDialog dialog = new DownloadDialog("正在下载运行Minecraft所需的文件...");
@@ -118,7 +126,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
                     using (HttpClient client = new HttpClient())
                     {
                         string json = await client.GetStringAsync(kver.AssetIndexInfo.Url);
-                        string path= string.Format(@"{0}\assets\indexes\{1}.json", CoreMCL.Core.GameRootPath, kver.Assets);
+                        string path = string.Format(@"{0}\assets\indexes\{1}.json", CoreMCL.Core.GameRootPath, kver.Assets);
                         FileInfo fileInfo = new FileInfo(path);
                         if (!fileInfo.Directory.Exists)
                         {
@@ -131,13 +139,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
                 catch (HttpRequestException ex)
                 {
                     await MainWindow.Instance.ShowMessageAsync("获取资源元数据失败", ex.Message + ex.StackTrace, MessageDialogStyle.Affirmative, DefaultDialogSettings);
-                    ViewModel.LaunchButtonContent = "启动";
                     return;
                 }
                 catch (IOException ex)
                 {
                     await MainWindow.Instance.ShowMessageAsync("获取资源元数据失败", ex.Message + ex.StackTrace, MessageDialogStyle.Affirmative, DefaultDialogSettings);
-                    ViewModel.LaunchButtonContent = "启动";
                     return;
                 }
             }
@@ -145,7 +151,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             var assetsResult = CoreMCL.CheckAssets(kver);
             if (!assetsResult.hasValidIndex)
             {
-                ViewModel.LaunchButtonContent = "启动";
                 await MainWindow.Instance.ShowMessageAsync("获取资源元数据失败", "发生未知错误，无法获取有效的资源元数据，我们将为您继续启动游戏，但这可能会导致游戏中出现无翻译和无声音等问题");
             }
             else
@@ -175,10 +180,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             {
                 await MainWindow.Instance.ShowMessageAsync("启动失败", result.ErrorMessage + "\r\n" + result.Exception);
             }
-
-            ViewModel.LaunchButtonContent = "启动";
-            isWorking = false;
-            //Dispatcher.InvokeShutdown();
         }
 
         private bool CheckAssetsIndex(KMCCC.Launcher.Version kver)
