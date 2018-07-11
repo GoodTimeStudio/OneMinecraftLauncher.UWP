@@ -83,6 +83,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
         {
             Config.SaveConfigToFileAsync();
             KMCCC.Launcher.Version kver = _VerBox.SelectedItem as KMCCC.Launcher.Version;
+            if (kver == null)
+            {
+                await MainWindow.Instance.ShowMessageAsync("启动失败", "版本未指定，请选择一个要启动的Minecraft版本");
+                return;
+            }
             Option.versionId = kver.Id;
             Option.javaExt = Config.INSTANCE.JavaExt;
             Option.javaArgs = Config.INSTANCE.JavaArgs;

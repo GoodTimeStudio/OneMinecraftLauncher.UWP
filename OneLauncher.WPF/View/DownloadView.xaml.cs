@@ -29,18 +29,23 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
     public partial class DownloadView : UserControl
     {
         private static readonly string VersionManifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
+        private bool firstLoad;
 
         public DownloadView()
         {
             InitializeComponent();
             Loaded += DownloadView_Loaded;
+            firstLoad = true;
         }
 
         private async void DownloadView_Loaded(object sender, RoutedEventArgs e)
         {
+            if (!firstLoad)
+            {
+                return;
+            }
+            firstLoad = false;
             ViewModel.isWorking = true;
-
-            // Get minecraft version json 
             try
             {
                 string json;
