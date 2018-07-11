@@ -39,6 +39,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
         public DownloadDialog(string title) : this()
         {
             ViewModel.Title = title;
+            Cancelled = false;
         }
 
         public void StartDownload()
@@ -51,7 +52,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
 
         private void Manager_DownloadCompleted(object sender, EventArgs e)
         {
-            DialogManager.HideMetroDialogAsync(MainWindow.Instance, this);
+            MainWindow.Instance.HideMetroDialogAsync(this);
         }
 
         public void CancelDownload()
@@ -64,6 +65,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
+            Cancelled = true;
             CancelDownload();
             MainWindow.Instance.HideMetroDialogAsync(this);
         }

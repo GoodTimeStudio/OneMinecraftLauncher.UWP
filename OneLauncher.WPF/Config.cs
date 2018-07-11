@@ -77,5 +77,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher
             File.WriteAllText(CONFIG_FILE, JsonConvert.SerializeObject(INSTANCE, serializerSettings));
         }
 
+        public static async void SaveConfigToFileAsync()
+        {
+            await Task.Run(() =>
+            {
+                File.WriteAllText(CONFIG_FILE, JsonConvert.SerializeObject(INSTANCE, serializerSettings));
+            });
+        }
     }
 }
