@@ -132,7 +132,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.Core
         {
             string indexPath = string.Format(@"{0}\assets\indexes\{1}.json", Core.GameRootPath, version.Assets);
 
-            bool hasIndex = Core.CheckFileHash(indexPath, version.AssetIndexInfo.SHA1, new SHA1CryptoServiceProvider());
+            bool hasIndex = Core.CheckFileHash(indexPath, version.AssetsIndex.SHA1, new SHA1CryptoServiceProvider());
 
             if (!hasIndex)
             {

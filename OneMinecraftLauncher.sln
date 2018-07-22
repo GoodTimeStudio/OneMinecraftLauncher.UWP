@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KMCCC.Basic", "KMCCC\KMCCC.
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "KMCCC.Shared", "KMCCC\KMCCC.Shared\KMCCC.Shared.shproj", "{564F0AF1-50E3-4AB4-A3B1-9A73882C3F3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneLauncher.Core", "OneLauncher.Core\OneLauncher.Core.csproj", "{4FFE312C-2BC7-4B8D-9AF9-25D8F6A505B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneLauncher.Core", "OneLauncher.Core\OneLauncher.Core.csproj", "{4FFE312C-2BC7-4B8D-9AF9-25D8F6A505B8}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

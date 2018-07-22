@@ -26,10 +26,10 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
                 return null;
 
             ValueSet ret = new ValueSet();
-            ret["client"] = ver.ClientJarUrl;
-            ret["client-sha1"] = ver.ClientJarSHA1;
-            ret["server"] = ver.ServerJarUrl;
-            ret["server-sha1"] = ver.ServerJarSHA1;
+            ret["client"] = ver.Downloads.Client.Url;
+            ret["client-sha1"] = ver.Downloads.Client.SHA1;
+            ret["server"] = ver.Downloads.Server.Url;
+            ret["server-sha1"] = ver.Downloads.Server.SHA1;
 
             return ret;
         }

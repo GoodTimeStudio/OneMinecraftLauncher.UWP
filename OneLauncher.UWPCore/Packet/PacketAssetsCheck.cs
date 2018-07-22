@@ -43,7 +43,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
             if (!assetsResult.hasValidIndex)
             {
                 Logger.Warn("Asset index dose not exist or invalid");
-                valueSet["index_url"] = ver.AssetIndexInfo.Url;
+                valueSet["index_url"] = ver.AssetsIndex.Url;
                 valueSet["index_path"] = string.Format(@"assets\indexes\{0}.json", ver.Assets);
                 return valueSet;
             }
