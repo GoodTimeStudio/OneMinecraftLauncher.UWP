@@ -1,0 +1,53 @@
+﻿<dialog:CustomDialog x:Class="GoodTimeStudio.OneMinecraftLauncher.WPF.View.UserDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.WPF.View"
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+             xmlns:model="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.Core.Models;assembly=OneMinecraftLauncher.Core"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <dialog:CustomDialog.Resources>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+    </dialog:CustomDialog.Resources>
+    <StackPanel>
+        <TextBlock Text="账号设定" Margin="0,5,0,30" FontSize="20" FontWeight="Bold" />
+
+        <TextBlock Text="账号类型" Margin="0,0,0,6" FontSize="16" />
+        <ComboBox x:Name="AccountTypeSelector" 
+                      IsEnabled="{Binding UserDialogNotLock, Mode=OneWay}"
+                      HorizontalAlignment="Left" MinWidth="280"
+                      ItemsSource="{Binding AccountTypesList, Mode=OneWay}"
+                      SelectedItem="{Binding SelectedAccountType, Mode=TwoWay}"
+                      SelectionChanged="ComboBox_SelectionChanged"
+                      Margin="0,0,0,12">
+            <ComboBox.ItemTemplate>
+                <DataTemplate DataType="model:AccountType">
+                    <TextBlock Text="{Binding Text}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <TextBlock Text="用户名 / 电子邮件地址" Margin="0,0,0,6" FontSize="16" />
+        <TextBox x:Name="UsernameBox"
+                     IsEnabled="{Binding UserDialogNotLock, Mode=OneWay}"
+                     Text="{Binding User, Mode=TwoWay}" 
+                     HorizontalAlignment="Left"
+                     MinWidth="280" Margin="0,0,0,12" />
+        <StackPanel x:Name="PasswordPanel" Visibility="{Binding UserDialogPasswordBoxVisibility, Mode=OneWay}">
+            <TextBlock Text="密码" Margin="0,0,0,6" FontSize="16"/>
+            <PasswordBox x:Name="PasswordBox" 
+                         HorizontalAlignment="Left" 
+                         MinWidth="280" Margin="0,0,0,12" />
+        </StackPanel>
+        
+        <Controls:MetroProgressBar IsIndeterminate="{Binding UserDialogWorking, Mode=OneWay}" Margin="0,0,0,6" />
+        <TextBlock Foreground="Red" Margin="0,0,0,6" Text="{Binding UserDialogResultString, Mode=OneWay}" />
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,30">
+            <Button Content="{Binding UserDialogPrimaryButtonContent}" Margin="0,0,12,0" Width="90"
+                    Style="{StaticResource AccentedFlatButton}" Click="Button_Click"/>
+            <Button Content="取消" Width="90" Click="Button_Cancel_Click" />
+        </StackPanel>
+    </StackPanel>
+</dialog:CustomDialog>

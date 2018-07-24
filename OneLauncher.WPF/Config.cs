@@ -12,13 +12,20 @@ namespace GoodTimeStudio.OneMinecraftLauncher
     {
         public static Config INSTANCE;
 
-        public static readonly string CONFIG_FILE = "config.json";
+        public static readonly string CONFIG_FILE = "onemcl.json";
         public static readonly JsonSerializerSettings serializerSettings = new JsonSerializerSettings
         {
             Formatting = Formatting.Indented
         };
 
-        public string Username;
+        private static object _locker = new object();
+
+        public string User;
+        public string Playername;
+        public string Password;
+        public string ClientToken;
+        public string UUID; 
+        public string AccountType;
         public string JavaExt;
         public string JavaArgs;
         public int MaxMemory;
@@ -27,61 +34,65 @@ namespace GoodTimeStudio.OneMinecraftLauncher
 
         public static void LoadFromFile()
         {
-            bool needReset = false;
-
-            if (!File.Exists(CONFIG_FILE))
+            lock (_locker)
             {
-                File.Create(CONFIG_FILE);
-                INSTANCE = new Config();
-            }
-            else
-            {
+                bool needReset = false;
 
-                string str = File.ReadAllText(CONFIG_FILE);
-                if (str != null)
+                if (!File.Exists(CONFIG_FILE))
                 {
-                    try
+                    File.Create(CONFIG_FILE).Dispose();
+                    INSTANCE = new Config();
+                }
+                else
+                {
+
+                    string str = File.ReadAllText(CONFIG_FILE);
+                    if (str != null)
                     {
-                        var t = JsonConvert.DeserializeObject<Config>(str, serializerSettings);
-                        if (t != null)
-                            INSTANCE = t;
-                        else
+                        try
+                        {
+                            var t = JsonConvert.DeserializeObject<Config>(str, serializerSettings);
+                            if (t != null)
+                                INSTANCE = t;
+                            else
+                                INSTANCE = new Config();
+                        }
+                        catch
+                        {
+                            needReset = true;
+                        }
+                    }
+
+                    if (needReset)
+                    {
+                        try
+                        {
+                            File.Delete(CONFIG_FILE);
+                            File.Create(CONFIG_FILE).Dispose();
                             INSTANCE = new Config();
-                    }
-                    catch
-                    {
-                        needReset = true;
-                    }
-                }
-
-                if (needReset)
-                {
-                    try
-                    {
-                        File.Delete(CONFIG_FILE);
-                        File.Create(CONFIG_FILE);
-                        INSTANCE = new Config();
-                    }
-                    catch
-                    {
-                        INSTANCE = new Config();
+                        }
+                        catch
+                        {
+                            INSTANCE = new Config();
+                        }
                     }
                 }
             }
-
-            
         }
 
         public static void SaveConfigToFile()
         {
-            File.WriteAllText(CONFIG_FILE, JsonConvert.SerializeObject(INSTANCE, serializerSettings));
+            lock (_locker)
+            {
+                File.WriteAllText(CONFIG_FILE, JsonConvert.SerializeObject(INSTANCE, serializerSettings));
+            }
         }
 
         public static async void SaveConfigToFileAsync()
         {
             await Task.Run(() =>
             {
-                File.WriteAllText(CONFIG_FILE, JsonConvert.SerializeObject(INSTANCE, serializerSettings));
+                SaveConfigToFile();
             });
         }
     }

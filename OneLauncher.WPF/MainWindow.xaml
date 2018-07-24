@@ -6,44 +6,68 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.WPF"
         xmlns:view="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.WPF.View"
+        xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
         mc:Ignorable="d"
         Title="One Minecraft Launcher" Height="500" Width="800"
         Icon="icon.ico"
-        BorderBrush="{DynamicResource AccentColorBrush}"
-        BorderThickness="1"
         WindowStartupLocation="CenterScreen"
-        ShowIconOnTitleBar="True"
-        ShowMaxRestoreButton="False"
-        ResizeMode="NoResize">
-    <Window.Resources>
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
-    </Window.Resources>
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        TitleCharacterCasing="Normal"
+        ShowCloseButton="False"
+        ShowTitleBar="False"
+        fw:AcrylicWindow.Enabled="True"
+        fw:AcrylicWindow.ShowTitleBar="False" >
+    <Controls:MetroWindow.TitleTemplate>
+        <DataTemplate>
+            <StackPanel Orientation="Horizontal">
+                <Button Background="{DynamicResource AccentColorBrush}"/>
+                <TextBlock Text="{TemplateBinding Content}"
+                   TextTrimming="CharacterEllipsis"
+                   VerticalAlignment="Center"
+                   Margin="8 -1 8 0"
+                   FontWeight="Light"
+                   FontSize="{DynamicResource WindowTitleFontSize}"
+                   FontFamily="{DynamicResource HeaderFontFamily}" />
+            </StackPanel>
+        </DataTemplate>
+    </Controls:MetroWindow.TitleTemplate>
     <Window.DataContext>
         <local:MainWindowViewModel x:Name="ViewModel" />
     </Window.DataContext>
 
-    <Controls:MetroWindow.IconTemplate>
-        <DataTemplate>
-            <Grid Width="{TemplateBinding Width}"
-                 Height="{TemplateBinding Height}"
-                 Margin="6"
-                 Background="Transparent"
-                 RenderOptions.EdgeMode="Aliased"
-                 RenderOptions.BitmapScalingMode="HighQuality">
-                <Image Source="icon.ico"></Image>
-            </Grid>
-        </DataTemplate>
-    </Controls:MetroWindow.IconTemplate>
-    <Controls:MetroAnimatedTabControl>
-        <TabItem Header="开始">
-            <view:StartView />
-        </TabItem>
-        <TabItem Header="下载">
-            <view:DownloadView />
-        </TabItem>
-        <TabItem Header="设置" >
-            <view:SettingsView />
-        </TabItem>
-            
-    </Controls:MetroAnimatedTabControl>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid HorizontalAlignment="Stretch" Height="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="90"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" x:Name="TitleBar" Height="30"
+                        Background="Transparent" MouseDown="TitleBar_MouseDown" >
+                <Button Style="{StaticResource WindowButtonStyle.Light}" Width="45" Click="Button_Back_Click"
+                        FontFamily="Segoe MDL2 Assets" Content="&#xE830;" 
+                        Visibility="{Binding BackButtonVisibility, Mode=OneWay}"/>
+                <TextBlock x:Name="TitleBlock"
+                   TextTrimming="CharacterEllipsis"
+                   VerticalAlignment="Center"
+                   Margin="8 -1 8 0"
+                   FontWeight="Light"
+                   FontSize="{DynamicResource WindowTitleFontSize}"
+                   FontFamily="{DynamicResource HeaderFontFamily}" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Width="45" Style="{StaticResource WindowButtonStyle.Light}"
+                        FontFamily="Segoe MDL2 Assets" Content="&#xE921;" Click="Button_Min_Click"/>
+                <Button Width="45" Style="{StaticResource MahApps.Metro.Styles.WindowButton.Close.Light.Win10}"
+                        FontFamily="Segoe MDL2 Assets" Content="&#xE8BB;" Click="Button_Close_Click"/>
+            </StackPanel>
+        </Grid>
+        <Controls:TransitioningContentControl Grid.Row="1" x:Name="rootContent" />
+    </Grid>
+
 </Controls:MetroWindow>

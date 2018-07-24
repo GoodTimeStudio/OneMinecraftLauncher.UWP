@@ -2,12 +2,14 @@
 using GoodTimeStudio.OneMinecraftLauncher.Core;
 using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
 using GoodTimeStudio.OneMinecraftLauncher.WPF.Downloading;
+using KMCCC.Authentication;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GoodTimeStudio.OneMinecraftLauncher.WPF
@@ -34,6 +36,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF
             Config.LoadFromFile();
             VersionsList = new ObservableCollection<KMCCC.Launcher.Version>();
             RefreshVersionsList(CoreMCL.Core.GetVersions());
+
+            AccountTypes.Mojang.Text = "Mojang账号（正版登陆）";
+            AccountTypes.Offline.Text = "离线模式";
 
             DownloadSourcesList = new List<IDownloadSource>();
             var tmp = new OriginalSource();
@@ -73,6 +78,57 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF
             {
                 return Math.Round(speed / 1024d, 2) + "Mb/s";
             }
+        }
+
+        public static async Task<AuthenticationInfo> Auth(AccountType type, string user, string password = "", bool refresh = false)
+        {
+            if (type == AccountTypes.Mojang)
+            {
+                Guid clientToken;
+                if (!Guid.TryParse(Config.INSTANCE.ClientToken, out clientToken))
+                {
+                    clientToken = Guid.NewGuid();
+                    Config.INSTANCE.ClientToken = clientToken.ToString();
+                }
+
+                CancellationToken ct = new CancellationToken();
+                AuthenticationInfo info = null;
+                if (refresh && Guid.TryParse(password, out Guid access))
+                {
+                    if (Guid.TryParse(Config.INSTANCE.UUID, out Guid uuid))
+                    {
+                        info = await new YggdrasilValidate(access, clientToken, uuid, Config.INSTANCE.Playername).DoAsync(ct);
+                    }
+                    if (info == null || !string.IsNullOrEmpty(info.Error))
+                    {
+                        info = await new YggdrasilRefresh(access, false).DoAsync(ct);
+                    }
+                }
+                else
+                {
+                    info = await new YggdrasilLogin(user, password, false, clientToken).DoAsync(ct);
+                }
+                return info;
+            }
+            else if (type == AccountTypes.Offline)
+            {
+                OfflineAuthenticator offline = new OfflineAuthenticator(user);
+                return offline.Do();
+            }
+            return null;
+        }
+
+        public static IAuthenticator GenAuthenticatorFromAuthInfo(AuthenticationInfo info)
+        {
+            if (info == null)
+            {
+                return null;
+            }
+            if (string.IsNullOrEmpty(info.Error))
+            {
+                return new WarpedAuhenticator(info);
+            }
+            return null;
         }
     }
 }

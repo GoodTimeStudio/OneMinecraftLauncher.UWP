@@ -20,9 +20,9 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
     /// <summary>
     /// SettingsView.xaml 的交互逻辑
     /// </summary>
-    public partial class SettingsView : UserControl
+    public partial class SettingsPage : UserControl
     {
-        public SettingsView()
+        public SettingsPage()
         {
             InitializeComponent();
             Loaded += SettingsView_Loaded;

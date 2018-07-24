@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="GoodTimeStudio.OneMinecraftLauncher.WPF.View.SettingsView"
+﻿<UserControl x:Class="GoodTimeStudio.OneMinecraftLauncher.WPF.View.SettingsPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,6 +8,7 @@
              xmlns:down="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.WPF.Downloading"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              mc:Ignorable="d" 
+             Background="White"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
@@ -18,7 +19,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
 
         <ScrollViewer>
@@ -63,35 +64,38 @@
             <Image Source="pack://application:,,,/Resources/GoodTimeStudioLogo.png" 
                            Width="120" Height="106" Margin="0,0,0,24" />
             <TextBlock FontSize="14" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow">
-                        <Run FontSize="24">One Minecraft Launcher</Run>
-                        <Run Text="  (WPF)" />
-                        <Run Text="Version 1.2.0" />
-                        <LineBreak/>
-                        <LineBreak/>                
-                        <Run FontSize="24">开放源代码许可</Run>
-                        <LineBreak/>
-                        <Run>
-                            © 2018 GoodTime Studio</Run>
-                        <LineBreak/>
-                        <Hyperlink NavigateUri="https://github.com/GoodTimeStudio/OneMinecraftLauncher.NET/blob/master/LICENSE"
-                                   RequestNavigate="Hyperlink_RequestNavigate">
-                            https://github.com/GoodTimeStudio/OneMinecraftLauncher.NET/blob/master/LICENSE
-                        </Hyperlink>
-                        <LineBreak/>
-                        <LineBreak/>
-                        <Run Text="本启动器使用了以下开源类库" />
-                        <LineBreak/>
-                        <Run Text="MahApps.Metro: " />
-                        <Hyperlink NavigateUri="https://github.com/MahApps/MahApps.Metro"
-                                   RequestNavigate="Hyperlink_RequestNavigate">MIT</Hyperlink>
-                        <LineBreak />
-                        <Run Text="KMCCC: " />
-                        <Hyperlink NavigateUri="https://github.com/GoodTimeStudio/KMCCC"
-                                   RequestNavigate="Hyperlink_RequestNavigate">LGPLv3</Hyperlink>
-                        <LineBreak/>
-                        <Run Text="AltoHttp: " />
-                        <Hyperlink NavigateUri="https://github.com/aalitor/AltoHttp"
-                                   RequestNavigate="Hyperlink_RequestNavigate">GPLv2</Hyperlink>
+                <Run FontSize="24">One Minecraft Launcher</Run>
+                <Run Text="  (WPF)" />
+                <Run Text="Version 1.3.0" />
+                <LineBreak/>
+                <LineBreak/>                
+                <Run FontSize="24">开放源代码许可</Run>
+                <LineBreak/>
+                <Hyperlink NavigateUri="https://github.com/GoodTimeStudio/OneMinecraftLauncher.NET/blob/master/LICENSE"
+                            RequestNavigate="Hyperlink_RequestNavigate">
+                    Open source under MIT license
+                </Hyperlink>
+                <LineBreak/>
+                <Run>© 2018 GoodTime Studio</Run>
+                <LineBreak/>
+                <LineBreak/>
+                <Run Text="本启动器使用了以下开源类库" />
+                <LineBreak/>
+                <Run Text="MahApps.Metro: " />
+                <Hyperlink NavigateUri="https://github.com/MahApps/MahApps.Metro"
+                            RequestNavigate="Hyperlink_RequestNavigate">MIT</Hyperlink>
+                <LineBreak />
+                <Run Text="KMCCC: " />
+                <Hyperlink NavigateUri="https://github.com/GoodTimeStudio/KMCCC"
+                            RequestNavigate="Hyperlink_RequestNavigate">LGPLv3</Hyperlink>
+                <LineBreak/>
+                <Run Text="AltoHttp: " />
+                <Hyperlink NavigateUri="https://github.com/aalitor/AltoHttp"
+                            RequestNavigate="Hyperlink_RequestNavigate">GPLv2</Hyperlink>
+                <LineBreak/>
+                <Run Text="FluentWPF: " />
+                <Hyperlink NavigateUri="https://github.com/sourcechord/FluentWPF"
+                            RequestNavigate="Hyperlink_RequestNavigate">MIT</Hyperlink>
             </TextBlock>
         </StackPanel>
     </Grid>

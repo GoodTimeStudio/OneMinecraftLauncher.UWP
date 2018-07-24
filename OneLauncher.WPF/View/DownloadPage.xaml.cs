@@ -26,12 +26,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
     /// <summary>
     /// DownloadView.xaml 的交互逻辑
     /// </summary>
-    public partial class DownloadView : UserControl
+    public partial class DownloadPage : UserControl
     {
         private static readonly string VersionManifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
         private bool firstLoad;
 
-        public DownloadView()
+        public DownloadPage()
         {
             InitializeComponent();
             Loaded += DownloadView_Loaded;
@@ -61,12 +61,12 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             }
             catch (HttpRequestException ex)
             {
-                await MainWindow.Instance.ShowMessageAsync("获取版本数据失败", "无法从服务器获取元文件" + ex.Message + ex.StackTrace, 
+                await MainWindow.Current.ShowMessageAsync("获取版本数据失败", "无法从服务器获取元文件" + ex.Message + ex.StackTrace, 
                     MessageDialogStyle.Affirmative, DefaultDialogSettings);
             }
             catch (JsonException ex)
             {
-                await MainWindow.Instance.ShowMessageAsync("获取版本数据失败", "未知错误" + ex.Message + ex.StackTrace,
+                await MainWindow.Current.ShowMessageAsync("获取版本数据失败", "未知错误" + ex.Message + ex.StackTrace,
                     MessageDialogStyle.Affirmative, DefaultDialogSettings);
             }
 
@@ -107,8 +107,8 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
                     }
                     File.Create(jarPath);
 
-                    HttpDownloader downloader = new HttpDownloader(kver.ClientJarUrl, jarPath);
-                    var progressController = await MainWindow.Instance.ShowProgressAsync("正在下载:  " + kver.Id, "", true, DefaultDialogSettings);
+                    HttpDownloader downloader = new HttpDownloader(kver.Downloads.Client.Url, jarPath);
+                    var progressController = await MainWindow.Current.ShowProgressAsync("正在下载:  " + kver.Id, "", true, DefaultDialogSettings);
                     downloader.DownloadProgressChanged += async delegate
                     {
                         if (downloader.ProgressInPercent == 100)
@@ -134,11 +134,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
             }
             catch (IOException ex)
             {
-                await MainWindow.Instance.ShowMessageAsync("下载失败", ex.Message + ex.StackTrace);
+                await MainWindow.Current.ShowMessageAsync("下载失败", ex.Message + ex.StackTrace);
             }
             catch (HttpRequestException ex)
             {
-                await MainWindow.Instance.ShowMessageAsync("下载失败", ex.Message + ex.StackTrace);
+                await MainWindow.Current.ShowMessageAsync("下载失败", ex.Message + ex.StackTrace);
             }
 
             ViewModel.isWorking = false;

@@ -1,0 +1,97 @@
+﻿<UserControl x:Class="GoodTimeStudio.OneMinecraftLauncher.WPF.View.StartPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.WPF.View"
+      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+      xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+      xmlns:model="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.WPF.Models"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800" >
+    <UserControl.DataContext>
+        <model:StartPageViewModel x:Name="ViewModel" />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style x:Key="_UserButtonStyle" 
+               BasedOn="{StaticResource MetroFlatButton}"
+               TargetType="{x:Type Button}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentColorBrush}" />
+                    <Setter Property="Foreground" Value="White" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="False">
+                    <Setter Property="Background" Value="Transparent" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource AccentColorBrush2}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="{fw:AcrylicBrush TintOpacity=0.5}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="120" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <TextBlock Text="开始" FontSize="45" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="30,0,0,0" />
+
+            <Button HorizontalAlignment="Right" VerticalAlignment="Center"  
+                     IsEnabled="{Binding UserDialogNotWorking, Mode=OneWay}"
+                     Margin="0,0,30,0" BorderThickness="2,2,0,2"
+                     Click="Button_UserDialog_Click" Padding="0"
+                     Style="{StaticResource _UserButtonStyle}"
+                     BorderBrush="DarkGray">
+
+                <Grid Height="40" Width="250" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="40" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding PlayerName, Mode=OneWay}" VerticalAlignment="Center" 
+                               HorizontalAlignment="Center" FontSize="20"/>
+                    <Grid Grid.Column="1" Background="DarkGray">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="White"
+                               HorizontalAlignment="Center" VerticalAlignment="Center">&#xE77B;</TextBlock>
+                    </Grid>
+                </Grid>
+            </Button>
+            <Controls:MetroProgressBar HorizontalAlignment="Right"  IsIndeterminate="{Binding UserDialogWorking, Mode=OneWay}"
+                       Margin="0,87,30,23" Width="250" />
+
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="40" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150" />
+                <RowDefinition Height="150" />
+            </Grid.RowDefinitions>
+
+            <Controls:Tile Grid.Column="1" Grid.ColumnSpan="2" Content="{Binding SelectedVersion.Id, Mode=OneWay}"
+                           Title="版本" Width="Auto" Click="Tile_Profile_Click" FontSize="30" />
+            <Controls:Tile Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" FontSize="30"
+                           Title="启动" Width="Auto" Content="{Binding LaunchButtonContent, Mode=OneWay}" Click="Tile_Launch_Click"/>
+
+            <Controls:Tile Grid.Column="4" Title="下载" Click="Tile_Download_Click" >
+                <TextBlock FontSize="45" FontFamily="Segoe MDL2 Assets">&#xE896;</TextBlock>
+            </Controls:Tile>
+            <Controls:Tile Grid.Column="5" Title="设置" Click="Tile_Settings_Click" >
+                <TextBlock FontSize="45" FontFamily="Segoe MDL2 Assets">&#xE713;</TextBlock>
+            </Controls:Tile>
+
+        </Grid>
+    </Grid>
+</UserControl>
