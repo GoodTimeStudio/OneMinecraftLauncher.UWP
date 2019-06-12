@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoodTimeStudio.OneMinecraftLauncher.WPF.Downloading
+namespace GoodTimeStudio.OneMinecraftLauncher.Core.Downloading
 {
     public class BMCLApiSource : IDownloadSource
     {

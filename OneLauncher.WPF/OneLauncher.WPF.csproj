@@ -108,10 +108,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CoreManager.cs" />
-    <Compile Include="Downloading\BMCLApiSource.cs" />
     <Compile Include="Downloading\DownloadManager.cs" />
-    <Compile Include="Downloading\IDownloadSource.cs" />
-    <Compile Include="Downloading\OriginalSource.cs" />
     <Compile Include="Models\DownloadDialogViewModel.cs" />
     <Compile Include="Downloading\DownloadItem.cs" />
     <Compile Include="Models\DownloadViewModel.cs" />
