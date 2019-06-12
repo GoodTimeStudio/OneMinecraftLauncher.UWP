@@ -111,6 +111,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
         private async Task<bool> ShowDownloadDialog(DownloadDialog dialog)
         {
             await MainWindow.Current.ShowMetroDialogAsync(dialog, DefaultDialogSettings);
+            dialog.StartDownload();
             await dialog.WaitUntilUnloadedAsync();
             return dialog.Cancelled;
         }
@@ -258,7 +259,6 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.View
                             dialog.DownloadQuene.Add(item);
                         }
                     });
-                    dialog.StartDownload();
                     if (await ShowDownloadDialog(dialog))
                     {
                         return;

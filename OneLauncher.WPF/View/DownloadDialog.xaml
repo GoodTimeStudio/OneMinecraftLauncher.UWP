@@ -7,26 +7,25 @@
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
              xmlns:model="clr-namespace:GoodTimeStudio.OneMinecraftLauncher.WPF.Models"
+             xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
              mc:Ignorable="d" 
              Height="300"
              d:DesignHeight="300" d:DesignWidth="500">
     <dialog:CustomDialog.DataContext>
         <model:DownloadDialogViewModel x:Name="ViewModel" />
     </dialog:CustomDialog.DataContext>
-    <Grid>
+    <Grid fw:PointerTracker.Enabled="True">
         <Grid.Resources>
             <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="18" />
             <RowDefinition />
-            <RowDefinition Height="10" />
+            <RowDefinition Height="15" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <TextBlock Text="{Binding Title, Mode=OneWay}" Margin="0,5,0,0" FontSize="20" FontWeight="Bold" />
-        <TextBlock Grid.Row="1" Text="{Binding manager.CurrentSpeedText, Mode=OneWay}"  HorizontalAlignment="Right" Width="130"/>
-        <ListView SelectionMode="Single" Grid.Row="2"
+        <ListView SelectionMode="Single" Grid.Row="1"
                   ItemsSource="{Binding DownloadQuene}" BorderThickness="0">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="model:DownloadItem">
@@ -51,8 +50,15 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <Controls:MetroProgressBar Grid.Row="3" Value="{Binding manager.TotalProgress, Mode=OneWay}"/>
-        <Button Grid.Row="4" Content="取消" HorizontalAlignment="Right" Margin="5" 
+
+        <Grid Grid.Row="2">
+            <Controls:MetroProgressBar Value="{Binding manager.TotalProgress, Mode=OneWay}" Background="DarkGray"/>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"
+                       Text="{Binding manager.ProgressTextInCount, Mode=OneWay}" FontSize="12" />
+        </Grid>
+        <Button Grid.Row="3" Content="取消"
+                Style="{StaticResource ButtonRevealStyle}"
+                HorizontalAlignment="Right" Margin="5" 
                 Width="100" Click="ButtonCancel_Click" />
     </Grid>
 </dialog:CustomDialog>

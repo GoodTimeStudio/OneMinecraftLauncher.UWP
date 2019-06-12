@@ -1,4 +1,5 @@
-﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Downloading;
+using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
 using GoodTimeStudio.OneMinecraftLauncher.WPF.Models;
 using System;
 using System.Collections.ObjectModel;
@@ -10,17 +11,35 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.Downloading
 {
     public class DownloadManager : BindableBase
     {
+        /// <summary>
+        /// Maximum of the downloading item in the same time
+        /// </summary>
+        private static readonly int MaxDownloadingCount = 50;
+
         private ObservableCollection<DownloadItem> _list;
         public IDownloadSource Source;
         private bool isDownloading = false;
-        private int ItemCount;
-        private int DownloadedItemCount;
 
-        private string _CurrentSpeedText;
-        public string CurrentSpeedText
+        private int _ItemCount;
+        public int ItemCount
         {
-            get => _CurrentSpeedText;
-            set => SetProperty(ref _CurrentSpeedText, value);
+            get => _ItemCount;
+            set
+            {
+                _ItemCount = value;
+                ProgressTextInCount = DownloadedItemCount + " / " + value;
+            }
+        }
+
+        private int _DownloadedItemCount;
+        public int DownloadedItemCount
+        {
+            get => _DownloadedItemCount;
+            set
+            {
+                _DownloadedItemCount = value;
+                ProgressTextInCount = value + " / " + ItemCount;
+            }
         }
 
         private double _TotalProgress;
@@ -28,6 +47,13 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.Downloading
         {
             get => _TotalProgress;
             set => SetProperty(ref _TotalProgress, value);
+        }
+
+        private string _ProgressTextInCount;
+        public string ProgressTextInCount
+        {
+            get => _ProgressTextInCount;
+            set => SetProperty(ref _ProgressTextInCount, value);
         }
 
         public event EventHandler DownloadCompleted;
@@ -43,53 +69,22 @@ namespace GoodTimeStudio.OneMinecraftLauncher.WPF.Downloading
         {
             if (!isDownloading)
             {
-                if (_list.Count > 0)
-                {
-                    DownloadItem item = _list.First();
-                    item.Start(this);
-                    isDownloading = true;
-                }
+                Parallel.ForEach(_list, new ParallelOptions { MaxDegreeOfParallelism = MaxDownloadingCount }, Download);
             }
+        }
+
+        private void Download(DownloadItem item)
+        {
+            item.Start(this);
         }
 
         public void Cancel()
         {
             for (int i = 0; i < _list.Count; i++)
             {
-                DownloadItem item = _list[i];
-                if (item.Operation.State == AltoHttp.DownloadState.Downloading)
-                {
-                    item.Operation.Cancel();
-                    break;
-                }
+                _list[i].Cancel();
             }
         }
 
-        public void DownloadNext(DownloadItem preItem, bool needRemove = true)
-        {
-            if (needRemove)
-            {
-                _list.Remove(preItem);
-            }
-            if (_list.Count == 0)
-            {
-                isDownloading = false;
-                DownloadCompleted(this, new EventArgs());
-                return;
-            }
-            for (int i = 0; i < _list.Count; i++)
-            {
-                DownloadedItemCount++;
-                TotalProgress = DownloadedItemCount / (double) ItemCount * 100d;
-
-                DownloadItem item = _list[i];
-                // Default state is cancelled, even the download operation not start
-                if (item.Operation.State == AltoHttp.DownloadState.Cancelled)
-                {
-                    item.Start(this);
-                    break;
-                }
-            }
-        }
     }
 }
