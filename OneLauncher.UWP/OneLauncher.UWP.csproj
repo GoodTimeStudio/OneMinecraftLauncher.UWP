@@ -22,8 +22,11 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>8BCB5D7BAEF6F8D6227789699F7DE3DFC9B0F9FA</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>6497EE33DAC202A5EA916A1F6099746F069A2149</PackageCertificateThumbprint>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -151,7 +154,6 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="GoodTime Studio Software.pfx" />
     <PRIResource Include="Resources\zh-Hans\DownloadPage.resw" />
     <PRIResource Include="Resources\zh-Hans\LaunchOptions.resw" />
     <PRIResource Include="Resources\zh-Hans\Resources.resw" />
@@ -176,6 +178,7 @@
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.png" />
     <Content Include="LauncherCore\OneMinecraftLauncher.UWPCore.exe" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>

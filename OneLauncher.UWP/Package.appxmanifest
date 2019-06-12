@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" IgnorableNamespaces="uap mp rescap desktop">
-  <Identity Name="3cc5f1a1-8774-4e70-a02a-89347c55b15e" Publisher="O=GoodTime Studio, OU=GoodTime Studio Software" Version="1.1.5.0" />
-  <mp:PhoneIdentity PhoneProductId="3cc5f1a1-8774-4e70-a02a-89347c55b15e" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="11602GoodTimeStudio.OneMinecraftLauncher" Publisher="CN=26FBF7DF-0382-4C02-8985-D8DE01CEF4A3" Version="1.1.80.0" />
+  <mp:PhoneIdentity PhoneProductId="2231a68b-31df-41e9-aa7d-8c32e45b7691" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
     <PublisherDisplayName>GoodTime Studio</PublisherDisplayName>

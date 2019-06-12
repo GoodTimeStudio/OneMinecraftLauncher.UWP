@@ -291,3 +291,4 @@ __pycache__/
 ####
 KMCCC*/*
 OneLauncher.Core/Auhenticator/GoodTimeAuhenticator.cs
+OneLauncher.UWP/LauncherCore/OneMinecraftLauncher.UWPCore.exe
