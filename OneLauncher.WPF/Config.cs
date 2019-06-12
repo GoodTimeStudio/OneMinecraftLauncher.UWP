@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GoodTimeStudio.OneMinecraftLauncher.Core.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,7 +42,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher
                 if (!File.Exists(CONFIG_FILE))
                 {
                     File.Create(CONFIG_FILE).Dispose();
-                    INSTANCE = new Config();
+                    INSTANCE = GenerateDefaultConfig();
                 }
                 else
                 {
@@ -69,11 +70,11 @@ namespace GoodTimeStudio.OneMinecraftLauncher
                         {
                             File.Delete(CONFIG_FILE);
                             File.Create(CONFIG_FILE).Dispose();
-                            INSTANCE = new Config();
+                            INSTANCE = GenerateDefaultConfig();
                         }
                         catch
                         {
-                            INSTANCE = new Config();
+                            INSTANCE = GenerateDefaultConfig();
                         }
                     }
                 }
@@ -94,6 +95,17 @@ namespace GoodTimeStudio.OneMinecraftLauncher
             {
                 SaveConfigToFile();
             });
+        }
+
+        public static Config GenerateDefaultConfig()
+        {
+            string player = "Steve";
+            return new Config
+            {
+                User = player,
+                Playername = player,
+                AccountType = AccountTypes.Offline.Tag
+            };
         }
     }
 }
