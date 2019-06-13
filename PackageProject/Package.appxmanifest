@@ -9,7 +9,7 @@
   <Identity
     Name="11602GoodTimeStudio.OneMinecraftLauncher"
     Publisher="CN=26FBF7DF-0382-4C02-8985-D8DE01CEF4A3"
-    Version="1.1.80.0" />
+    Version="1.1.83.0" />
 
   <Properties>
     <DisplayName>One Minecraft Launcher</DisplayName>
@@ -43,6 +43,11 @@
         </uap:DefaultTile >
         <uap:SplashScreen Image="Images\SplashScreen.png" />
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.appService">
+          <uap:AppService Name="LaunchAgent"/>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
 
