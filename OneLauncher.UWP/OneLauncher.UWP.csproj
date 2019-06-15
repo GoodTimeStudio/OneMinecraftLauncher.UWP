@@ -177,7 +177,6 @@
     <Content Include="Assets\StartPageDefaultBackground.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.png" />
-    <Content Include="LauncherCore\OneMinecraftLauncher.UWPCore.exe" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>

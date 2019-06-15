@@ -54,13 +54,13 @@
     <TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <DefaultLanguage>zh-CN</DefaultLanguage>
-    <EntryPointProjectUniqueName>..\OneLauncher.UWP\OneLauncher.UWP.csproj</EntryPointProjectUniqueName>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <PackageCertificateThumbprint>472A9649E87E7128B4ED56F8A475DC5176ED2F2E</PackageCertificateThumbprint>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
+    <EntryPointProjectUniqueName>..\OneLauncher.UWP\OneLauncher.UWP.csproj</EntryPointProjectUniqueName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <AppxBundle>Always</AppxBundle>
@@ -126,10 +126,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OneLauncher.UWPCore\OneLauncher.UWPCore.csproj">
-      <DesktopBridgeSelfContained>False</DesktopBridgeSelfContained>
-      <DesktopBridgeIdentifier>
-      </DesktopBridgeIdentifier>
-      <Properties>DesktopBridgeSelfContained=%(DesktopBridgeSelfContained);DesktopBridgeIdentifier=%(DesktopBridgeIdentifier)</Properties>
       <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
     </ProjectReference>
     <ProjectReference Include="..\OneLauncher.UWP\OneLauncher.UWP.csproj" />
