@@ -4,8 +4,6 @@ using GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet;
 using KMCCC.Launcher;
 using log4net;
 using log4net.Config;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +21,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
 {
     class Program
     {
-        private static readonly ILog Logger = LogManager.GetLogger("UWPCore");
+        private static readonly ILog Logger = LogManager.GetLogger("UWPCore", "Main");
 
         public const string ServiceName = "LaunchAgent";
         static AutoResetEvent appServiceExit;
@@ -49,7 +47,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
             //Get log4net config in assembly
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(Properties.Resources.log4net_config);
-            XmlConfigurator.Configure(xml.DocumentElement);
+            XmlConfigurator.Configure(LogManager.CreateRepository("UWPCore"), xml.DocumentElement);
 
             Logger.Info("Starting One Minecraft Launcher (UWP Core)");
 

@@ -15,7 +15,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Packet
 
         public PacketBase()
         {
-            Logger = LogManager.GetLogger(GetTypeName());
+            Logger = LogManager.GetLogger("UWPCore", GetTypeName());
         }
 
         public abstract string GetTypeName();
