@@ -60,7 +60,16 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
 
             appServiceExit = new AutoResetEvent(false);
             //LaunchTest();
-            Process(args);
+
+            try
+            {
+                Process(args);
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e);
+            }
+
             appServiceExit.WaitOne();
 
             Logger.Info("UWPCore is shutting down.");
@@ -158,7 +167,7 @@ namespace GoodTimeStudio.OneMinecraftLauncher.UWP.Core
                 }
                 catch(Exception e)
                 {
-                    Console.WriteLine(e);
+                    Logger.Fatal(e);
                 }
 
                 if (tmp == null)
