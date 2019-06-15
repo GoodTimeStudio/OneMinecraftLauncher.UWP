@@ -1,136 +1,40 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{476530DE-1801-425D-8B36-48EDF70CDB6A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>GoodTimeStudio.OneMinecraftLauncher.UWP.Core</RootNamespace>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <StartupObject>GoodTimeStudio.OneMinecraftLauncher.UWPCore.Program</StartupObject>
+    <ApplicationIcon />
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageId>OneMinecraftLauncher.UWPCore</PackageId>
+    <Authors>GoodTime Studio</Authors>
+    <Version>2.0.0</Version>
+    <Product>One Minecraft Launcher (UWP Core)</Product>
+    <Description>The real launcher behind UWP shell.</Description>
+    <Copyright>Copyright ©  2018</Copyright>
     <AssemblyName>OneMinecraftLauncher.UWPCore</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
+    <RootNamespace>GoodTimeStudio.OneMinecraftLauncher.UWPCore</RootNamespace>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>GoodTimeStudio.OneMinecraftLauncher.UWP.Core.Program</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup />
+
   <ItemGroup>
-    <Reference Include="LibZ.Bootstrap, Version=1.2.0.0, Culture=neutral, PublicKeyToken=62360e53307d6ba2, processorArchitecture=MSIL">
-      <HintPath>..\packages\LibZ.Bootstrap.1.2.0.0\lib\net4-client\LibZ.Bootstrap.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.InteropServices.WindowsRuntime" />
-    <Reference Include="System.Runtime.WindowsRuntime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETCore\v4.5\System.Runtime.WindowsRuntime.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.WindowsRuntime.UI.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETCore\v4.5\System.Runtime.WindowsRuntime.UI.Xaml.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Windows, Version=255.255.255.255, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Windows Kits\10\UnionMetadata\Facade\Windows.WinMD</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <PackageReference Include="log4net" Version="2.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OneLauncher.Core\OneLauncher.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Windows.Foundation.FoundationContract">
       <HintPath>C:\Program Files (x86)\Windows Kits\10\References\10.0.17763.0\Windows.Foundation.FoundationContract\3.0.0.0\Windows.Foundation.FoundationContract.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
     </Reference>
-    <Reference Include="Windows.Foundation.UniversalApiContract, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Windows.Foundation.UniversalApiContract">
       <HintPath>C:\Program Files (x86)\Windows Kits\10\References\10.0.17763.0\Windows.Foundation.UniversalApiContract\7.0.0.0\Windows.Foundation.UniversalApiContract.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="LibZResolver.cs" />
-    <Compile Include="Packet\IServicePacket.cs" />
-    <Compile Include="Packet\PacketAssetsCheck.cs" />
-    <Compile Include="Packet\PacketBase.cs" />
-    <Compile Include="Packet\PacketInit.cs" />
-    <Compile Include="Packet\PacketLaunchMessage.cs" />
-    <Compile Include="Packet\PacketLibrariesCheck.cs" />
-    <Compile Include="Packet\PacketVersionsList.cs" />
-    <Compile Include="Packet\PacketVersionUrl.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\KMCCC\KMCCC.Basic\KMCCC.Basic.csproj">
-      <Project>{2b35c1fd-5e62-416e-b125-7577ef8ba1fb}</Project>
-      <Name>KMCCC.Basic</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OneLauncher.Core\OneLauncher.Core.csproj">
-      <Project>{4ffe312c-2bc7-4b8d-9af9-25d8f6a505b8}</Project>
-      <Name>OneLauncher.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="log4net.xml">
-      <SubType>Designer</SubType>
-    </None>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>cd $(TargetDir)
-set LIBZ="$(SolutionDir)packages\LibZ.Bootstrap.1.2.0.0\tools\libz.exe"
-%25LIBZ%25
-%25LIBZ%25 add --libz libraries.libz --include *.dll --move
-%25LIBZ%25 inject-libz -assembly  $(TargetFileName) --libz libraries.libz --move
-%25LIBZ%25 instrument --assembly $(TargetFileName) --libz-resources
 
-del /q "$(SolutionDir)OneLauncher.UWP\LauncherCore\" 
-
-xcopy /y /s "$(TargetDir)*.exe" "$(SolutionDir)OneLauncher.UWP\LauncherCore\"</PostBuildEvent>
-  </PropertyGroup>
 </Project>

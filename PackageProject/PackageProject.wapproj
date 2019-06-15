@@ -125,7 +125,13 @@
     <Content Include="Square44x44Logo.scale-100.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OneLauncher.UWPCore\OneLauncher.UWPCore.csproj" />
+    <ProjectReference Include="..\OneLauncher.UWPCore\OneLauncher.UWPCore.csproj">
+      <DesktopBridgeSelfContained>False</DesktopBridgeSelfContained>
+      <DesktopBridgeIdentifier>
+      </DesktopBridgeIdentifier>
+      <Properties>DesktopBridgeSelfContained=%(DesktopBridgeSelfContained);DesktopBridgeIdentifier=%(DesktopBridgeIdentifier)</Properties>
+      <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
     <ProjectReference Include="..\OneLauncher.UWP\OneLauncher.UWP.csproj" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
