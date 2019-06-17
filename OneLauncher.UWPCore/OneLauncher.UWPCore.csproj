@@ -20,10 +20,8 @@
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.8" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\OneLauncher.Core\OneLauncher.Core.csproj" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="OneMinecraftLauncher.Core" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
