@@ -33,7 +33,6 @@
 ##### If you are interested in Fluent Design and UWP, we'd love your help! Feel free to contribute some codes :)
 
 #### Dependencies
-- Visual Studio 2017
+- Visual Studio 2019 Preview
 - Windows 10 SDK 17763
-- .NET Freamwork 4
-- .NET Core 2.0
+- .NET Core 3.0 Preview 6
