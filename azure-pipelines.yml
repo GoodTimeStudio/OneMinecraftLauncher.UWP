@@ -22,9 +22,16 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
+- task: SecureFiles@1
+  inputs:
+    secureFileName: 'install_cert.ps1'
+    outputDirectory: '$(System.DefaultWorkingDirectory)'
+    removeSecureFile: false
+
 - task: VSBuild@1
   inputs:
     platform: 'x86'
     solution: '$(solution)'
     configuration: '$(buildConfiguration)'
     msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+
