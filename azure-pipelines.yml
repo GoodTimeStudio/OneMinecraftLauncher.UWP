@@ -6,7 +6,7 @@
 trigger:
 - master
 
-pool: MICROHAO-DESKTO
+pool: Default
 
 variables:
   solution: '**/*.sln'
