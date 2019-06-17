@@ -24,14 +24,26 @@ steps:
 
 - task: SecureFiles@1
   inputs:
-    secureFileName: 'install_cert.ps1'
+    secureFileName: 'install_store_cert.ps1'
     outputDirectory: '$(System.DefaultWorkingDirectory)'
-    removeSecureFile: false
+    removeSecureFile: true
+
+- task: SecureFiles@1
+  inputs:
+    secureFileName: 'store_cert.pfx'
+    outputDirectory: '$(System.DefaultWorkingDirectory)'
+    removeSecureFile: true
+
+- task: PowerShell@2
+  displayName: Install Microsoft Store certificate
+  inputs:
+    filePath: 'install_store_cert.ps1'
+    failOnStderr: true
 
 - task: VSBuild@1
   inputs:
     platform: 'x86'
     solution: '$(solution)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+    msbuildArgs: '/t:PackageProject /p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
 
