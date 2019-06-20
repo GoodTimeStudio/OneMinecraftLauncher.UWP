@@ -4,12 +4,13 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap rescap">
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  IgnorableNamespaces="uap rescap desktop">
 
   <Identity
     Name="11602GoodTimeStudio.OneMinecraftLauncher"
     Publisher="CN=26FBF7DF-0382-4C02-8985-D8DE01CEF4A3"
-    Version="1.1.83.0" />
+    Version="1.2.0.0" />
 
   <Properties>
     <DisplayName>One Minecraft Launcher</DisplayName>
@@ -47,6 +48,7 @@
         <uap:Extension Category="windows.appService">
           <uap:AppService Name="LaunchAgent"/>
         </uap:Extension>
+        <desktop:Extension Category="windows.fullTrustProcess" Executable="OneLauncher.UWPCore/OneMinecraftLauncher.UWPCore.exe" />
       </Extensions>
     </Application>
   </Applications>
