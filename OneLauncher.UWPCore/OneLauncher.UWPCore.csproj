@@ -40,14 +40,17 @@
   <PropertyGroup />
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="LibZ.Bootstrap, Version=1.2.0.0, Culture=neutral, PublicKeyToken=62360e53307d6ba2, processorArchitecture=MSIL">
-      <HintPath>..\packages\LibZ.Bootstrap.1.2.0.0\lib\net4-client\LibZ.Bootstrap.dll</HintPath>
+    <Reference Include="KMCCC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OneMinecraftLauncher.Core.1.1.0\lib\netstandard2.0\KMCCC.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OneMinecraftLauncher.Core, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OneMinecraftLauncher.Core.1.1.0\lib\netstandard2.0\OneMinecraftLauncher.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -80,7 +83,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LibZResolver.cs" />
     <Compile Include="Packet\IServicePacket.cs" />
     <Compile Include="Packet\PacketAssetsCheck.cs" />
     <Compile Include="Packet\PacketBase.cs" />
@@ -102,16 +104,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KMCCC\KMCCC.Basic\KMCCC.Basic.csproj">
-      <Project>{2b35c1fd-5e62-416e-b125-7577ef8ba1fb}</Project>
-      <Name>KMCCC.Basic</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OneLauncher.Core\OneLauncher.Core.csproj">
-      <Project>{4ffe312c-2bc7-4b8d-9af9-25d8f6a505b8}</Project>
-      <Name>OneLauncher.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="log4net.xml">
       <SubType>Designer</SubType>
     </None>
@@ -122,15 +114,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>cd $(TargetDir)
-set LIBZ="$(SolutionDir)packages\LibZ.Bootstrap.1.2.0.0\tools\libz.exe"
-%25LIBZ%25
-%25LIBZ%25 add --libz libraries.libz --include *.dll --move
-%25LIBZ%25 inject-libz -assembly  $(TargetFileName) --libz libraries.libz --move
-%25LIBZ%25 instrument --assembly $(TargetFileName) --libz-resources
-
-del /q "$(SolutionDir)OneLauncher.UWP\LauncherCore\" 
-
-xcopy /y /s "$(TargetDir)*.exe" "$(SolutionDir)OneLauncher.UWP\LauncherCore\"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
